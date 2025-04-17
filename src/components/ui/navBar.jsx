@@ -32,7 +32,7 @@ const Navbar = () => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: isMobile ? '8px 12px' : '10px 20px',
+        padding: isMobile ? '2px 12px' : '10px 20px',
         
         width: '100%',
         backgroundColor: 'white',
@@ -67,10 +67,10 @@ const Navbar = () => {
         <img 
             src={hormigueroLogo} 
             alt="Hormiga" 
-            style={{ width: isMobile ? '40px' : '60px', height: 'auto' }} 
+            style={{ width: isMobile ? '30px' : '60px', height: 'auto' }} 
         />
         <span style={{ 
-            fontSize: isMobile ? '14px' : '25px',
+            fontSize: isMobile ? '12px' : '25px',
             marginTop: '2px',
             color: '#000',
             textTransform: 'uppercase'

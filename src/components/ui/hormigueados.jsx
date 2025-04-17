@@ -89,9 +89,7 @@ const HormigueadosSection = () => {
         </div>
         
         <div className="carousel-controls">
-          <button className="carousel-button prev" onClick={prevSlide}>
-            &lt;
-          </button>
+          
           <div className="carousel-indicators">
             {carouselItems.map((_, index) => (
               <span 
@@ -101,9 +99,7 @@ const HormigueadosSection = () => {
               />
             ))}
           </div>
-          <button className="carousel-button next" onClick={nextSlide}>
-            &gt;
-          </button>
+          
         </div>
       </div>
       
