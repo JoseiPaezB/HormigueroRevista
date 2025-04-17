@@ -74,6 +74,7 @@ const Edicion = () => {
       <br />
       <EventosSection></EventosSection>
       
+      
     </div>
   );
 };

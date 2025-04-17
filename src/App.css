@@ -17,7 +17,7 @@
 .cover-image {
   position: relative;
   background-image: url('../../assets/images/edicion1.png');
-  height: 60vh;
+  height: 30vh;
   min-height: 300px;
   max-height: 1000px;
   width: 100%;
@@ -346,12 +346,9 @@
   height: auto;
   aspect-ratio: 16/9;
   object-fit: cover;
-  transition: transform 0.3s ease;
 }
 
-.event-image:hover {
-  transform: scale(1.05);
-}
+
 
 .event-details {
   padding: 0 5px;
