@@ -1,5 +1,3 @@
-
-
 * {
   font-family: "JetBrains Mono", monospace;
 }
@@ -17,9 +15,7 @@
 .cover-image {
   position: relative;
   background-image: url('../../assets/images/edicion1.png');
-  height: 30vh;
-  min-height: 300px;
-  max-height: 1000px;
+  height: 300px; /* Adjust this value as needed */
   width: 100%;
   background-size: cover;
   background-position: center;
@@ -121,7 +117,7 @@
   }
   
   .cover-image {
-    height: 500vh;
+    height: 250px;
   }
   
   .contributors-list {
@@ -150,7 +146,7 @@
 @media (max-width: 480px) {
   .cover-image {
     height:   
-    100vh;
+    700px;
   }
   
   .article-preview {
