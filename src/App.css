@@ -402,6 +402,8 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: transform 0.2s ease;
+  color:#000;
+  text-decoration: none;
   z-index: 1;
 }
 
