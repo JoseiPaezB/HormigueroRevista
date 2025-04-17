@@ -40,8 +40,7 @@
 /* Issue info styling */
 .issue-info {
   position: absolute;
-  top: 75%; /* Position at 50% from the top of the container */
-  transform: translateY(-50%); /* Shift up by 50% of its own height to center it */
+  top:60%; /* Position at 50% from the top of the container */
   left: 20px;
   color: white;
   text-transform: uppercase;
