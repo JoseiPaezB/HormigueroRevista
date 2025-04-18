@@ -17,8 +17,8 @@ function App() {
         <Route path="/" element={<Edicion />} />
         <Route path="/contenidos" element={<Contenido />} />
         <Route path="/creaciones" element={<Creaciones />} />
-        <Route path="/poemario" element={<AuthorBio />} />
-        <Route path="/poema" element={<Poema />} />
+        <Route path="/poemario/:id" element={<AuthorBio />} />
+        <Route path="/poema/:id" element={<Poema />} />
         {/* Add more routes as needed */}
       </Routes>
       <br />

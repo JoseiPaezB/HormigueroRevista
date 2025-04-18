@@ -6,25 +6,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-grid">
-          {/* Company Info */}
-          <div className="footer-section">
-            <h3 className="footer-heading">Company</h3>
-            <ul className="footer-list">
-              <li><a href="#" className="footer-link">About Us</a></li>
-              <li><a href="#" className="footer-link">Careers</a></li>
-              <li><a href="#" className="footer-link">Blog</a></li>
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div className="footer-section">
-            <h3 className="footer-heading">Resources</h3>
-            <ul className="footer-list">
-              <li><a href="#" className="footer-link">Documentation</a></li>
-              <li><a href="#" className="footer-link">Help Center</a></li>
-              <li><a href="#" className="footer-link">Privacy Policy</a></li>
-            </ul>
-          </div>
+         
 
           {/* Contact */}
           <div className="footer-section">

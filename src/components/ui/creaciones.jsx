@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import portada from '../../assets/images/edicion1.png';
-import {Link} from 'react-router-dom';
+import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
+import { Link } from 'react-router-dom';
+import { createClient } from '@supabase/supabase-js';
 
 // Import your book cover images
 import bookCover1 from '../../assets/images/1res.png';
@@ -9,98 +11,126 @@ import bookCover3 from '../../assets/images/3res.png';
 import bookCover4 from '../../assets/images/4res.png';
 import bookCover5 from '../../assets/images/5res.png';
 
+// Initialize Supabase client
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+
 const Creaciones = () => {
-  // Book data with poem counts
-  const books = [
-    {
-      id: 1,
-      title: "LA BANCA DE UN PARQUE",
-      author: "OCTAVIO PAZ",
-      cover: bookCover1,
-      link: "/poemario",
-      poemCount: 4 // Small
-    },
-    {
-      id: 2,
-      title: "ODISEA",
-      author: "SYLVIA PLATH",
-      cover: bookCover2,
-      link: "/book/2",
-      poemCount: 6 // Medium
-    },
-    {
-      id: 3,
-      title: "DEJOS DE CUCARACHAS",
-      author: "CHARLES BAUDELAIRE",
-      cover: bookCover3,
-      link: "/book/3",
-      poemCount: 9 // Large
-    },
-    {
-      id: 4,
-      title: "MI VIDA EN LA MANCHA",
-      author: "FEDERICO GARCÍA LORCA",
-      cover: bookCover4,
-      link: "/book/4",
-      poemCount: 3 // Small
-    },
-    {
-      id: 5,
-      title: "RAICES SECAS",
-      author: "EMILY DICKINSON",
-      cover: bookCover5,
-      link: "/book/5",
-      poemCount: 8 // Large
-    }, 
-    {
-      id: 6,
-      title: "LA BANCA DE UN PARQUE",
-      author: "OCTAVIO PAZ",
-      cover: bookCover1,
-      link: "/book/1",
-      poemCount: 6 // Small
-    },
-    {
-      id: 7,
-      title: "LA BANCA DE UN PARQUE",
-      author: "OCTAVIO PAZ",
-      cover: bookCover1,
-      link: "/book/1",
-      poemCount: 4 // Small
-    },
-    {
-      id: 8,
-      title: "LA BANCA DE UN PARQUE",
-      author: "OCTAVIO PAZ",
-      cover: bookCover1,
-      link: "/book/1",
-      poemCount: 6 // Small
-    },
-    {
-      id: 9,
-      title: "LA BANCA DE UN PARQUE",
-      author: "OCTAVIO PAZ",
-      cover: bookCover1,
-      link: "/book/1",
-      poemCount: 11 // Small
-    },
-    {
-      id: 10,
-      title: "LA BANCA DE UN PARQUE",
-      author: "OCTAVIO PAZ",
-      cover: bookCover1,
-      link: "/book/1",
-      poemCount: 1 // Small
-    },
-    {
-      id: 11,
-      title: "LA BANCA DE UN PARQUE",
-      author: "OCTAVIO PAZ",
-      cover: bookCover1,
-      link: "/book/1",
-      poemCount: 6 // Small
-    }
-  ];
+  // State for data
+  const [revista, setRevista] = useState(null);
+  const [creaciones, setCreaciones] = useState(null);
+  const [poemarios, setPoemarios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [contributors, setContributors] = useState([]);
+
+  // Default book covers mapping
+  const defaultCovers = {
+    1: bookCover1,
+    2: bookCover2,
+    3: bookCover3,
+    4: bookCover4,
+    5: bookCover5
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // 1. Fetch revista with ID 1
+        const { data: revistaData, error: revistaError } = await supabase
+          .from('revista')
+          .select('*')
+          .eq('id', 1)
+          .single();
+  
+        if (revistaError) throw revistaError;
+        setRevista(revistaData);
+  
+        // 2. Fetch creaciones linked to this revista
+        const { data: creacionesData, error: creacionesError } = await supabase
+          .from('creaciones')
+          .select('*')
+          .eq('id_revista', 1)
+          .single();
+  
+        if (creacionesError) throw creacionesError;
+        setCreaciones(creacionesData);
+  
+        // Parse colaboradores
+        if (creacionesData.colaboradores) {
+          const colaboradoresList = creacionesData.colaboradores
+            .split(',')
+            .map(name => name.trim());
+          setContributors(colaboradoresList);
+        }
+  
+        // 3. Fetch poemario IDs from junction table
+        const { data: poemarioRelations, error: relationsError } = await supabase
+          .from('creaciones_poemario')
+          .select('id_poemario')
+          .eq('id_creacion', creacionesData.id);
+  
+        if (relationsError) throw relationsError;
+  
+        const poemarioIds = poemarioRelations.map(relation => relation.id_poemario);
+  
+        // 4. Fetch actual poemarios
+        if (poemarioIds.length > 0) {
+          const { data: poemarioData, error: poemarioError } = await supabase
+            .from('poemario')
+            .select('*, autor(nombre)')
+            .in('id', poemarioIds);
+  
+          if (poemarioError) throw poemarioError;
+  
+          // 5. Fetch poem count for each poemario
+          const poemariosWithCount = await Promise.all(
+            poemarioData.map(async (poemario) => {
+              const { count, error: countError } = await supabase
+                .from('poema') // usa el nombre real de tu tabla
+                .select('*', { count: 'exact', head: true })
+                .eq('id_poemario', poemario.id);
+  
+              return {
+                id: poemario.id,
+                title: poemario.titulo,
+                author: poemario.autor ? poemario.autor.nombre : 'Unknown',
+                cover: poemario.portada,
+                link: `/poemario/${poemario.id_autor}`,
+                poemCount: countError ? Math.floor(Math.random() * 10) + 1 : count
+              };
+            })
+          );
+  
+          setPoemarios(poemariosWithCount);
+        }
+  
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to load data');
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+  // Format date for display (YYYY-MM-DD to DD/MM/YY)
+  const formatDate = (dateString) => {
+    if (!dateString) return '01/08/25';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+  };
 
   // Function to categorize books by size
   const categorizeBooks = (books) => {
@@ -155,7 +185,7 @@ const Creaciones = () => {
   };
   
   // Arrange books in the desired pattern
-  const arrangedBooks = arrangeBooks(books);
+  const arrangedBooks = arrangeBooks(poemarios);
 
   // Function to determine book size based on poem count
   const getBookSize = (poemCount, sizeCategory) => {
@@ -214,46 +244,54 @@ const Creaciones = () => {
     };
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div className="edition-container">
       {/* Green gradient cover image */}
-      <div className="cover-image image_2" style={{
-        backgroundImage: `url(${portada})`,
-        height: '30vh'
-      }}>
-      </div>
+      <br />
       
       {/* Article preview section */}
-      <div className="article-preview">
-        <div className="article-date">01/08/25</div>
+      <div className="article-preview" style={{marginTop: '3rem'}}>
+        <div className="article-date">{formatDate(revista?.fecha)}</div>
         <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px' }}>
           CREACIONES
         </h2>
         <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem'}}>
-        <p style={{marginBottom: '10px'}}>JOSÉ NERUDA – "Veinte poemas de amor y una canción desesperada"</p>
-        <p style={{marginBottom: '10px'}}>FEDERICO GARCÍA LORCA – "Romancero gitano"</p>
-        <p style={{marginBottom: '10px'}}>EMILY DICKINSON – "Poems by Emily Dickinson"</p>
-        <p style={{marginBottom: '10px'}}>GABRIEL GARCÍA MÁRQUEZ – "Obra poética completa"</p>
-        <p style={{marginBottom: '10px'}}>OCTAVIO PAZ – "Piedra de sol"</p>
-        <p style={{marginBottom: '10px'}}>SYLVIA PLATH – "Ariel"</p>
-        <p style={{marginBottom: '10px'}}>JORGE LUIS BORGES – "Fervor de Buenos Aires"</p>
-        <p style={{marginBottom: '10px'}}>GABRIELA MISTRAL – "Desolación"</p>
-        <p style={{marginBottom: '10px'}}>WALT WHITMAN – "Leaves of Grass"</p>
-        <p style={{marginBottom: '10px'}}>ALEJANDRA PIZARNIK – "Extracción de la piedra de locura"</p>
-</div>
-          <h3 className="title" style={{ fontWeight: 'bold' }}>
+          {contributors.length > 0 ? (
+            contributors.map((contributor, index) => (
+              <p key={index} style={{marginBottom: '10px'}}>{contributor.toUpperCase()}</p>
+            ))
+          ) : (
+            /* Fallback contributors if none are found */
+            <>
+              <p style={{marginBottom: '10px'}}>JOSÉ NERUDA – "Veinte poemas de amor y una canción desesperada"</p>
+              <p style={{marginBottom: '10px'}}>FEDERICO GARCÍA LORCA – "Romancero gitano"</p>
+              <p style={{marginBottom: '10px'}}>EMILY DICKINSON – "Poems by Emily Dickinson"</p>
+              <p style={{marginBottom: '10px'}}>GABRIEL GARCÍA MÁRQUEZ – "Obra poética completa"</p>
+              <p style={{marginBottom: '10px'}}>OCTAVIO PAZ – "Piedra de sol"</p>
+              <p style={{marginBottom: '10px'}}>SYLVIA PLATH – "Ariel"</p>
+              <p style={{marginBottom: '10px'}}>JORGE LUIS BORGES – "Fervor de Buenos Aires"</p>
+              <p style={{marginBottom: '10px'}}>GABRIELA MISTRAL – "Desolación"</p>
+              <p style={{marginBottom: '10px'}}>WALT WHITMAN – "Leaves of Grass"</p>
+              <p style={{marginBottom: '10px'}}>ALEJANDRA PIZARNIK – "Extracción de la piedra de locura"</p>
+            </>
+          )}
+        </div>
+        <h3 className="title" style={{ fontWeight: 'bold' }}>
           SINTESIS
         </h3>
         <div className="article-content" style={{marginBottom: '3rem'}}>
-        <p style={{ 
-            textIndent: '1em',
-            maxWidth: '27em',  // This controls line width
-            lineHeight: '1.5', // Improves readability
-            hyphens: 'auto',   // Enables hyphenation
-            textAlign: 'justify' // Makes text edges align on both sides
-        }}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.
-        </p>
+          <p style={{ 
+              textIndent: '1em',
+              maxWidth: '27em',
+              lineHeight: '1.5',
+              hyphens: 'auto',
+              textAlign: 'justify'
+          }}>
+            {creaciones?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
+          </p>
         </div>
 
         {/* Book covers grid */}
@@ -294,7 +332,6 @@ const Creaciones = () => {
                   height: sizeStyles.height,
                   width: '100%', // Always use full width of grid cell
                 }}>
-                  {/* Rest of your code for the book card remains the same */}
                   <img 
                     src={book.cover} 
                     alt={book.title} 
@@ -345,8 +382,6 @@ const Creaciones = () => {
             );
           })}
         </div>
-
-        
       </div>
     </div>
   );
