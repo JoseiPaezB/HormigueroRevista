@@ -129,6 +129,73 @@ const Contenido = () => {
               letterSpacing: '1px'
             }}>CRITICA</div>
           </Link>
+          
+          <Link to="/rescates" className="menu-item" style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: 'black',
+            transition: 'transform 0.2s',
+            justifyContent: 'center', // Add this
+            textAlign: 'center',      // Add this
+            width: '100%',            // Add this
+          }}>
+            <div className="ant-icon" style={{ marginBottom: '10px' }}>
+              {/* Place for your ant image */}
+              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+            </div>
+            <div className="menu-text" style={{
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              letterSpacing: '1px'
+            }}>RESCATES</div>
+          </Link>
+          <Link to="/visuales" className="menu-item" style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: 'black',
+            transition: 'transform 0.2s',
+            justifyContent: 'center', // Add this
+            textAlign: 'center',      // Add this
+            width: '100%',            // Add this
+          }}>
+            <div className="ant-icon" style={{ marginBottom: '10px' }}>
+              {/* Place for your ant image */}
+              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+            </div>
+            <div className="menu-text" style={{
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              letterSpacing: '1px'
+            }}>VISUALES</div>
+          </Link>
+          <Link to="/critica" className="menu-item" style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: 'black',
+            transition: 'transform 0.2s',
+            justifyContent: 'center', // Add this
+            textAlign: 'center',      // Add this
+            width: '100%',            // Add this
+          }}>
+            <div className="ant-icon" style={{ marginBottom: '10px' }}>
+              {/* Place for your ant image */}
+              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+            </div>
+            <div className="menu-text" style={{
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              letterSpacing: '1px'
+            }}>ENTREVISTAS</div>
+          </Link>
         </div>
       </div>
 
