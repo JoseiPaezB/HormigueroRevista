@@ -17,7 +17,7 @@ const Creaciones = () => {
       title: "LA BANCA DE UN PARQUE",
       author: "OCTAVIO PAZ",
       cover: bookCover1,
-      link: "/book/1",
+      link: "/poemario",
       poemCount: 4 // Small
     },
     {
