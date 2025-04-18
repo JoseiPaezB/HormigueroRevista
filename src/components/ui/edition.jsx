@@ -2,6 +2,7 @@ import React from 'react';
 import portada from '../../assets/images/edicion1.png'; // Adjust the path as necessary
 import HormigueadosSection from './hormigueados'; // Adjust the path as necessary
 import EventosSection from './eventos';
+import {Link} from 'react-router-dom';
 
 const Edicion = () => {
   return (
@@ -14,8 +15,10 @@ const Edicion = () => {
         
         {/* Issue info overlay */}
         <div className="issue-info">
-          <h2 className="edition-title">EDICION 1</h2>
-          <p className="edition-date">04/08/25</p>
+        <Link to="/contenidos" className="edition-link" style={{color: 'white'}}>
+        <h2 className="edition-title">EDICION 1</h2>
+      </Link>          
+      <p className="edition-date">04/08/25</p>
           
           {/* Contributors list */}
           <div className="contributors-list">

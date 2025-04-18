@@ -1,7 +1,9 @@
 * {
   font-family: "JetBrains Mono", monospace;
 }
-
+.image_2{
+  height:300px !important;
+}
 .edition-container {
   max-width: 800px;
   width: 100%;
