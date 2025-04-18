@@ -238,7 +238,7 @@ const Creaciones = () => {
     
     return {
       margin: '0 0 5px 0', 
-      fontSize: '14px',
+      
       fontWeight: 'bold',
       letterSpacing: '0.5px'
     };
@@ -250,10 +250,14 @@ const Creaciones = () => {
   return (
     <div className="edition-container">
       {/* Green gradient cover image */}
-      <br />
+      <div className="cover-image image_2" style={{
+              backgroundImage: `url(${creaciones?.imagen})`,
+              height: '30vh'
+            }}>
+            </div>
       
       {/* Article preview section */}
-      <div className="article-preview" style={{marginTop: '3rem'}}>
+      <div className="article-preview" style={{marginTop: '0rem'}}>
         <div className="article-date">{formatDate(revista?.fecha)}</div>
         <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px' }}>
           CREACIONES
@@ -345,7 +349,7 @@ const Creaciones = () => {
                   {isLargeBook ? (
                     // Centered title for large books
                     <div style={titleStyles}>
-                      <h3>{book.title}</h3>
+                      <h3>{book.title.toUpperCase()}</h3>
                       <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.author}</p>
                     </div>
                   ) : (
@@ -360,7 +364,7 @@ const Creaciones = () => {
                       width: '100%',
                       background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
                     }}>
-                      <h4 style={titleStyles}>{book.title}</h4>
+                      <h4 style={titleStyles}>{book.title.toUpperCase()}</h4>
                       <p style={{margin: 0, fontSize: '10px'}}>{book.author}</p>
                     </div>
                   )}

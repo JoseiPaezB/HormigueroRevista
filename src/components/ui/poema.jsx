@@ -208,7 +208,7 @@ const Poema = () => {
           fontSize: '24px',
           fontFamily: 'JetBrains Mono, monospace',
         }}>
-          {poema?.titulo || fallbackPoem.title}
+          {poema?.titulo.toUpperCase() || fallbackPoem.title}
         </h2>
        
         <div style={{

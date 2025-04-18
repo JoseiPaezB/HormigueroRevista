@@ -95,7 +95,7 @@ const AuthorBio = () => {
               author: autorData.nombre,
               cover: poema.portada, // Cycle through available covers
               link: `/poema/${poema.id}`,
-              wordCount: wordCount || Math.floor(Math.random() * 150) + 20 // Real word count or random if text is missing
+              wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
             };
           });
 
@@ -315,9 +315,9 @@ const AuthorBio = () => {
             </div>
           </div>
         </div>
-        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center'}}>
-            YO Y ANTES LA HORMIGA
-          </h2>
+        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>
+            {poemario?.titulo.toUpperCase()}
+        </h2>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
