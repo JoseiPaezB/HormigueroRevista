@@ -646,7 +646,7 @@ const Poema = () => {
                 boxShadow: isFocused ? '0 0 0 2px black' : 'none', // resplandor negro al enfocar
                 transition: 'border 0.2s, box-shadow 0.2s' // transición suave
             }}
-            autoFocus
+            
             />
           <div style={{
             display: 'flex',
