@@ -107,10 +107,11 @@ const HormigueadosSection = () => {
                 <div
                   className="carousel-content"
                   style={{ background: `url(${item.portada || hormigueroLogo}) center/cover no-repeat` }}                >
-                  <div className="carousel-text">
-                    <p>{item.titulo}</p>
-                    <small>{item.autor}</small>
-                  </div>
+                  <div className="carousel-text" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+                  <p>{item.titulo}</p>
+                  <small>{item.autor}</small>
+                </div>
+
                 </div>
               </Link>
             </div>
