@@ -13,6 +13,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 const Poema = () => {
+    const [isFocused, setIsFocused] = useState(false);
+
   const { id } = useParams(); // Get poem ID from URL
   const navigate = useNavigate();
   const [poema, setPoema] = useState(null);
@@ -561,7 +563,7 @@ const Poema = () => {
 
 {/* Keep your existing modal code with modified styling for the success message */}
 {showHormiguearModal && (
-  <div style={{
+  <div  onClick={closeModal} style={{
     position: 'fixed',
     top: 0,
     left: 0,
@@ -573,7 +575,7 @@ const Poema = () => {
     alignItems: 'center',
     zIndex: 1000
   }}>
-    <div style={{
+    <div  onClick={(e) => e.stopPropagation()} style={{
       backgroundColor: 'white',
       padding: '20px',
       borderRadius: '8px',
@@ -592,7 +594,9 @@ const Poema = () => {
           background: 'none',
           border: 'none',
           fontSize: '18px',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          color: 'black', // <- esto es lo que faltaba
+
         }}
       >
         ✕
@@ -627,14 +631,20 @@ const Poema = () => {
             type="text"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             placeholder="Tu nombre"
             style={{
                 width: '95%',
                 padding: '8px',
                 borderRadius: '4px',
-                border: '1px solid #ddd',
+                border: isFocused ? '1px solid black' : '1px solid #aaa', // gris oscuro normal, negro al enfocar
                 marginBottom: '15px',
-                fontSize: '14px' // Add font size to ensure consistency
+                fontSize: '14px',
+                fontFamily: 'JetBrains Mono, monospace',
+                outline: 'none',
+                boxShadow: isFocused ? '0 0 0 2px black' : 'none', // resplandor negro al enfocar
+                transition: 'border 0.2s, box-shadow 0.2s' // transición suave
             }}
             autoFocus
             />
