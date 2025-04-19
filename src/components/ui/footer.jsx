@@ -19,34 +19,7 @@ const PulseStyle = () => (
 const Footer = () => {
   const [emphasizeContact, setEmphasizeContact] = useState(false);
   
-  useEffect(() => {
-    // También podemos comprobar si hay un hash en la URL actual
-    if (window.location.hash === '#contacto') {
-      handleContactEmphasis();
-    }
-    const shouldScrollToSuscribete = document.getElementById('suscribete');
-    if (shouldScrollToSuscribete) {
-      shouldScrollToSuscribete.scrollIntoView({ behavior: 'smooth' });
-
-      setTimeout(() => {
-        setEmphasizeContact(true);
-        
-        // Desactivar después de completar la animación
-        setTimeout(() => {
-          setEmphasizeContact(false);
-        }, 1500);
-      }, 300); 
-    }
-    
-    const shouldScrollToFooter = sessionStorage.getItem('scrollToFooter');
-    if (shouldScrollToFooter === 'true') {
-      sessionStorage.removeItem('scrollToFooter');
-      
-      setTimeout(() => {
-        handleContactEmphasis();
-      }, 500);
-    }
-  }, []);
+  
   
   const handleContactEmphasis = () => {
    

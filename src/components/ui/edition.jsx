@@ -6,14 +6,9 @@ import HormigueadosSection from './hormigueados';
 import EventosSection from './eventos';
 import Footer from './footer';
 
-// Initialize Supabase client - using import.meta.env for Vite or direct variables for CRA
-//const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || process.env.REACT_APP_SUPABASE_URL;
-//const supabaseKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || process.env.REACT_APP_SUPABASE_ANON_KEY;
-
-// Alternative if you're using Vite and still having issues:
+// Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
-
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Edicion = () => {
@@ -22,66 +17,10 @@ const Edicion = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [contributors, setContributors] = useState([]);
+  const [readyToShow, setReadyToShow] = useState(false);
 
-  // Check for scroll to eventos
-  useEffect(() => {
-    // Prevenir scrolls inesperados
-  sessionStorage.removeItem('scrollToFooter');
+  // Control scroll and content visibility
 
-    const shoudlScrollToMainContent = sessionStorage.getItem('scrollToMainContent');
-    if (shoudlScrollToMainContent === 'true') {
-      // Limpiamos la bandera
-      sessionStorage.removeItem('scrollToMainContent');
-      
-      // Esperamos un momento para que el DOM se renderice completamente
-      setTimeout(() => {
-        const mainContentElement = document.getElementById('main-content');
-        if (mainContentElement) {
-          mainContentElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);
-    }
-    const shouldScrollToEventos = sessionStorage.getItem('scrollToEventos');
-    if (shouldScrollToEventos === 'true') {
-      // Limpiamos la bandera
-      sessionStorage.removeItem('scrollToEventos');
-      
-      // Esperamos un momento para que el DOM se renderice completamente
-      setTimeout(() => {
-        const eventosElement = document.getElementById('eventos');
-        if (eventosElement) {
-          eventosElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);
-    }
-    const shouldScrollToFooter = sessionStorage.getItem('scrollToFooter');
-    if (shouldScrollToFooter === 'true') {
-      // Limpiamos la bandera
-      sessionStorage.removeItem('scrollToFooter');
-      
-      // Esperamos un momento para que el DOM se renderice completamente
-      setTimeout(() => {
-        const footerElement = document.getElementById('contacto');
-        if (footerElement) {
-          footerElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);
-    }
-
-    const shouldScrollToSuscribete = sessionStorage.getItem('scrollToSuscribete');
-    if (shouldScrollToSuscribete === 'true') {
-      // Limpiamos la bandera
-      sessionStorage.removeItem('scrollToSuscribete');
-      
-      // Esperamos un momento para que el DOM se renderice completamente
-      setTimeout(() => {
-        const susElement = document.getElementById('suscribete');
-        if (susElement) {
-          susElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);
-    }
-  }, []);
 
   // Fetch revista data on component mount
   useEffect(() => {
@@ -126,8 +65,6 @@ const Edicion = () => {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <div className="edition-container" >
@@ -195,7 +132,10 @@ const Edicion = () => {
         <EventosSection />
       </div>
       <br />
-      <Footer />
+      <div >
+        <Footer />
+      </div>
+      <div id="contacto"></div>
     </div>
   );
 };

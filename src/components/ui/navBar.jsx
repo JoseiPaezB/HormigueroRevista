@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { FaInstagram, FaEnvelope, FaSearch, FaBars, FaTimes } from 'react-icons/fa';
 import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
 import { FaBell } from 'react-icons/fa6';
+import { HashLink } from 'react-router-hash-link';
+
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -35,55 +37,7 @@ const Navbar = () => {
   }, []);
 
   // Check for scroll to eventos
-  useEffect(() => {
-    const shouldScrollToMainContent = sessionStorage.getItem('scrollToMainContent');
-    if (shouldScrollToMainContent === 'true') {
-      // Limpiamos el estado
-      sessionStorage.removeItem('scrollToMainContent');
-      setTimeout(() => {
-        const mainContentElement = document.getElementById('main-content');
-        if (mainContentElement) {
-          mainContentElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);  
-    }  // <-- Faltaba esta llave de cierre
-     
-    const shouldScrollToEventos = sessionStorage.getItem('scrollToEventos');
-    
-    if (shouldScrollToEventos === 'true') {
-      // Limpiamos el estado
-      sessionStorage.removeItem('scrollToEventos');
-      
-      // Damos tiempo para que el DOM se renderice completamente
-      setTimeout(() => {
-        const eventosElement = document.getElementById('eventos');
-        if (eventosElement) {
-          eventosElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);
-    }
-    const shouldScrollToFooter = sessionStorage.getItem('scrollToFooter');
-    if (shouldScrollToFooter === 'true') {
-      sessionStorage.removeItem('scrollToFooter');  
-      setTimeout(() => {
-        const footerElement = document.getElementById('contacto');
-        if (footerElement) {
-          footerElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);
-    }
-
-    const shouldScrollToSuscribete = sessionStorage.getItem('scrollToSuscribete');
-    if (shouldScrollToSuscribete === 'true') {
-      sessionStorage.removeItem('scrollToSuscribete');  
-      setTimeout(() => {
-        const susElement = document.getElementById('suscribete');
-        if (susElement) {
-          susElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);
-    }
-  }, []);
+ 
 
   // Handle clicks outside the menu
   useEffect(() => {
@@ -250,30 +204,17 @@ const Navbar = () => {
             fontFamily: '"JetBrains Mono", monospace',
           }}>
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-            <Link 
-                to="/" 
+              <Link 
+                to="/#main-content" 
                 className="edition-link" 
                 style={{ textDecoration: 'none', color: '#000' }}
-                onClick={(e) => {
-                  if (window.location.pathname !== '/') {
-                    // Si no estamos en la página principal, guardar el estado
-                    // para que sepamos que hay que desplazarse después de cargar
-                    setMenuOpen(false);
-                    // No prevenimos el evento predeterminado para permitir la navegación
-                  } else {
-                    // Si ya estamos en la página principal, solo hacemos scroll
-                    e.preventDefault();
-                    const mainContentElement = document.getElementById('main-content');
-                    if (mainContentElement) {
-                      mainContentElement.scrollIntoView({ behavior: 'smooth' });
-                    }
-                    setMenuOpen(false);
-                  }
-                }}
+                onClick={() => setMenuOpen(false)}
+
               >
                 INICIO
               </Link>
             </li>
+            
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <Link 
                 to="/contenidos" 
@@ -284,27 +225,14 @@ const Navbar = () => {
                 EDICION {revista?.numero}
               </Link>
             </li>
+            
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <Link 
-                to="/" 
+                to="/#eventos" 
                 className="edition-link" 
                 style={{ textDecoration: 'none', color: '#000' }}
-                onClick={(e) => {
-                  if (window.location.pathname !== '/') {
-                    // Si no estamos en la página principal, guardar el estado
-                    // para que sepamos que hay que desplazarse después de cargar
-                    setMenuOpen(false);
-                    // No prevenimos el evento predeterminado para permitir la navegación
-                  } else {
-                    // Si ya estamos en la página principal, solo hacemos scroll
-                    e.preventDefault();
-                    const eventosElement = document.getElementById('eventos');
-                    if (eventosElement) {
-                      eventosElement.scrollIntoView({ behavior: 'smooth' });
-                    }
-                    setMenuOpen(false);
-                  }
-                }}
+                onClick={() => setMenuOpen(false)}
+
               >
                 EVENTOS
               </Link>
@@ -312,61 +240,32 @@ const Navbar = () => {
 
             {/* Only show these on mobile since they're hidden in the navbar */}
             {isMobile && (
-            <>
-              <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                <Link 
-                  to="/" // Mantiene la ruta actual
-                  className="edition-link" 
-                  style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
-                  onClick={(e) => {
-                    // If we're already on the homepage, allow smooth scrolling
-                    if (window.location.pathname !== '/') {
-                      // If we're NOT on the homepage, just navigate and skip the scroll behavior
-                      setMenuOpen(false);
-                    } else {
-                      // Otherwise, perform scroll
-                      e.preventDefault();
-                      const footerElement = document.getElementById('contacto');
-                      if (footerElement) {
-                        footerElement.scrollIntoView({ behavior: 'smooth' });
-                      }
-                      setMenuOpen(false);
-                    }
-                  }}
-                >
-                  CONTACTO
-                </Link>
-              </li>
+              <>
+                <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+                  <Link 
+                    to="/#contacto" 
+                    className="edition-link" 
+                    style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                    onClick={() => setMenuOpen(false)}
 
-              <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <Link 
-                  to="/" // Mantiene la ruta actual
-                  className="edition-link" 
-                  style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
-                  onClick={(e) => {
-                    if (window.location.pathname !== '/') {
-                      // Si no estamos en la página principal, guardar el estado
-                      // para que sepamos que hay que desplazarse después de cargar
-                      setMenuOpen(false);
-                      // No prevenimos el evento predeterminado para permitir la navegación
-                    } else {
-                      // Si ya estamos en la página principal, solo hacemos scroll
-                      e.preventDefault();
-                      const susElement = document.getElementById('suscribete');
-                      if (susElement) {
-                        susElement.scrollIntoView({ behavior: 'smooth' });
-                      }
-                      setMenuOpen(false);
-                    }
-                  }}
-                >
-                   SUSCRIBETE
-                </Link>
-              </li>
+                  >
+                    CONTACTO
+                  </Link>
+                </li>
 
-            </>
-          )}
+                <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+                  <Link 
+                    to="/#contacto" 
+                    className="edition-link" 
+                    style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                    onClick={() => setMenuOpen(false)}
 
+                  >
+                    SUSCRIBETE
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       )}
