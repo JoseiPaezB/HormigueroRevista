@@ -317,16 +317,25 @@ const Navbar = () => {
             <>
               <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
                 <Link 
-                  to={window.location.pathname} // Mantiene la ruta actual
+                  to="/" // Mantiene la ruta actual
                   className="edition-link" 
                   style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
                   onClick={(e) => {
-                    e.preventDefault(); // Siempre prevenir la navegación
-                    const footerElement = document.getElementById('contacto');
-                    if (footerElement) {
-                      footerElement.scrollIntoView({ behavior: 'smooth' });
+                    if (window.location.pathname !== '/') {
+                      // Si no estamos en la página principal, guardar el estado
+                      // para que sepamos que hay que desplazarse después de cargar
+                      sessionStorage.setItem('scrollToFooter', 'true');
+                      setMenuOpen(false);
+                      // No prevenimos el evento predeterminado para permitir la navegación
+                    } else {
+                      // Si ya estamos en la página principal, solo hacemos scroll
+                      e.preventDefault();
+                      const footerElement = document.getElementById('contacto');
+                      if (footerElement) {
+                        footerElement.scrollIntoView({ behavior: 'smooth' });
+                      }
+                      setMenuOpen(false);
                     }
-                    setMenuOpen(false);
                   }}
                 >
                   CONTACTO
@@ -335,16 +344,25 @@ const Navbar = () => {
 
               <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <Link 
-                  to={window.location.pathname} // Mantiene la ruta actual
+                  to="/" // Mantiene la ruta actual
                   className="edition-link" 
                   style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
                   onClick={(e) => {
-                    e.preventDefault(); // Siempre prevenir la navegación
-                    const susElement = document.getElementById('suscribete');
-                    if (susElement) {
-                      susElement.scrollIntoView({ behavior: 'smooth' });
+                    if (window.location.pathname !== '/') {
+                      // Si no estamos en la página principal, guardar el estado
+                      // para que sepamos que hay que desplazarse después de cargar
+                      sessionStorage.setItem('scrollToSuscribete', 'true');
+                      setMenuOpen(false);
+                      // No prevenimos el evento predeterminado para permitir la navegación
+                    } else {
+                      // Si ya estamos en la página principal, solo hacemos scroll
+                      e.preventDefault();
+                      const susElement = document.getElementById('suscribete');
+                      if (susElement) {
+                        susElement.scrollIntoView({ behavior: 'smooth' });
+                      }
+                      setMenuOpen(false);
                     }
-                    setMenuOpen(false);
                   }}
                 >
                    SUSCRIBETE

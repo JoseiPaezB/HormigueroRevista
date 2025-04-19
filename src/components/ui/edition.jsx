@@ -51,6 +51,33 @@ const Edicion = () => {
         }
       }, 500);
     }
+    const shouldScrollToFooter = sessionStorage.getItem('scrollToFooter');
+    if (shouldScrollToFooter === 'true') {
+      // Limpiamos la bandera
+      sessionStorage.removeItem('scrollToFooter');
+      
+      // Esperamos un momento para que el DOM se renderice completamente
+      setTimeout(() => {
+        const footerElement = document.getElementById('contacto');
+        if (footerElement) {
+          footerElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    }
+
+    const shouldScrollToSuscribete = sessionStorage.getItem('scrollToSuscribete');
+    if (shouldScrollToSuscribete === 'true') {
+      // Limpiamos la bandera
+      sessionStorage.removeItem('scrollToSuscribete');
+      
+      // Esperamos un momento para que el DOM se renderice completamente
+      setTimeout(() => {
+        const susElement = document.getElementById('suscribete');
+        if (susElement) {
+          susElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    }
   }, []);
 
   // Fetch revista data on component mount
