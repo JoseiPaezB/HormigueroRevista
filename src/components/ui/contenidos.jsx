@@ -78,7 +78,7 @@ const Contenido = () => {
       <div className="article-preview">
         <div className="article-date">{formatDate(revista?.fecha)}</div>
         <h2 className="edition-title" style={{ fontWeight: 'bold' }}>
-          {revista?.nombre || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
+          {revista?.nombre.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
         </h2>
         <div className="contributors-list">
           {contributors.length > 0 ? (
