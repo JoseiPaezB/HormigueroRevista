@@ -10,26 +10,29 @@ const Footer = () => {
 
           {/* Contact */}
           <div className="footer-section">
-            <h3 className="footer-heading">Contact</h3>
-            <ul className="footer-list">
-              <li><a href="#" className="footer-link">Support</a></li>
-              <li><a href="#" className="footer-link">Sales</a></li>
-              <li><a href="#" className="footer-link">Partners</a></li>
+            <h3 className="footer-heading">CONTACTO</h3>
+            <ul className="footer-list" style={{ textAlign: 'left', padding: 0 }}>
+              <li style={{ textAlign: 'left', listStyleType: 'none', marginBottom: '8px' }}>
+                HORMIGUERO@GMAIL.COM
+              </li>
+              <li style={{ textAlign: 'left', listStyleType: 'none' }}>
+                BRUNOJAVIER@GMAIL.COM
+              </li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div className="footer-section">
-            <h3 className="footer-heading">Stay Updated</h3>
-            <p className="newsletter-text">Subscribe to our newsletter for the latest updates.</p>
+            <h3 className="footer-heading">QUEDATE AL PENDIENTE</h3>
+            <p className="newsletter-text">SUBSCRIBETE PARA RECIBIR LAS ULTIMAS NOTICIAS</p>
             <form className="newsletter-form">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Ingresa tu correo"
                 className="newsletter-input"
               />
               <button className="newsletter-button">
-                Subscribe
+                Subscribete
               </button>
             </form>
           </div>
@@ -37,27 +40,9 @@ const Footer = () => {
 
         {/* Social Links & Copyright */}
         <div className="footer-bottom">
-          <div className="footer-bottom-content">
-            <div className="social-links">
-              <a href="#" className="social-link">
-                <Github size={20} />
-              </a>
-              <a href="#" className="social-link">
-                <Twitter size={20} />
-              </a>
-              <a href="#" className="social-link">
-                <Linkedin size={20} />
-              </a>
-              <a href="#" className="social-link">
-                <Mail size={20} />
-              </a>
+        <div className="copyright">
+              <span>&copy; {new Date().getFullYear()} HORMIGUERO. TODOS LOS DERECHOS RESERVADOS.</span>
             </div>
-            <div className="copyright">
-              <span>Made with</span>
-              <Heart size={16} className="heart-icon" />
-              <span>&copy; {new Date().getFullYear()} Your Company. All rights reserved.</span>
-            </div>
-          </div>
         </div>
       </div>
     </footer>

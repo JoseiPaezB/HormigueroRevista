@@ -443,8 +443,7 @@
 }
 
 .footer {
-  background-color: #1f2937;
-  color: #d1d5db;
+  color: #000;
 }
 
 .footer-container {
@@ -466,7 +465,7 @@
 }
 
 .footer-heading {
-  color: white;
+  color: #000;
   font-size: 1.125rem;
   font-weight: 600;
 }
@@ -484,7 +483,7 @@
 }
 
 .footer-link:hover {
-  color: white;
+  color: #232121;
 }
 
 .newsletter-text {
@@ -497,23 +496,23 @@
 }
 
 .newsletter-input {
-  background-color: #374151;
+  background-color: #c1bcbc;
   border-radius: 0.25rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   flex: 1;
   border: none;
-  color: white;
+  color: #000;
 }
 
 .newsletter-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #3b82f6;
+  box-shadow: 0 0 0 2px #000;
 }
 
 .newsletter-button {
-  background-color: #3b82f6;
-  color: white;
+  background-color: #96b25a;
+  color: #000;
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   font-size: 0.875rem;
@@ -523,13 +522,13 @@
 }
 
 .newsletter-button:hover {
-  background-color: #2563eb;
+  background-color: #232121;
 }
 
 .footer-bottom {
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid #374151;
+  border-top: 1px solid #000;
 }
 
 .footer-bottom-content {
