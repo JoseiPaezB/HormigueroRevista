@@ -373,7 +373,6 @@
 }
 
 .event-title {
-  font-family: monospace;
   font-size: clamp(16px, 5vw, 20px);
   font-weight: normal;
   margin: 0 0 10px 0;

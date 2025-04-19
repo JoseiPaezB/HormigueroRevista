@@ -112,7 +112,7 @@ const EventosSection = () => {
                   </div>
                 </div>
 
-                <h3 className="event-title">{event.nombre}</h3>
+                <h3 className="event-title">{event.nombre.toUpperCase()}</h3>
 
                 <p className="event-description">{event.descripcion}</p>
 
