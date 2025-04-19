@@ -511,8 +511,8 @@
 }
 
 .newsletter-button {
-  background-color: #96b25a;
-  color: #000;
+  background-color: #000;
+  color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   font-size: 0.875rem;
@@ -522,7 +522,7 @@
 }
 
 .newsletter-button:hover {
-  background-color: #232121;
+  background-color: #5a5252;
 }
 
 .footer-bottom {

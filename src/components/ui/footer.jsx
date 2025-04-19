@@ -90,7 +90,7 @@ const Footer = () => {
                 placeholder="Ingresa tu correo"
                 className="newsletter-input"
               />
-              <button className="newsletter-button" >
+              <button className="newsletter-button" disabled >
                 Suscribete
               </button>
             </form>
