@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/ui/navBar.jsx';
 import Edicion from './components/ui/edition.jsx';
 import Contenido from './components/ui/contenidos.jsx';
-import Footer from './components/ui/footer.jsx';
 import Creaciones from './components/ui/creaciones.jsx';
 import AuthorBio from './components/ui/poemario.jsx';
 import Poema from './components/ui/poema.jsx';
@@ -39,8 +38,6 @@ function RoutesWithLoading() {
         <Route path="/poemario/:id" element={<AuthorBio />} />
         <Route path="/poema/:id" element={<Poema />} />
       </Routes>
-      <br />
-      <Footer />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import portada from '../../assets/images/edicion1.png'; // Fallback image
 import HormigueadosSection from './hormigueados';
 import EventosSection from './eventos';
+import Footer from './footer';
 
 // Initialize Supabase client - using import.meta.env for Vite or direct variables for CRA
 //const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || process.env.REACT_APP_SUPABASE_URL;
@@ -163,6 +164,8 @@ const Edicion = () => {
       <div id="eventos">
         <EventosSection />
       </div>
+      <br />
+      <Footer />
     </div>
   );
 };
