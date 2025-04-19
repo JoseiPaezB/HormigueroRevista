@@ -24,6 +24,19 @@ const Footer = () => {
     if (window.location.hash === '#contacto') {
       handleContactEmphasis();
     }
+    const shouldScrollToSuscribete = document.getElementById('suscribete');
+    if (shouldScrollToSuscribete) {
+      shouldScrollToSuscribete.scrollIntoView({ behavior: 'smooth' });
+
+      setTimeout(() => {
+        setEmphasizeContact(true);
+        
+        // Desactivar después de completar la animación
+        setTimeout(() => {
+          setEmphasizeContact(false);
+        }, 1500);
+      }, 300); 
+    }
     
     const shouldScrollToFooter = sessionStorage.getItem('scrollToFooter');
     if (shouldScrollToFooter === 'true') {
@@ -36,6 +49,11 @@ const Footer = () => {
   }, []);
   
   const handleContactEmphasis = () => {
+   
+
+
+
+
     const footerElement = document.getElementById('contacto');
     if (footerElement) {
       footerElement.scrollIntoView({ behavior: 'smooth' });
@@ -90,7 +108,7 @@ const Footer = () => {
           </div>
 
           {/* Newsletter */}
-          <div className="footer-section">
+          <div className="footer-section" >
             <h3 className="footer-heading">QUEDATE AL PENDIENTE</h3>
             <p className="newsletter-text">SUBSCRIBETE PARA RECIBIR LAS ULTIMAS NOTICIAS</p>
             <form className="newsletter-form">
@@ -99,7 +117,7 @@ const Footer = () => {
                 placeholder="Ingresa tu correo"
                 className="newsletter-input"
               />
-              <button className="newsletter-button">
+              <button className="newsletter-button" >
                 Subscribete
               </button>
             </form>
@@ -109,7 +127,7 @@ const Footer = () => {
         {/* Social Links & Copyright */}
         <div className="footer-bottom">
           <div className="copyright">
-            <span>&copy; {new Date().getFullYear()} HORMIGUERO. TODOS LOS DERECHOS RESERVADOS.</span>
+            <span id="suscribete">&copy; {new Date().getFullYear()} HORMIGUERO. TODOS LOS DERECHOS RESERVADOS.</span>
           </div>
         </div>
       </div>

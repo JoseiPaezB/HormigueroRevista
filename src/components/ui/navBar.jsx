@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { FaInstagram, FaEnvelope, FaSearch, FaBars, FaTimes } from 'react-icons/fa';
 import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
+import { FaBell } from 'react-icons/fa6';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -68,6 +69,17 @@ const Navbar = () => {
         const footerElement = document.getElementById('contacto');
         if (footerElement) {
           footerElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    }
+
+    const shouldScrollToSuscribete = sessionStorage.getItem('scrollToSuscribete');
+    if (shouldScrollToSuscribete === 'true') {
+      sessionStorage.removeItem('scrollToSuscribete');  
+      setTimeout(() => {
+        const susElement = document.getElementById('suscribete');
+        if (susElement) {
+          susElement.scrollIntoView({ behavior: 'smooth' });
         }
       }, 500);
     }
@@ -302,6 +314,7 @@ const Navbar = () => {
 
             {/* Only show these on mobile since they're hidden in the navbar */}
             {isMobile && (
+            <>
               <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
                 <Link 
                   to={window.location.pathname} // Mantiene la ruta actual
@@ -316,10 +329,31 @@ const Navbar = () => {
                     setMenuOpen(false);
                   }}
                 >
-                  <FaEnvelope size={16} /> CONTACTO
+                  CONTACTO
                 </Link>
               </li>
-            )}
+
+              <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+              <Link 
+                  to={window.location.pathname} // Mantiene la ruta actual
+                  className="edition-link" 
+                  style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                  onClick={(e) => {
+                    e.preventDefault(); // Siempre prevenir la navegación
+                    const susElement = document.getElementById('suscribete');
+                    if (susElement) {
+                      susElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    setMenuOpen(false);
+                  }}
+                >
+                   SUBSCRIBETE
+                </Link>
+              </li>
+
+            </>
+          )}
+
           </ul>
         </div>
       )}
