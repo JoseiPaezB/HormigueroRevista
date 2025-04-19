@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Twitter, Linkedin, Mail, Heart } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, Heart, Instagram } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -13,10 +13,18 @@ const Footer = () => {
             <h3 className="footer-heading">CONTACTO</h3>
             <ul className="footer-list" style={{ textAlign: 'left', padding: 0 }}>
               <li style={{ textAlign: 'left', listStyleType: 'none', marginBottom: '8px' }}>
-                HORMIGUERO@GMAIL.COM
+              <a href="https://www.instagram.com/hormiguero.revista/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Mail size={16} /> HOMRIGUERO@GMAIL.COM
+                  </span>
+                </a>
               </li>
               <li style={{ textAlign: 'left', listStyleType: 'none' }}>
-                BRUNOJAVIER@GMAIL.COM
+                <a href="https://www.instagram.com/hormiguero.revista/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Instagram size={16} /> HORMIGUERODEPOEMAS
+                  </span>
+                </a>
               </li>
             </ul>
           </div>

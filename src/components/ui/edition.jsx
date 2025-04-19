@@ -22,6 +22,36 @@ const Edicion = () => {
   const [error, setError] = useState(null);
   const [contributors, setContributors] = useState([]);
 
+  // Check for scroll to eventos
+  useEffect(() => {
+    const shoudlScrollToMainContent = sessionStorage.getItem('scrollToMainContent');
+    if (shoudlScrollToMainContent === 'true') {
+      // Limpiamos la bandera
+      sessionStorage.removeItem('scrollToMainContent');
+      
+      // Esperamos un momento para que el DOM se renderice completamente
+      setTimeout(() => {
+        const mainContentElement = document.getElementById('main-content');
+        if (mainContentElement) {
+          mainContentElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    }
+    const shouldScrollToEventos = sessionStorage.getItem('scrollToEventos');
+    if (shouldScrollToEventos === 'true') {
+      // Limpiamos la bandera
+      sessionStorage.removeItem('scrollToEventos');
+      
+      // Esperamos un momento para que el DOM se renderice completamente
+      setTimeout(() => {
+        const eventosElement = document.getElementById('eventos');
+        if (eventosElement) {
+          eventosElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    }
+  }, []);
+
   // Fetch revista data on component mount
   useEffect(() => {
     const fetchRevista = async () => {
@@ -69,7 +99,7 @@ const Edicion = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="edition-container">
+    <div className="edition-container" id="main-content">
       {/* Green gradient cover image */}
       <div className="cover-image" style={{
         backgroundImage: `url(${portada})`
@@ -130,7 +160,9 @@ const Edicion = () => {
       <br />
       <HormigueadosSection />
       <br />
-      <EventosSection />
+      <div id="eventos">
+        <EventosSection />
+      </div>
     </div>
   );
 };

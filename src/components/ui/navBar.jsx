@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
+import { Link } from 'react-router-dom';
 import { FaInstagram, FaEnvelope, FaSearch, FaBars, FaTimes } from 'react-icons/fa';
 import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [revista, setRevista] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [contributors, setContributors] = useState([]);
+  
   // Check screen size and update state when it changes
   useEffect(() => {
     const checkScreenSize = () => {
@@ -22,27 +33,117 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
+  // Check for scroll to eventos
+  useEffect(() => {
+    const shouldScrollToMainContent = sessionStorage.getItem('scrollToMainContent');
+    if (shouldScrollToMainContent === 'true') {
+      // Limpiamos el estado
+      sessionStorage.removeItem('scrollToMainContent');
+      setTimeout(() => {
+        const mainContentElement = document.getElementById('main-content');
+        if (mainContentElement) {
+          mainContentElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);  
+    }  // <-- Faltaba esta llave de cierre
+     
+    const shouldScrollToEventos = sessionStorage.getItem('scrollToEventos');
+    
+    if (shouldScrollToEventos === 'true') {
+      // Limpiamos el estado
+      sessionStorage.removeItem('scrollToEventos');
+      
+      // Damos tiempo para que el DOM se renderice completamente
+      setTimeout(() => {
+        const eventosElement = document.getElementById('eventos');
+        if (eventosElement) {
+          eventosElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    }
+  }, []);
+
+  // Handle clicks outside the menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const navbarElement = document.getElementById('navbar');
+      const menuElement = document.getElementById('navbar-menu');
+      
+      // Si el menú está abierto y el clic fue fuera del navbar y del menú
+      if (menuOpen && 
+          navbarElement && 
+          !navbarElement.contains(event.target) && 
+          menuElement && 
+          !menuElement.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    
+    // Añadir el detector de eventos si el menú está abierto
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    // Limpiar detector de eventos
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
+
+  // Fetch revista data
+  useEffect(() => {
+    const fetchRevista = async () => {
+      try {
+        // Fetch the revista with ID 1
+        const { data, error } = await supabase
+          .from('revista')
+          .select('*')
+          .eq('id', 1)
+          .single();
+
+        if (error) throw error;
+        
+        setRevista(data);
+        
+        // Parse contributors string into array
+        if (data.contribuyentes) {
+          const contributorsList = data.contribuyentes.split(',').map(name => name.trim());
+          setContributors(contributorsList);
+        }
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching revista:', err);
+        setError('Failed to load magazine data');
+        setLoading(false);
+      }
+    };
+
+    fetchRevista();
+  }, []);
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
   return (
     <>
-      <nav style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: isMobile ? '2px 12px' : '10px 20px',
-        
-        width: '100%',
-        backgroundColor: 'white',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        boxSizing: 'border-box'
-      }}>
+      <nav 
+        id="navbar"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: isMobile ? '2px 12px' : '10px 20px',
+          width: '100%',
+          backgroundColor: 'white',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          boxSizing: 'border-box'
+        }}>
         {!isMobile && (
           <div style={{ 
             display: 'flex', 
@@ -60,23 +161,23 @@ const Navbar = () => {
         {isMobile && <div style={{ width: '20px' }}></div>}
 
         <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center' 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center' 
         }}>
-        <img 
+          <img 
             src={hormigueroLogo} 
             alt="Hormiga" 
             style={{ width: isMobile ? '30px' : '60px', height: 'auto' }} 
-        />
-        <span style={{ 
+          />
+          <span style={{ 
             fontSize: isMobile ? '12px' : '25px',
             marginTop: '2px',
             color: '#000',
             textTransform: 'uppercase'
-        }}>
+          }}>
             Hormiguero
-        </span>
+          </span>
         </div>
 
         {/* Right icons */}
@@ -104,20 +205,22 @@ const Navbar = () => {
 
       {/* Dropdown menu */}
       {menuOpen && (
-        <div style={{
-          position: 'fixed',
-          top: isMobile ? '60px' : '80px', // Adjust based on your navbar height
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          borderBottom: '1px solid #ddd',
-          zIndex: 999,
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          padding: '20px',
-          transition: 'all 0.3s ease',
-          transform: menuOpen ? 'translateY(0)' : 'translateY(-100%)',
-          opacity: menuOpen ? 1 : 0,
-        }}>
+        <div 
+          id="navbar-menu"
+          style={{
+            position: 'fixed',
+            top: isMobile ? '60px' : '80px', // Adjust based on your navbar height
+            left: 0,
+            right: 0,
+            backgroundColor: 'white',
+            borderBottom: '1px solid #ddd',
+            zIndex: 999,
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            padding: '20px',
+            transition: 'all 0.3s ease',
+            transform: menuOpen ? 'translateY(0)' : 'translateY(-100%)',
+            opacity: menuOpen ? 1 : 0,
+          }}>
           <ul style={{
             listStyleType: 'none',
             margin: 0,
@@ -125,36 +228,79 @@ const Navbar = () => {
             fontFamily: '"JetBrains Mono", monospace',
           }}>
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <a href="#" style={{ textDecoration: 'none', color: '#000' }}>Home</a>
+            <Link 
+                to="/" 
+                className="edition-link" 
+                style={{ textDecoration: 'none', color: '#000' }}
+                onClick={(e) => {
+                  if (window.location.pathname !== '/') {
+                    // Si no estamos en la página principal, guardar el estado
+                    // para que sepamos que hay que desplazarse después de cargar
+                    sessionStorage.setItem('scrollToMainContent', 'true');
+                    setMenuOpen(false);
+                    // No prevenimos el evento predeterminado para permitir la navegación
+                  } else {
+                    // Si ya estamos en la página principal, solo hacemos scroll
+                    e.preventDefault();
+                    const eventosElement = document.getElementById('main-content');
+                    if (eventosElement) {
+                      eventosElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    setMenuOpen(false);
+                  }
+                }}
+              >
+                INICIO
+              </Link>
             </li>
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <a href="#" style={{ textDecoration: 'none', color: '#000' }}>About</a>
+              <Link 
+                to="/contenidos" 
+                className="edition-link" 
+                style={{ textDecoration: 'none', color: '#000' }}
+                onClick={() => setMenuOpen(false)}
+              >
+                EDICION {revista?.numero}
+              </Link>
             </li>
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <a href="#" style={{ textDecoration: 'none', color: '#000' }}>Blog</a>
+              <Link 
+                to="/" 
+                className="edition-link" 
+                style={{ textDecoration: 'none', color: '#000' }}
+                onClick={(e) => {
+                  if (window.location.pathname !== '/') {
+                    // Si no estamos en la página principal, guardar el estado
+                    // para que sepamos que hay que desplazarse después de cargar
+                    sessionStorage.setItem('scrollToEventos', 'true');
+                    setMenuOpen(false);
+                    // No prevenimos el evento predeterminado para permitir la navegación
+                  } else {
+                    // Si ya estamos en la página principal, solo hacemos scroll
+                    e.preventDefault();
+                    const eventosElement = document.getElementById('eventos');
+                    if (eventosElement) {
+                      eventosElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    setMenuOpen(false);
+                  }
+                }}
+              >
+                EVENTOS
+              </Link>
             </li>
-            <li style={{ padding: '10px 0' }}>
-              <a href="#" style={{ textDecoration: 'none', color: '#000' }}>Contact</a>
-            </li>
+
             {/* Only show these on mobile since they're hidden in the navbar */}
             {isMobile && (
-              <>
-                <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                  <a href="#instagram" style={{  color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FaInstagram size={16} /> Instagram
-                  </a>
-                </li>
-                <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                  <a href="#email" style={{  color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FaEnvelope size={16} /> Contact
-                  </a>
-                </li>
-                <li style={{ padding: '10px 0' }}>
-                  <a href="#search" style={{  color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FaSearch size={16} /> Search
-                  </a>
-                </li>
-              </>
+              <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+                <a 
+                  href="#email" 
+                  style={{ color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <FaEnvelope size={16} /> CONTACTO
+                </a>
+              </li>
             )}
           </ul>
         </div>
