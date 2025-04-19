@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import portada from '../../assets/images/edicion1.png';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
@@ -12,9 +12,11 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Poema = () => {
   const { id } = useParams(); // Get poem ID from URL
+  const navigate = useNavigate();
   const [poema, setPoema] = useState(null);
   const [autor, setAutor] = useState(null);
   const [revista, setRevista] = useState(null);
+  const [otrosPoemas, setOtrosPoemas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -28,7 +30,7 @@ const Poema = () => {
         // 1. Fetch poem data
         const { data: poemaData, error: poemaError } = await supabase
           .from('poema')
-          .select('*, id_autor')
+          .select('*, id_autor, id_poemario')
           .eq('id', poemId)
           .single();
 
@@ -45,9 +47,23 @@ const Poema = () => {
 
           if (autorError) throw autorError;
           setAutor(autorData);
+          
+          // 3. Fetch other poems by the same author from the same poemario
+          if (poemaData.id_poemario) {
+            const { data: otrosPoemaData, error: otrosPoemaError } = await supabase
+              .from('poema')
+              .select('*')
+              .eq('id_autor', poemaData.id_autor)
+              .eq('id_poemario', poemaData.id_poemario)
+              .neq('id', poemId) // Exclude current poem
+              .limit(2); // Get only 2 poems for display
+  
+            if (otrosPoemaError) throw otrosPoemaError;
+            setOtrosPoemas(otrosPoemaData);
+          }
         }
 
-        // 3. Fetch revista for header background
+        // 4. Fetch revista for header background
         const { data: revistaData, error: revistaError } = await supabase
           .from('revista')
           .select('*')
@@ -77,6 +93,12 @@ const Poema = () => {
       month: '2-digit',
       year: '2-digit'
     });
+  };
+
+  // Handle navigation to another poem
+  const handleGoToPoem = (poemId) => {
+    navigate(`/poema/${poemId}`);
+    window.scrollTo(0, 0); // Scroll to top when navigating
   };
 
   // Process poem text to handle indentation and stanzas
@@ -149,6 +171,22 @@ const Poema = () => {
     return processedText;
   };
   
+  // Get excerpt from a poem text (for the thumbnail view)
+  const getPoemaExcerpt = (texto, maxLength = 80) => {
+    if (!texto) return '';
+    
+    // Clean up any section markers and remove extra whitespace
+    const cleanText = texto
+      .replace(/^-([^-]+)-$/gm, '')
+      .replace(/\n+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+      
+    // Return a short excerpt
+    return cleanText.length > maxLength 
+      ? cleanText.substring(0, maxLength) + '...'
+      : cleanText;
+  };
 
   // Fallback poem if data isn't available
   const fallbackPoem = {
@@ -175,6 +213,9 @@ const Poema = () => {
   const poemSections = poema?.texto 
     ? processPoemaText(poema.texto) 
     : fallbackPoem.sections;
+
+  // Determine if we have other poems to show
+  const hasOtherPoems = otrosPoemas && otrosPoemas.length > 0;
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -208,7 +249,7 @@ const Poema = () => {
           fontSize: '24px',
           fontFamily: 'JetBrains Mono, monospace',
         }}>
-          {poema?.titulo.toUpperCase() || fallbackPoem.title}
+          {poema?.titulo?.toUpperCase() || fallbackPoem.title}
         </h2>
        
         <div style={{
@@ -243,6 +284,103 @@ const Poema = () => {
               </div>
             ))}
           </div>
+        </div>
+        
+        {/* Section for other poems by the author */}
+        {hasOtherPoems && (
+          <div style={{ marginTop: '60px', marginBottom: '40px' }}>
+            <h3 style={{ 
+              textAlign: 'center', 
+              fontWeight: 'bold',
+              marginBottom: '30px',
+              textTransform: 'uppercase',
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '18px'
+            }}>
+              MAS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}
+            </h3>
+            
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              flexWrap: 'wrap',
+              gap: '20px'
+            }}>
+              {otrosPoemas.map((otroPoema) => (
+                <div 
+                  key={otroPoema.id} 
+                  onClick={() => handleGoToPoem(otroPoema.id)}
+                  style={{
+                    width: '150px',
+                    cursor: 'pointer',
+                    marginBottom: '20px'
+                  }}
+                >
+                  <div style={{
+                    position: 'relative',
+                    height: '200px',
+                    width: '100%',
+                    marginBottom: '10px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    borderRadius: '4px',
+                    overflow: 'hidden'
+                  }}>
+                    <img 
+                      src={otroPoema.portada || portada}
+                      alt={otroPoema.titulo}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '5px',
+                      right: '5px',
+                      fontSize: '8px',
+                      color: 'white',
+                      background: 'rgba(0,0,0,0.6)',
+                      padding: '2px 5px',
+                      borderRadius: '2px'
+                    }}>
+                      {getPoemaExcerpt(otroPoema.texto).split(' ').length} PALABRAS
+                    </div>
+                  </div>
+                  <h4 style={{
+                    fontSize: '11px',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    margin: '0 0 5px 0'
+                  }}>
+                    {otroPoema.titulo}
+                  </h4>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Back button */}
+        <div 
+          onClick={() => navigate(-1)}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginTop: '30px',
+            marginBottom: '30px',
+            cursor: 'pointer'
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
+            Regresar
+          </span>
         </div>
       </div>
     </div>

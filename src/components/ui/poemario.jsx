@@ -46,7 +46,7 @@ const AuthorBio = () => {
       const fetchData = async () => {
         try {
           // Default author ID if not provided in URL
-          const authorId = id || 5; // Using ID 5 from our sample data (Alejandra Pizarnik)
+          const authorId = id // Using ID 5 from our sample data (Alejandra Pizarnik)
           
           // 1. Fetch autor (author) data
           const { data: autorData, error: autorError } = await supabase
