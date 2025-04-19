@@ -141,11 +141,13 @@ const Navbar = () => {
           flexDirection: 'column', 
           alignItems: 'center' 
         }}>
-          <img 
-            src={hormigueroLogo} 
-            alt="Hormiga" 
-            style={{ width: isMobile ? '30px' : '60px', height: 'auto' }} 
-          />
+          <Link to="/">
+            <img
+              src={hormigueroLogo}
+              alt="Hormiga"
+              style={{ width: isMobile ? '30px' : '60px', height: 'auto' }}
+            />
+          </Link>
           <span style={{ 
             fontSize: isMobile ? '12px' : '25px',
             marginTop: '2px',
