@@ -1,21 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Github, Twitter, Linkedin, Mail, Heart, Instagram } from 'lucide-react';
 
+// Definimos el componente de estilo para los keyframes
+const PulseStyle = () => (
+  <style>{`
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      20% { transform: scale(1.1); }
+      40% { transform: scale(1.08); }
+      60% { transform: scale(1.1); }
+      80% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+  `}</style>
+);
+
 const Footer = () => {
+  const [emphasizeContact, setEmphasizeContact] = useState(false);
+  
+  useEffect(() => {
+    // También podemos comprobar si hay un hash en la URL actual
+    if (window.location.hash === '#contacto') {
+      handleContactEmphasis();
+    }
+    
+    const shouldScrollToFooter = sessionStorage.getItem('scrollToFooter');
+    if (shouldScrollToFooter === 'true') {
+      sessionStorage.removeItem('scrollToFooter');
+      
+      setTimeout(() => {
+        handleContactEmphasis();
+      }, 500);
+    }
+  }, []);
+  
+  const handleContactEmphasis = () => {
+    const footerElement = document.getElementById('contacto');
+    if (footerElement) {
+      footerElement.scrollIntoView({ behavior: 'smooth' });
+      
+      // Activar el efecto después de un pequeño retraso
+      setTimeout(() => {
+        setEmphasizeContact(true);
+        
+        // Desactivar después de completar la animación
+        setTimeout(() => {
+          setEmphasizeContact(false);
+        }, 1500);
+      }, 300); // Pequeño retraso para que la animación comience después del scroll
+    }
+  };
+
   return (
     <footer className="footer">
+      {/* Incluimos los keyframes de la animación */}
+      <PulseStyle />
+      
       <div className="footer-container">
         <div className="footer-grid">
-         
-
           {/* Contact */}
-          <div className="footer-section">
-            <h3 className="footer-heading">CONTACTO</h3>
+          <div 
+            className="footer-section"
+            
+          >
+            <h3 
+              className="footer-heading" 
+              id="contacto"
+              
+            >
+              CONTACTO
+            </h3>
             <ul className="footer-list" style={{ textAlign: 'left', padding: 0 }}>
               <li style={{ textAlign: 'left', listStyleType: 'none', marginBottom: '8px' }}>
-              <a href="https://www.instagram.com/hormiguero.revista/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <a href="mailto:hormiguero@gmail.com" style={{ textDecoration: 'none', color: 'inherit' }} >
                   <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Mail size={16} /> HOMRIGUERO@GMAIL.COM
+                    <Mail size={16} /> HORMIGUERO@GMAIL.COM
                   </span>
                 </a>
               </li>
@@ -48,9 +108,9 @@ const Footer = () => {
 
         {/* Social Links & Copyright */}
         <div className="footer-bottom">
-        <div className="copyright">
-              <span>&copy; {new Date().getFullYear()} HORMIGUERO. TODOS LOS DERECHOS RESERVADOS.</span>
-            </div>
+          <div className="copyright">
+            <span>&copy; {new Date().getFullYear()} HORMIGUERO. TODOS LOS DERECHOS RESERVADOS.</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -61,6 +61,16 @@ const Navbar = () => {
         }
       }, 500);
     }
+    const shouldScrollToFooter = sessionStorage.getItem('scrollToFooter');
+    if (shouldScrollToFooter === 'true') {
+      sessionStorage.removeItem('scrollToFooter');  
+      setTimeout(() => {
+        const footerElement = document.getElementById('contacto');
+        if (footerElement) {
+          footerElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    }
   }, []);
 
   // Handle clicks outside the menu
@@ -293,13 +303,21 @@ const Navbar = () => {
             {/* Only show these on mobile since they're hidden in the navbar */}
             {isMobile && (
               <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                <a 
-                  href="#email" 
-                  style={{ color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
-                  onClick={() => setMenuOpen(false)}
+                <Link 
+                  to={window.location.pathname} // Mantiene la ruta actual
+                  className="edition-link" 
+                  style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                  onClick={(e) => {
+                    e.preventDefault(); // Siempre prevenir la navegación
+                    const footerElement = document.getElementById('contacto');
+                    if (footerElement) {
+                      footerElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    setMenuOpen(false);
+                  }}
                 >
                   <FaEnvelope size={16} /> CONTACTO
-                </a>
+                </Link>
               </li>
             )}
           </ul>
