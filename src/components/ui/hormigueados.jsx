@@ -19,7 +19,6 @@ const HormigueadosSection = () => {
   const carouselRef = useRef(null);
   useEffect(() => {
     const fetchPoems = async () => {
-      // Sort by hormigueos in descending order at the database level and get only top 3
       const { data, error } = await supabase
         .from('poema')
         .select(`
@@ -32,12 +31,12 @@ const HormigueadosSection = () => {
             nombre
           )
         `)
-        .limit(3); // Only get the top 3
-      
+        .order('hormigueos', { ascending: false }) // <- Ordenamos por hormigueos DESC
+        .limit(3); // <- Solo traemos los 3 más altos
+  
       if (error) {
         console.error('Error fetching poems:', error);
       } else {
-        // Simply map the data without filtering or sorting
         const processedData = data.map((poema) => ({
           id: poema.id,
           titulo: poema.titulo,
@@ -50,10 +49,10 @@ const HormigueadosSection = () => {
         setCarouselItems(processedData);
       }
     };
-    
+  
     fetchPoems();
   }, []);
-
+  
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === carouselItems.length - 1 ? 0 : prev + 1));
