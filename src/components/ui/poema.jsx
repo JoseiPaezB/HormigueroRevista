@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import portada from '../../assets/images/edicion1.png';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
+import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
+
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -19,6 +21,20 @@ const Poema = () => {
   const [otrosPoemas, setOtrosPoemas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showHormiguearModal, setShowHormiguearModal] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [hormiguearSuccess, setHormiguearSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hormiguearButtonStyle, setHormiguearButtonStyle] = useState({
+    position: 'fixed',
+    top: '40%',
+    right: '20px',
+    zIndex: 100
+  });
+  
+  const hormiguearButtonRef = useRef(null);
+  const masPoemasSectionRef = useRef(null);
+  const articleContainerRef = useRef(null);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -83,7 +99,48 @@ const Poema = () => {
 
     fetchData();
   }, [id]);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!masPoemasSectionRef.current || !hormiguearButtonRef.current || !articleContainerRef.current) {
+        return;
+      }
+      
+      const masPoemasBounds = masPoemasSectionRef.current.getBoundingClientRect();
+      const containerBounds = articleContainerRef.current.getBoundingClientRect();
+      const buttonHeight = hormiguearButtonRef.current.offsetHeight;
+      
+      // Calculate the threshold where the button should stop
+      // This is the distance from top of the page to the start of "Mas poemas" section
+      // minus the button height and some padding
+      const stopThreshold = masPoemasBounds.top + window.scrollY - buttonHeight - 20;
+      
+      // Check if we've scrolled past the threshold
+      if (window.scrollY > stopThreshold) {
+        // Switch to absolute positioning at the threshold
+        setHormiguearButtonStyle({
+          position: 'absolute',
+          top: `${stopThreshold}px`,
+          right: '20px',
+          zIndex: 100
+        });
+      } else {
+        // Keep using fixed positioning
+        setHormiguearButtonStyle({
+          position: 'fixed',
+          top: '40%',
+          right: '20px',
+          zIndex: 100
+        });
+      }
+    };
 
+    window.addEventListener('scroll', handleScroll);
+    
+    // Run once to set initial position
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   // Format date for display (YYYY-MM-DD to DD/MM/YY)
   const formatDate = (dateString) => {
     if (!dateString) return '01/08/25';
@@ -94,7 +151,74 @@ const Poema = () => {
       year: '2-digit'
     });
   };
+  const handleHormiguear = async () => {
+    setShowHormiguearModal(true);
+  };
 
+  // Function to submit the hormiguear
+  const submitHormiguear = async (e) => {
+    e.preventDefault();
+    
+    if (!userName.trim()) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // First, get the current hormiguear count
+      const { data: currentPoem, error: fetchError } = await supabase
+        .from('poema')
+        .select('hormigueos')
+        .eq('id', id || 1)
+        .single();
+      
+      if (fetchError) throw fetchError;
+      
+      // Calculate new count (default to 1 if it doesn't exist yet)
+      const newCount = (currentPoem.hormigueos || 0) + 1;
+      
+      // Update the count in the database
+      const { error: updateError } = await supabase
+        .from('poema')
+        .update({ hormigueos: newCount })
+        .eq('id', id || 1);
+      
+      if (updateError) throw updateError;
+      
+      // Optionally, log the user name (if you want to keep track of who liked)
+      // You might want to create a separate table for this
+      
+      // Show success message
+      setHormiguearSuccess(true);
+      
+      // Update local state if needed
+      if (poema) {
+        setPoema({
+          ...poema,
+          hormigueos: newCount
+        });
+      }
+      
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        setShowHormiguearModal(false);
+        setHormiguearSuccess(false);
+        setUserName('');
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error updating hormiguear count:', error);
+      alert('No se pudo registrar su hormigueo. Por favor, intente de nuevo.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Add close modal function
+  const closeModal = () => {
+    setShowHormiguearModal(false);
+    setHormiguearSuccess(false);
+    setUserName('');
+  };
   // Handle navigation to another poem
   const handleGoToPoem = (poemId) => {
     navigate(`/poema/${poemId}`);
@@ -221,7 +345,7 @@ const Poema = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="edition-container">
+    <div className="edition-container" ref={articleContainerRef}>
       {/* Green gradient cover image */}
       <div className="cover-image image_2" style={{
         backgroundImage: `url(${poema?.portada || portada})`,
@@ -242,15 +366,65 @@ const Poema = () => {
           {autor?.nombre || fallbackPoem.author}
         </div>
         
-        <h2 style={{ 
-          fontWeight: 'bold', 
-          marginBottom: '40px',
-          textAlign: 'left',
-          fontSize: '24px',
-          fontFamily: 'JetBrains Mono, monospace',
-        }}>
-          {poema?.titulo?.toUpperCase() || fallbackPoem.title}
-        </h2>
+        <div style={{
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '40px'
+  
+}}>
+  <h2 style={{ 
+    fontWeight: 'bold',
+    textAlign: 'left',
+    fontSize: '24px',
+    fontFamily: 'JetBrains Mono, monospace',
+    margin: 0 // Remove default margin
+  }}>
+    {poema?.titulo?.toUpperCase() || fallbackPoem.title}
+  </h2>
+  
+  <div  ref={hormiguearButtonRef} style={{
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginLeft: '15px'
+  }}>
+    <button
+      onClick={handleHormiguear}
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0', 
+        border: '1px solid #ddd',
+        borderRadius: '50%',
+        padding: '8px',
+        width: '40px',
+        height: '40px',
+        cursor: 'pointer',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        transition: 'background-color 0.2s'
+      }}
+      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e0e0e0'}
+      onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+    >
+      <img 
+        src={hormigueroLogo} 
+        alt="Hormiga" 
+        style={{ width: '24px', height: 'auto' }} 
+      />
+    </button>
+    <div style={{
+      fontFamily: 'JetBrains Mono, monospace',
+      fontSize: '10px',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginTop: '5px'
+    }}>
+      HORMIGUEAR
+    </div>
+  </div>
+</div>
        
         <div style={{
           marginBottom: '3rem',
@@ -288,7 +462,7 @@ const Poema = () => {
         
         {/* Section for other poems by the author */}
         {hasOtherPoems && (
-          <div style={{ marginTop: '60px', marginBottom: '40px' }}>
+          <div  ref={masPoemasSectionRef} style={{ marginTop: '60px', marginBottom: '40px' }}>
             <h3 style={{ 
               textAlign: 'center', 
               fontWeight: 'bold',
@@ -383,6 +557,137 @@ const Poema = () => {
           </span>
         </div>
       </div>
+      
+
+{/* Keep your existing modal code with modified styling for the success message */}
+{showHormiguearModal && (
+  <div style={{
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000
+  }}>
+    <div style={{
+      backgroundColor: 'white',
+      padding: '20px',
+      borderRadius: '8px',
+      width: '300px',
+      maxWidth: '90%',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+      position: 'relative'
+    }}>
+      {/* Close button */}
+      <button
+        onClick={closeModal}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          background: 'none',
+          border: 'none',
+          fontSize: '18px',
+          cursor: 'pointer'
+        }}
+      >
+        ✕
+      </button>
+      
+      {!hormiguearSuccess ? (
+        <form onSubmit={submitHormiguear} >
+          <h3 style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px', // separa el ícono del texto
+            marginBottom: '20px',
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: '16px'
+            }}>
+            <img 
+                src={hormigueroLogo} 
+                alt="Hormiga" 
+                style={{ width:'30px', height: 'auto' }} 
+            />
+            HORMIGUEAR POEMA
+            </h3>
+          <p style={{
+            marginBottom: '15px',
+            textAlign: 'center',
+            fontSize: '14px'
+          }}>
+            Por favor, ingresa tu nombre para hormiguear este poema
+          </p>
+          <input
+            type="text"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            placeholder="Tu nombre"
+            style={{
+                width: '95%',
+                padding: '8px',
+                borderRadius: '4px',
+                border: '1px solid #ddd',
+                marginBottom: '15px',
+                fontSize: '14px' // Add font size to ensure consistency
+            }}
+            autoFocus
+            />
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center'
+          }}>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#000',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '14px',
+                opacity: isSubmitting ? 0.7 : 1
+              }}
+            >
+              {isSubmitting ? 'ENVIANDO...' : 'ENVIAR'}
+            </button>
+          </div>
+        </form>
+      ) : (
+        // Modified success screen to match your image
+        <div style={{
+          textAlign: 'center',
+          padding: '20px 0'
+        }}>
+          <h3 style={{
+            marginBottom: '15px',
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: '20px',
+            fontWeight: 'bold'
+          }}>
+            GRACIAS
+          </h3>
+          <p style={{
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: '14px',
+            marginBottom: '10px'
+          }}>
+            POR HABER HORMIGUEADO<br />
+            ESTE POEMA
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+)}
     </div>
   );
 };
