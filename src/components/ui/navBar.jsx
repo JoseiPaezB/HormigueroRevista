@@ -141,7 +141,7 @@ const Navbar = () => {
           flexDirection: 'column', 
           alignItems: 'center' 
         }}>
-          <Link to="/">
+          <Link to="/#main-content">
             <img
               src={hormigueroLogo}
               alt="Hormiga"
