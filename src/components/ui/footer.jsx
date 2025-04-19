@@ -110,7 +110,7 @@ const Footer = () => {
           {/* Newsletter */}
           <div className="footer-section" >
             <h3 className="footer-heading">QUEDATE AL PENDIENTE</h3>
-            <p className="newsletter-text">SUBSCRIBETE PARA RECIBIR LAS ULTIMAS NOTICIAS</p>
+            <p className="newsletter-text">SUSCRIBETE PARA RECIBIR LAS ULTIMAS NOTICIAS</p>
             <form className="newsletter-form">
               <input
                 type="email"
@@ -118,7 +118,7 @@ const Footer = () => {
                 className="newsletter-input"
               />
               <button className="newsletter-button" >
-                Subscribete
+                Suscribete
               </button>
             </form>
           </div>

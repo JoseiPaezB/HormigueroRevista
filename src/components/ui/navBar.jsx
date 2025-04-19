@@ -347,7 +347,7 @@ const Navbar = () => {
                     setMenuOpen(false);
                   }}
                 >
-                   SUBSCRIBETE
+                   SUSCRIBETE
                 </Link>
               </li>
 
