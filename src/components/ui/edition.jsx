@@ -25,6 +25,9 @@ const Edicion = () => {
 
   // Check for scroll to eventos
   useEffect(() => {
+    // Prevenir scrolls inesperados
+  sessionStorage.removeItem('scrollToFooter');
+
     const shoudlScrollToMainContent = sessionStorage.getItem('scrollToMainContent');
     if (shoudlScrollToMainContent === 'true') {
       // Limpiamos la bandera
@@ -127,9 +130,9 @@ const Edicion = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="edition-container" id="main-content">
+    <div className="edition-container" >
       {/* Green gradient cover image */}
-      <div className="cover-image" style={{
+      <div className="cover-image" id="main-content" style={{
         backgroundImage: `url(${portada})`
       }}>
         <div className="texture-overlay"></div>

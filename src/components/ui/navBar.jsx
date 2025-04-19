@@ -258,15 +258,14 @@ const Navbar = () => {
                   if (window.location.pathname !== '/') {
                     // Si no estamos en la página principal, guardar el estado
                     // para que sepamos que hay que desplazarse después de cargar
-                    sessionStorage.setItem('scrollToMainContent', 'true');
                     setMenuOpen(false);
                     // No prevenimos el evento predeterminado para permitir la navegación
                   } else {
                     // Si ya estamos en la página principal, solo hacemos scroll
                     e.preventDefault();
-                    const eventosElement = document.getElementById('main-content');
-                    if (eventosElement) {
-                      eventosElement.scrollIntoView({ behavior: 'smooth' });
+                    const mainContentElement = document.getElementById('main-content');
+                    if (mainContentElement) {
+                      mainContentElement.scrollIntoView({ behavior: 'smooth' });
                     }
                     setMenuOpen(false);
                   }
@@ -294,7 +293,6 @@ const Navbar = () => {
                   if (window.location.pathname !== '/') {
                     // Si no estamos en la página principal, guardar el estado
                     // para que sepamos que hay que desplazarse después de cargar
-                    sessionStorage.setItem('scrollToEventos', 'true');
                     setMenuOpen(false);
                     // No prevenimos el evento predeterminado para permitir la navegación
                   } else {
@@ -321,14 +319,12 @@ const Navbar = () => {
                   className="edition-link" 
                   style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
                   onClick={(e) => {
+                    // If we're already on the homepage, allow smooth scrolling
                     if (window.location.pathname !== '/') {
-                      // Si no estamos en la página principal, guardar el estado
-                      // para que sepamos que hay que desplazarse después de cargar
-                      sessionStorage.setItem('scrollToFooter', 'true');
+                      // If we're NOT on the homepage, just navigate and skip the scroll behavior
                       setMenuOpen(false);
-                      // No prevenimos el evento predeterminado para permitir la navegación
                     } else {
-                      // Si ya estamos en la página principal, solo hacemos scroll
+                      // Otherwise, perform scroll
                       e.preventDefault();
                       const footerElement = document.getElementById('contacto');
                       if (footerElement) {
@@ -351,7 +347,6 @@ const Navbar = () => {
                     if (window.location.pathname !== '/') {
                       // Si no estamos en la página principal, guardar el estado
                       // para que sepamos que hay que desplazarse después de cargar
-                      sessionStorage.setItem('scrollToSuscribete', 'true');
                       setMenuOpen(false);
                       // No prevenimos el evento predeterminado para permitir la navegación
                     } else {
