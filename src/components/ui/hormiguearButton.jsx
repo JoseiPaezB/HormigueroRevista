@@ -97,14 +97,6 @@ const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBefor
         />
         
       </button>
-      <span style={{
-          fontSize: '10px',
-          fontWeight: 'bold',
-          marginTop: '5px',
-          fontFamily: 'JetBrains Mono, monospace'
-        }}>
-          HORMIGUEAR
-        </span>
     </div>
   );
 };
