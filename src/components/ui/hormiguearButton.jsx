@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import hormigueroLogo from '../../assets/anticon.svg'; // Make sure path is correct
+import hormigueroLogo from '../../assets/anticon2.svg'; // Make sure path is correct
 
 const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBeforeStop = 150 }) => {
     const [buttonStyle, setButtonStyle] = useState({
