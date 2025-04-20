@@ -4,6 +4,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import hormigueroLogo from '../../assets/anticon.svg';
 import FloatingHormiguearButton from './hormiguearButton'; // Import our new component
+import hormigueroLogo2 from '../../assets/anticon2.svg'; // Make sure path is correct
+
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -527,7 +529,7 @@ const Poema = () => {
                   fontSize: '16px'
                   }}>
                   <img 
-                      src={hormigueroLogo} 
+                      src={hormigueroLogo2} 
                       alt="Hormiga" 
                       style={{ width:'30px', height: 'auto' }} 
                   />
