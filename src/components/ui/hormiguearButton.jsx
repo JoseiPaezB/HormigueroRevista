@@ -2,13 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import hormigueroLogo from '../../assets/anticon.svg'; // Make sure path is correct
 
 const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBeforeStop = 150 }) => {
-  const [buttonStyle, setButtonStyle] = useState({
-    position: 'fixed',
-    right: '20px',
-    top: '40%',
-    zIndex: 999,
-    transition: 'all 0.3s ease'
-  });
+    const [buttonStyle, setButtonStyle] = useState({
+        position: 'fixed',
+        right: '20px',
+        top: '40%',
+        zIndex: 999,
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      });
   
   const buttonRef = useRef(null);
   const stopElementRef = useRef(null);
@@ -92,7 +95,9 @@ const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBefor
           alt="Hormiguear" 
           style={{ width: '30px', height: 'auto' }} 
         />
-        <span style={{
+        
+      </button>
+      <span style={{
           fontSize: '10px',
           fontWeight: 'bold',
           marginTop: '5px',
@@ -100,7 +105,6 @@ const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBefor
         }}>
           HORMIGUEAR
         </span>
-      </button>
     </div>
   );
 };
