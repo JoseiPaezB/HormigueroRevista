@@ -331,6 +331,7 @@
   flex: 0 0 100%;
   padding: 0 10px;
   box-sizing: border-box;
+ 
 }
 
 .event-image-container {
@@ -350,7 +351,7 @@
 
 
 .event-details {
-  padding: 0 5px;
+  padding: 16px;
 }
 
 .event-info {

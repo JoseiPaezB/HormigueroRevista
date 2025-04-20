@@ -85,7 +85,7 @@ const EventosSection = () => {
         onTouchMove={handleTouchMove}
       >
         <div
-          className="carousel-container"
+          className="carousel-container carousel-dos"
           style={{
             transform: `translateX(-${currentSlide * 100}%)`,
           }}
