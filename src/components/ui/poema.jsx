@@ -3,7 +3,7 @@ import portada from '../../assets/images/edicion1.png';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import hormigueroLogo from '../../assets/anticon.svg';
-import FloatingHormiguearButton from './hormiguearButton'// Import our new component
+import FloatingHormiguearButton from './hormiguearButton'; // Import our new component
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -472,6 +472,7 @@ const Poema = () => {
       <FloatingHormiguearButton 
         handleHormiguear={handleHormiguear}
         stopAtElement={masPoemasSectionRef}
+        offsetBeforeStop={150} // You can adjust this value to control how far before the section it stops
       />
 
       {/* Keep your existing modal code with modified styling for the success message */}
@@ -550,13 +551,13 @@ const Poema = () => {
                       width: '95%',
                       padding: '8px',
                       borderRadius: '4px',
+                      border: isFocused ? '1px solid black' : '1px solid #aaa',
                       marginBottom: '15px',
                       fontSize: '14px',
                       fontFamily: 'JetBrains Mono, monospace',
                       outline: 'none',
                       boxShadow: isFocused ? '0 0 0 2px black' : 'none',
-                      transition: 'border 0.2s, box-shadow 0.2s', 
-                        border: '1px solid #ddd',
+                      transition: 'border 0.2s, box-shadow 0.2s'
                   }}
                   
                   />
