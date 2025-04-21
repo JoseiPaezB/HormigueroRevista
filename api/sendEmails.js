@@ -1,10 +1,11 @@
-// api/send-email.js
+/* eslint-env node */
+
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
 
 // Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -18,19 +19,19 @@ export default async function handler(req, res) {
   const { apiKey, subject, htmlContent } = req.body;
   
   // Check API key (simple security)
-  if (apiKey !== import.meta.env.EMAIL_API_SECRET) {
+  if (apiKey !== process.env.EMAIL_API_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
     // Configure email transporter
     const transporter = nodemailer.createTransport({
-      host: import.meta.env.EMAIL_HOST,
-      port: parseInt(import.meta.env.EMAIL_PORT || '587'),
-      secure: import.meta.env.EMAIL_SECURE === 'true',
+      host: process.env.EMAIL_HOST,
+      port: parseInt(process.env.EMAIL_PORT || '587'),
+      secure: process.env.EMAIL_SECURE === 'true',
       auth: {
-        user: import.meta.env.EMAIL_USER,
-        pass: import.meta.env.EMAIL_PASSWORD
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
       }
     });
 
@@ -46,7 +47,7 @@ export default async function handler(req, res) {
     // Send emails to all subscribers
     const emailPromises = subscribers.map(subscriber => {
       const mailOptions = {
-        from: `"Hormiguero" <${import.meta.env.EMAIL_USER}>`,
+        from: `"Hormiguero" <${process.env.EMAIL_USER}>`,
         to: subscriber.correo,
         subject: subject,
         html: htmlContent
