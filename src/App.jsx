@@ -7,10 +7,11 @@ import Contenido from './components/ui/contenidos.jsx';
 import Creaciones from './components/ui/creaciones.jsx';
 import AuthorBio from './components/ui/poemario.jsx';
 import Poema from './components/ui/poema.jsx';
+import EventosContent from './components/ui/eventos_content.jsx'; // Update import name to match export
 import LoadingPage from './components/ui/LoadingPage.jsx';
 import { LoadingProvider, useLoading } from './components/ui/LoadingContext.jsx';
 import { useEffect } from 'react';
-import ScrollToHashElement from './components/ui/ScrollToHashElement'; // Make sure the import path is correct
+import ScrollToHashElement from './components/ui/ScrollToHashElement';
 
 // Subcomponente que escucha cambios en la URL y muestra el loading
 function RoutesWithLoading() {
@@ -39,6 +40,7 @@ function RoutesWithLoading() {
         <Route path="/creaciones" element={<Creaciones />} />
         <Route path="/poemario/:id" element={<AuthorBio />} />
         <Route path="/poema/:id" element={<Poema />} />
+        <Route path="/evento/:id" element={<EventosContent />} /> {/* Make sure component name matches import */}
       </Routes>
     </>
   );

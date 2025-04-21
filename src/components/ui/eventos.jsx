@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom'; // Make sure Link is imported
 import { createClient } from '@supabase/supabase-js';
 import { FaCalendarAlt, FaMapMarkerAlt } from 'react-icons/fa';
 
@@ -19,12 +20,7 @@ const EventosSection = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       // First, update outdated events
-      const { error: updateError } = await supabase.rpc('update_event_status_by_date2');
-  
-      if (updateError) {
-        console.error('Error updating event statuses:', updateError);
-        return;
-      }
+      
   
       // Now fetch only the active events
       const { data, error } = await supabase
@@ -117,13 +113,16 @@ const EventosSection = () => {
                 <p className="event-description">{event.descripcion}</p>
 
                 <div className="ver-mas-container">
-                  <button className="ver-mas-button">
-                    VER MÁS
-                    <div
-                      className="button-background"
-                      style={{ backgroundImage: `url(${buttonBg})` }}
-                    ></div>
-                  </button>
+                  {/* Update this Link to use the proper ID from the event */}
+                  <Link to={`/evento/${event.id}`}>
+                    <button className="ver-mas-button">
+                      VER MÁS
+                      <div
+                        className="button-background"
+                        style={{ backgroundImage: `url(${buttonBg})` }}
+                      ></div>
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
