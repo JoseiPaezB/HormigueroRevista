@@ -116,7 +116,11 @@ const Poema = () => {
   const submitHormiguear = async (e) => {
     e.preventDefault();
     
-    if (!userName.trim()) return;
+    if (!userName.trim()) {
+      // Show an error message if the name is empty
+      alert('Por favor, ingresa tu nombre para continuar.');
+      return;
+    }
     
     setIsSubmitting(true);
     
@@ -124,11 +128,29 @@ const Poema = () => {
       // First, get the current hormiguear count
       const { data: currentPoem, error: fetchError } = await supabase
         .from('poema')
-        .select('hormigueos')
+        .select('hormigueos, titulo, id_poemario, id_autor')
         .eq('id', id || 1)
         .single();
       
       if (fetchError) throw fetchError;
+      
+      // Get poemario title
+      const { data: poemarioData, error: poemarioError } = await supabase
+        .from('poemario')
+        .select('titulo')
+        .eq('id', currentPoem.id_poemario)
+        .single();
+        
+      if (poemarioError && poemarioError.code !== 'PGRST116') throw poemarioError;
+      
+      // Get author data including formspree_url
+      const { data: authorData, error: authorError } = await supabase
+        .from('autor')
+        .select('nombre, formspree_url')
+        .eq('id', currentPoem.id_autor)
+        .single();
+        
+      if (authorError) throw authorError;
       
       // Calculate new count (default to 1 if it doesn't exist yet)
       const newCount = (currentPoem.hormigueos || 0) + 1;
@@ -140,6 +162,33 @@ const Poema = () => {
         .eq('id', id || 1);
       
       if (updateError) throw updateError;
+      
+      // If author has a formspree_url, submit to Formspree
+      if (authorData.formspree_url) {
+        try {
+          const formspreeResponse = await fetch(authorData.formspree_url, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              mensaje_nombre: userName,
+              message: `¡Nuevo Hormigueo en "${currentPoem.titulo}" del poemario "${poemarioData?.titulo || 'Sin poemario'}"`,
+              poema: currentPoem.titulo,
+              poemario: poemarioData?.titulo || 'Sin poemario',
+              fecha: new Date().toLocaleString()
+            })
+          });
+          
+          if (!formspreeResponse.ok) {
+            console.error('Formspree error:', formspreeResponse);
+          }
+        } catch (formspreeError) {
+          // Log the error but don't fail the whole process
+          console.error('Error submitting to Formspree:', formspreeError);
+        }
+      }
       
       // Show success message
       setHormiguearSuccess(true);
