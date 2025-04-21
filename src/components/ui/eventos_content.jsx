@@ -97,12 +97,12 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
       if (daysDiff > 5) {
         setEventStatus({
           text: 'PRÓXIMAMENTE',
-          color: '#2196f3',
+          color: '#000',
         });
       } else {
         setEventStatus({
           text: `${daysDiff} día${daysDiff !== 1 ? 's' : ''} para comenzar`,
-          color: '#ff9800',
+         color: '#000'
         });
       }
     } else if (daysDiff === 0) {
@@ -114,7 +114,7 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
           text: hoursToStart > 0
             ? `${hoursToStart}h ${remainingMinutes}m para comenzar`
             : `${remainingMinutes}m para comenzar`,
-          color: '#ff9800',
+          color: '#000'
         });
       } else {
         if (end && now > end) {
