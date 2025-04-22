@@ -131,9 +131,9 @@ const Footer = () => {
             </h3>
             <ul className="footer-list" style={{ textAlign: 'left', padding: 0 }}>
               <li style={{ textAlign: 'left', listStyleType: 'none', marginBottom: '8px' }}>
-                <a href="mailto:hormiguero@gmail.com" style={{ textDecoration: 'none', color: 'inherit' }} >
+                <a href="mailto:hormiguero.bj@gmail.com" style={{ textDecoration: 'none', color: 'inherit' }} >
                   <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Mail size={16} /> HORMIGUERO@GMAIL.COM
+                    <Mail size={16} /> HORMIGUERO.BJ@GMAIL.COM
                   </span>
                 </a>
               </li>
