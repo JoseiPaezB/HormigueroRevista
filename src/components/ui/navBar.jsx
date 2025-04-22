@@ -141,13 +141,13 @@ const Navbar = () => {
           flexDirection: 'column', 
           alignItems: 'center' 
         }}>
-          <Link to="/#main-content">
+          <a href="/#main-content">
             <img
               src={hormigueroLogo}
               alt="Hormiga"
               style={{ width: isMobile ? '30px' : '60px', height: 'auto' }}
             />
-          </Link>
+          </a>
           <span style={{ 
             fontSize: isMobile ? '12px' : '25px',
             marginTop: '2px',
@@ -206,15 +206,15 @@ const Navbar = () => {
             fontFamily: '"JetBrains Mono", monospace',
           }}>
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <Link 
-                to="/#main-content" 
+              <a 
+                href="/#main-content" 
                 className="edition-link" 
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
 
               >
                 INICIO
-              </Link>
+              </a>
             </li>
             
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
@@ -229,42 +229,42 @@ const Navbar = () => {
             </li>
             
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <Link 
-                to="/#eventos" 
+              <a
+                href="/#eventos" 
                 className="edition-link" 
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
 
               >
                 EVENTOS
-              </Link>
+              </a>
             </li>
 
             {/* Only show these on mobile since they're hidden in the navbar */}
             {isMobile && (
               <>
                 <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                  <Link 
-                    to="/#contacto" 
+                  <a 
+                    href="/#contacto" 
                     className="edition-link" 
                     style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
                     onClick={() => setMenuOpen(false)}
 
                   >
                     CONTACTO
-                  </Link>
+                  </a>
                 </li>
 
                 <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                  <Link 
-                    to="/#contacto" 
+                  <a 
+                    href="/#contacto" 
                     className="edition-link" 
                     style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
                     onClick={() => setMenuOpen(false)}
 
                   >
                     SUSCRIBETE
-                  </Link>
+                  </a>
                 </li>
               </>
             )}
