@@ -12,6 +12,7 @@ import LoadingPage from './components/ui/LoadingPage.jsx';
 import { LoadingProvider, useLoading } from './components/ui/LoadingContext.jsx';
 import { useEffect } from 'react';
 import ScrollToHashElement from './components/ui/ScrollToHashElement';
+import NotFound from './components/ui/notFound.jsx';
 
 // Subcomponente que escucha cambios en la URL y muestra el loading
 function RoutesWithLoading() {
@@ -41,7 +42,7 @@ function RoutesWithLoading() {
         <Route path="/poemario/:id" element={<AuthorBio />} />
         <Route path="/poema/:id" element={<Poema />} />
         <Route path="/evento/:id" element={<EventosContent />} /> {/* Make sure component name matches import */}
-
+        <Route path="*" element={<NotFound />} /> 
 
       </Routes>
     </>
