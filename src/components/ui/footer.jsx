@@ -138,9 +138,9 @@ const Footer = () => {
                 </a>
               </li>
               <li style={{ textAlign: 'left', listStyleType: 'none' }}>
-                <a href="https://www.instagram.com/hormiguero.revista/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <a href="https://www.instagram.com/hormiguerodepoemas?igsh=Y2owbnVvOGkxcmhs" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Instagram size={16} /> hormiguerodepoemas
+                    <Instagram size={16} /> HORMIGUERODEPOEMAS
                   </span>
                 </a>
               </li>
