@@ -5,14 +5,22 @@ import Navbar from './components/ui/navBar.jsx';
 import Edicion from './components/ui/edition.jsx';
 import Contenido from './components/ui/contenidos.jsx';
 import Creaciones from './components/ui/creaciones.jsx';
+import Traducciones from './components/ui/traducciones.jsx';
 import AuthorBio from './components/ui/poemario.jsx';
 import Poema from './components/ui/poema.jsx';
-import EventosContent from './components/ui/eventos_content.jsx'; // Update import name to match export
+import EventosContent from './components/ui/eventos_content.jsx';
 import LoadingPage from './components/ui/LoadingPage.jsx';
 import { LoadingProvider, useLoading } from './components/ui/LoadingContext.jsx';
 import { useEffect } from 'react';
 import ScrollToHashElement from './components/ui/ScrollToHashElement';
 import NotFound from './components/ui/notFound.jsx';
+import Critica from './components/ui/critica.jsx'; // Import the Critica component
+import Rescates from './components/ui/rescates.jsx';
+import VisualesWrapper from './components/ui/visuales_wrapper.jsx'; // Import the Visuales component
+import VisualesArtistas from './components/ui/visuales_artistas.jsx';
+import Entrevistas from './components/ui/Entrevistas.jsx';
+// Import the other content type components - these would be similar to Creaciones.jsx
+
 
 // Subcomponente que escucha cambios en la URL y muestra el loading
 function RoutesWithLoading() {
@@ -39,11 +47,15 @@ function RoutesWithLoading() {
         <Route path="/" element={<Edicion />} />
         <Route path="/contenidos" element={<Contenido />} />
         <Route path="/creaciones" element={<Creaciones />} />
+        <Route path="/traducciones" element={<Traducciones />} />
+        <Route path="/critica" element={<Critica />} />
+        <Route path="/rescates" element={<Rescates />} />
+        <Route path="/visuales" element={<VisualesWrapper />} />
+        <Route path="/entrevistas" element={<Entrevistas />} />
         <Route path="/poemario/:id" element={<AuthorBio />} />
         <Route path="/poema/:id" element={<Poema />} />
-        <Route path="/evento/:id" element={<EventosContent />} /> {/* Make sure component name matches import */}
-        <Route path="*" element={<NotFound />} /> 
-
+        <Route path="/evento/:id" element={<EventosContent />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

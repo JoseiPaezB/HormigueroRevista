@@ -1,6 +1,10 @@
 * {
   font-family: "JetBrains Mono", monospace;
 }
+a{
+  text-decoration: none;
+  color: inherit;
+}
 .image_2{
   height:300px !important;
 }
@@ -651,3 +655,5 @@
     opacity: 0.7;
   }
 }
+
+/* Visuales Component Styles */

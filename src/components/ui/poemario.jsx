@@ -6,7 +6,7 @@ import bookCover2 from '../../assets/images/2res.png';
 import bookCover3 from '../../assets/images/3res.png';
 import bookCover4 from '../../assets/images/4res.png';
 import bookCover5 from '../../assets/images/5res.png';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
@@ -18,13 +18,14 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const AuthorBio = () => {
     const { id } = useParams(); // Get author ID from URL if available
+    const navigate = useNavigate(); // Initialize navigate function
     const [autor, setAutor] = useState(null);
     const [poemas, setPoemas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [revista, setRevista] = useState(null);
     const [poemario, setPoemario] = useState(null);
-
+    const [isVisualArtist, setIsVisualArtist] = useState(false);
 
     // Default book covers mapping
     const defaultCovers = {
@@ -46,7 +47,7 @@ const AuthorBio = () => {
       const fetchData = async () => {
         try {
           // Default author ID if not provided in URL
-          const authorId = id // Using ID 5 from our sample data (Alejandra Pizarnik)
+          const authorId = id // Using ID from URL params
           
           // 1. Fetch autor (author) data
           const { data: autorData, error: autorError } = await supabase
@@ -57,6 +58,9 @@ const AuthorBio = () => {
 
           if (autorError) throw autorError;
           setAutor(autorData);
+          
+          // Check if author is visual artist
+          setIsVisualArtist(autorData.tipo_creacion === 'visuales');
 
           // 2. Fetch revista for the header background
           const { data: revistaData, error: revistaError } = await supabase
@@ -68,38 +72,45 @@ const AuthorBio = () => {
           if (revistaError) throw revistaError;
           setRevista(revistaData);
 
-          // 3. Fetch poems by this author
-          const { data: poemasData, error: poemasError } = await supabase
-            .from('poema')
-            .select('*')
-            .eq('id_autor', authorId);
+          // Only fetch poems if the author is not a visual artist
+          if (autorData.tipo_creacion !== 'visuales') {
+            // 3. Fetch poems by this author
+            const { data: poemasData, error: poemasError } = await supabase
+              .from('poema')
+              .select('*')
+              .eq('id_autor', authorId);
 
-          if (poemasError) throw poemasError;
-          
-          const { data: poemarioData, error: poemarioError } = await supabase
-            .from('poemario')
-            .select('*')
-            .eq('id_autor', authorId)
-            .single();
-          
-            if (poemarioError) throw poemarioError;
-            setPoemario(poemarioData);
-          // Transform poemas to match the books format and count words
-          const transformedPoemas = poemasData.map((poema, index) => {
-            // Count words in the poem text
-            const wordCount = countWords(poema.texto);
+            if (poemasError) throw poemasError;
             
-            return {
-              id: poema.id,
-              title: poema.titulo,
-              author: autorData.nombre,
-              cover: poema.portada, // Cycle through available covers
-              link: `/poema/${poema.id}`,
-              wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
-            };
-          });
+            // 4. Fetch poemario info
+            const { data: poemarioData, error: poemarioError } = await supabase
+              .from('poemario')
+              .select('*')
+              .eq('id_autor', authorId)
+              .single();
+            
+            if (!poemarioError) {
+              setPoemario(poemarioData);
+            }
+            
+            // Transform poemas to match the books format and count words
+            const transformedPoemas = poemasData.map((poema, index) => {
+              // Count words in the poem text
+              const wordCount = countWords(poema.texto);
+              
+              return {
+                id: poema.id,
+                title: poema.titulo,
+                author: autorData.nombre,
+                cover: poema.portada || defaultCovers[(index % 5) + 1], // Cycle through available covers
+                link: `/poema/${poema.id}`,
+                wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
+              };
+            });
 
-          setPoemas(transformedPoemas);
+            setPoemas(transformedPoemas);
+          }
+          
           setLoading(false);
         } catch (err) {
           console.error('Error fetching author data:', err);
@@ -227,7 +238,7 @@ const AuthorBio = () => {
     if (error) return <div>{error}</div>;
 
     // Format author name for display
-    const authorName = autor?.nombre?.toUpperCase() || "ALEJANDRA PIZARNIK";
+    const authorName = autor?.nombre?.toUpperCase() || "AUTOR";
     
     // Generate first letter for emphasized display
     const firstLetter = authorName.charAt(0);
@@ -236,7 +247,7 @@ const AuthorBio = () => {
     return (
       <div className="bio-container">
         <div className="cover-image image_2" style={{
-          backgroundImage: `url(${poemario?.portada || portada})`,
+          backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
           height: '30vh'
         }}>
         </div>
@@ -270,7 +281,7 @@ const AuthorBio = () => {
                 marginRight: '2px',
                 lineHeight: '1'
               }}>{firstLetter}</span>
-              {restOfName} {autor?.semblanza || 'nació en Avellaneda en 1936, y desde entonces cargó con una lengua que le dolía. Escritora, traductora, habitante de los márgenes. En su voz convivían el murmullo de la muerte, la inocencia herida y una lucidez que quemaba. Su poesía no fue una evasión: fue una condena a una salvación. Murió en 1972, a los 36 años, pero dejó un temblor que todavía no acaba.'}
+              {restOfName} {autor?.semblanza || 'es un creador de quien no tenemos información biográfica detallada. Su obra habla por sí misma, transitando los caminos de la expresión artística con una voz única y personal.'}
             </p>
             
             {/* Second paragraph with image */}
@@ -286,7 +297,15 @@ const AuthorBio = () => {
                 margin: 0,
                 flex: 1
               }}>
-                En <i>Árbol de Diana</i>, su poemario más conocido, el lenguaje rompe la lógica y el tiempo. Escribe versos breves, fulgurantes, que se abren como cuchillas. El yo poético es una niña sin consuelo, una mujer que grita desde la habitación cerrada del alma.
+                {isVisualArtist ? (
+                  <span>
+                    {autor?.bio_corta || 'Su trabajo explora las posibilidades de la expresión visual, creando obras que desafían la percepción y expanden los límites del arte. A través de sus piezas, nos invita a explorar nuevas formas de ver y entender el mundo que nos rodea.'}
+                  </span>
+                ) : (
+                  <span>
+                    En <i>{poemario?.titulo || 'su obra'}</i>, {autor?.bio_corta || 'el lenguaje rompe la lógica y el tiempo. Escribe versos breves, fulgurantes, que se abren como cuchillas. Una poética intensa que resuena con fuerza en el lector.'}
+                  </span>
+                )}
               </p>
               
               {/* Author image */}
@@ -303,111 +322,137 @@ const AuthorBio = () => {
               />
             </div>
             
-            {/* Footer signature */}
-            <div style={{
-              paddingTop: '12px',
-              marginTop: '10px',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: '14px'
-            }}>
-              
-            </div>
-          </div>
-        </div>
-        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>
-            {poemario?.titulo.toUpperCase()}
-        </h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
-          gap: '20px',
-          marginBottom: '40px',
-          padding: '0 20px', // Add horizontal padding
-          maxWidth: '800px', // Set a maximum width
-          margin: '20px auto' // Center the grid with automatic horizontal margins
-          }}>
-            {arrangedBooks.map((book, index) => {
-              const sizeStyles = getBookSize(book.wordCount, book.sizeCategory);
-              const titleStyles = getTitleStyles(sizeStyles);
-              const isLargeBook = sizeStyles.isLarge;
-              
-              // For large books, ensure they start at the beginning of a row
-              // by placing them in positions that align with the grid
-              const gridPosition = {};
-              if (isLargeBook) {
-                gridPosition.gridColumn = '1 / span 2'; // Always span full width
-              }
-              
-              return (
-                <Link 
-                  key={book.id} 
-                  to={book.link} 
+            {/* Visual artist specific section */}
+            {isVisualArtist && (
+              <div style={{
+                marginTop: '30px',
+                textAlign: 'center'
+              }}>
+                <div 
+                  onClick={() => navigate(-1)}
                   style={{
-                    textDecoration: 'none', 
-                    color: 'inherit',
-                    ...gridPosition
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    marginTop: '30px',
+                    marginBottom: '30px',
+                    cursor: 'pointer'
                   }}
                 >
-                  <div style={{
-                    position: 'relative',
-                    overflow: 'hidden',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                    transition: 'transform 0.3s ease',
-                    height: sizeStyles.height,
-                    width: '100%', // Always use full width of grid cell
-                  }}>
-                    <img 
-                      src={book.cover} 
-                      alt={book.title} 
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                    />
-                    
-                    {isLargeBook ? (
-                      // Centered title for large books
-                      <div style={titleStyles}>
-                        <h3>{book.title}</h3>
-                        <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.author}</p>
-                      </div>
-                    ) : (
-                      // Standard top-aligned title for small/medium books
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
+                    Regresar
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Only show poemario title and works if not a visual artist */}
+        {!isVisualArtist && (
+          <>
+            {poemario && (
+              <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>
+                {poemario.titulo.toUpperCase()}
+              </h2>
+            )}
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
+              gap: '20px',
+              marginBottom: '40px',
+              padding: '0 20px', // Add horizontal padding
+              maxWidth: '800px', // Set a maximum width
+              margin: '20px auto' // Center the grid with automatic horizontal margins
+            }}>
+              {arrangedBooks.map((book, index) => {
+                const sizeStyles = getBookSize(book.wordCount, book.sizeCategory);
+                const titleStyles = getTitleStyles(sizeStyles);
+                const isLargeBook = sizeStyles.isLarge;
+                
+                // For large books, ensure they start at the beginning of a row
+                // by placing them in positions that align with the grid
+                const gridPosition = {};
+                if (isLargeBook) {
+                  gridPosition.gridColumn = '1 / span 2'; // Always span full width
+                }
+                
+                return (
+                  <Link 
+                    key={book.id} 
+                    to={book.link} 
+                    style={{
+                      textDecoration: 'none', 
+                      color: 'inherit',
+                      ...gridPosition
+                    }}
+                  >
+                    <div style={{
+                      position: 'relative',
+                      overflow: 'hidden',
+                      borderRadius: '4px',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                      transition: 'transform 0.3s ease',
+                      height: sizeStyles.height,
+                      width: '100%', // Always use full width of grid cell
+                    }}>
+                      <img 
+                        src={book.cover} 
+                        alt={book.title} 
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                      
+                      {isLargeBook ? (
+                        // Centered title for large books
+                        <div style={titleStyles}>
+                          <h3>{book.title}</h3>
+                          <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.author}</p>
+                        </div>
+                      ) : (
+                        // Standard top-aligned title for small/medium books
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          padding: '10px',
+                          color: 'white',
+                          textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+                          width: '100%',
+                          background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
+                        }}>
+                          <h4 style={titleStyles}>{book.title}</h4>
+                          <p style={{margin: 0, fontSize: '10px'}}>{book.author}</p>
+                        </div>
+                      )}
+                      
                       <div style={{
                         position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        padding: '10px',
+                        bottom: '5px',
+                        right: '5px',
+                        fontSize: '8px',
                         color: 'white',
-                        textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
-                        width: '100%',
-                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
+                        background: 'rgba(0,0,0,0.6)',
+                        padding: '2px 5px',
+                        borderRadius: '2px'
                       }}>
-                        <h4 style={titleStyles}>{book.title}</h4>
-                        <p style={{margin: 0, fontSize: '10px'}}>{book.author}</p>
+                        {book.wordCount} PALABRAS
                       </div>
-                    )}
-                    
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '5px',
-                      right: '5px',
-                      fontSize: '8px',
-                      color: 'white',
-                      background: 'rgba(0,0,0,0.6)',
-                      padding: '2px 5px',
-                      borderRadius: '2px'
-                    }}>
-                      {book.wordCount} PALABRAS
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     );
 };

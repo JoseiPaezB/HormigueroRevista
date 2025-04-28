@@ -146,7 +146,7 @@ const Contenido = () => {
             }}>CREACIONES</div>
           </Link>
           
-          <Link to="/traduccion" className="menu-item" style={{
+          <Link to="/traducciones" className="menu-item" style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -236,7 +236,7 @@ const Contenido = () => {
               letterSpacing: '1px'
             }}>VISUALES</div>
           </Link>
-          <Link to="/critica" className="menu-item" style={{
+          <Link to="/entrevistas" className="menu-item" style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
