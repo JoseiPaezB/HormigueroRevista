@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import FloatingHormiguearButton from './hormiguearButton';
 import { Link} from 'react-router-dom';
+import hormigueroLogo2 from '../../assets/anticon2.svg'; // Adjust the path as necessary
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -282,6 +283,8 @@ const Visuales = () => {
           // Log the error but don't fail the whole process
           console.error('Error submitting to Formspree:', formspreeError);
         }
+      }else{
+        console.log('No Formspree URL provided for this author.');
       }
       
       // Show success message
@@ -708,7 +711,11 @@ const Visuales = () => {
                   fontSize: '16px'
                   }}>
                   {/* Replace with your actual image source */}
-                  <span style={{ fontSize: '24px' }}>🐜</span>
+                  <img 
+                    src={hormigueroLogo2} 
+                    alt="Hormiga" 
+                    style={{ width:'30px', height: 'auto' }} 
+                    />
                   HORMIGUEAR OBRA VISUAL
                 </h3>
                 <p style={{
