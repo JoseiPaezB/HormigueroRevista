@@ -17,7 +17,6 @@ import NotFound from './components/ui/notFound.jsx';
 import Critica from './components/ui/critica.jsx'; // Import the Critica component
 import Rescates from './components/ui/rescates.jsx';
 import VisualesWrapper from './components/ui/visuales_wrapper.jsx'; // Import the Visuales component
-import VisualesArtistas from './components/ui/visuales_artistas.jsx';
 import Entrevistas from './components/ui/Entrevistas.jsx';
 // Import the other content type components - these would be similar to Creaciones.jsx
 
