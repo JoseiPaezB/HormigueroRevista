@@ -236,7 +236,7 @@ const Contenido = () => {
               letterSpacing: '1px'
             }}>VISUALES</div>
           </Link>
-          <Link to="/entrevistas" className="menu-item" style={{
+          <Link to="/entrevista" className="menu-item" style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
