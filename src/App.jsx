@@ -17,7 +17,7 @@ import NotFound from './components/ui/notFound.jsx';
 import Critica from './components/ui/critica.jsx'; // Import the Critica component
 import Rescates from './components/ui/rescates.jsx';
 import VisualesWrapper from './components/ui/visuales_wrapper.jsx'; // Import the Visuales component
-import Entrevistas from './components/ui/Entrevistas.jsx';
+import EntrevistaWrapper from './components/ui/entrevistaWrapper.jsx';
 // Import the other content type components - these would be similar to Creaciones.jsx
 
 
@@ -50,7 +50,7 @@ function RoutesWithLoading() {
         <Route path="/critica" element={<Critica />} />
         <Route path="/rescates" element={<Rescates />} />
         <Route path="/visuales" element={<VisualesWrapper />} />
-        <Route path="/entrevistas" element={<Entrevistas />} />
+        <Route path="/entrevista" element={<EntrevistaWrapper />} />
         <Route path="/poemario/:id" element={<AuthorBio />} />
         <Route path="/poema/:id" element={<Poema />} />
         <Route path="/evento/:id" element={<EventosContent />} />
