@@ -261,7 +261,7 @@ const ContentComponent = ({ contentType }) => {
       
       {/* Article preview section */}
       <div className="article-preview" style={{marginTop: '0rem'}}>
-        <div className="article-date" style={{color:'#fff'}}>{formatDate(revista?.fecha)}</div>
+        <div className="article-date" style={{color:'#000'}}>{formatDate(revista?.fecha)}</div>
         <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px' }}>
           {displayTitle.toUpperCase()}
         </h2>
@@ -290,9 +290,7 @@ const ContentComponent = ({ contentType }) => {
               maxWidth: '27em',
               lineHeight: '1.5',
               hyphens: 'auto',
-              textAlign: 'justify',
-              color: 'white',
-          }}>
+              textAlign: 'justify'          }}>
             {content?.sintesis || 'Default synthesis text if none is available.'}
           </p>
         </div>
