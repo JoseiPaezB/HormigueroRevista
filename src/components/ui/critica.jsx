@@ -17,6 +17,10 @@ const Critica = () => {
         autoPlay 
         loop 
         muted
+        playsInline  // Prevents iOS from playing video in fullscreen
+        disablePictureInPicture // Prevents picture-in-picture mode
+        controlsList="nodownload nofullscreen noremoteplayback" // Disables various controls
+        onContextMenu={(e) => e.preventDefault()} // Prevents right-click menu
       >
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
