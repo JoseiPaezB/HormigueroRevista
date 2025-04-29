@@ -19,7 +19,7 @@ const Critica = () => {
         muted
       >
         <source src={video} type="video/mp4" />
-        Your browser does not support the video tag.
+        Your browser does not support the video tag.Res
       </video>
       
       {/* Content overlay - everything from ContentComponent will display on top */}
