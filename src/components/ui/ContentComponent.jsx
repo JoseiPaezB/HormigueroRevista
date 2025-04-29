@@ -253,16 +253,11 @@ const ContentComponent = ({ contentType }) => {
   return (
     <div className="edition-container">
       {/* Cover image */}
-      <div className="cover-image image_2" style={{
-        backgroundImage: `url(${content?.imagen})`,
-        height: '30vh'
-      }}>
-      </div>
+      
       
       {/* Article preview section */}
-      <div className="article-preview" style={{marginTop: '0rem'}}>
-        <div className="article-date" style={{color:'#000'}}>{formatDate(revista?.fecha)}</div>
-        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px' }}>
+      <div className="article-preview" style={{marginTop: '5rem'}}>
+        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px',fontSize:'50px' }}>
           {displayTitle.toUpperCase()}
         </h2>
         <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem'}}>
@@ -290,7 +285,9 @@ const ContentComponent = ({ contentType }) => {
               maxWidth: '27em',
               lineHeight: '1.5',
               hyphens: 'auto',
-              textAlign: 'justify'          }}>
+              textAlign: 'justify', 
+              color: 'white',          
+              }}>
             {content?.sintesis || 'Default synthesis text if none is available.'}
           </p>
         </div>

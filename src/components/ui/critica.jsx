@@ -11,7 +11,7 @@ const Critica = () => {
         style={{ 
           position: 'fixed',
           zIndex: '-1',
-          opacity: 0.5  // Adjust this value between 0 and 1 (0 = invisible, 1 = fully opaque)
+          opacity: 1  // Adjust this value between 0 and 1 (0 = invisible, 1 = fully opaque)
         }}
       >
         <video 
@@ -35,7 +35,7 @@ const Critica = () => {
       </div>
       
       {/* Content overlay with higher z-index */}
-      <div className="relative" style={{ zIndex: '1' }}>
+      <div className="relative" style={{ zIndex: '1', color: 'white' }}>
         <ContentComponent contentType="critica" />
       </div>
     </div>
