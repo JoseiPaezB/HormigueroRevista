@@ -48,10 +48,33 @@ const EntrevistasComponent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch entrevistas from the database
+        // First, fetch the creadores data for entrevista to get colaboradores
+        const { data: creadoresData, error: creadoresError } = await supabase
+          .from('creaciones')
+          .select('colaboradores')
+          .eq('tipo', 'entrevista')
+          .single();
+
+        if (creadoresError) {
+          console.error('Error fetching creaciones data:', creadoresError);
+        }
+
+        let colaboradoresList = [];
+        if (creadoresData && creadoresData.colaboradores) {
+          colaboradoresList = creadoresData.colaboradores
+            .split(',')
+            .map(name => name.trim().toUpperCase());
+          setContributors(colaboradoresList);
+        }
+
+        // Now fetch entrevistas with author information
         const { data: entrevistasData, error: entrevistasError } = await supabase
           .from('entrevista')
-          .select('*');
+          .select(`
+            *,
+            autor:id_autor(id, nombre)
+          `)
+          .order('id', { ascending: true }); // Order by ID in ascending order
 
         if (entrevistasError) throw entrevistasError;
         
@@ -67,18 +90,21 @@ const EntrevistasComponent = () => {
             videoUrl: entrevista.video, // URL from your database
             thumbnailUrl: "/api/placeholder/640/360", // Placeholder for now
             duration: fakeDuration,
-            colaboradores: entrevista.colaboradores
+            colaboradores: entrevista.colaboradores, // Individual video collaborators from entrevista table
+            // Author information
+            authorId: entrevista.id_autor,
+            authorName: entrevista.autor ? entrevista.autor.nombre : 'Autor desconocido'
           };
         });
         
         setEntrevistas(processedEntrevistas);
         
-        // Extract all unique contributors from the entrevistas
-        if (processedEntrevistas.length > 0) {
-          // Get contributors from the first entrevista or set defaults
+        // If we already have contributors from creaciones, no need to extract from entrevistas
+        if (colaboradoresList.length === 0 && processedEntrevistas.length > 0) {
+          // Fallback: Get contributors from the first entrevista
           const firstEntrevista = processedEntrevistas[0];
           if (firstEntrevista.colaboradores) {
-            const colaboradoresList = firstEntrevista.colaboradores
+            colaboradoresList = firstEntrevista.colaboradores
               .split(',')
               .map(name => name.trim().toUpperCase());
             setContributors(colaboradoresList);
@@ -90,8 +116,11 @@ const EntrevistasComponent = () => {
               "OCTAVIO PAZ – Productor ejecutivo"
             ]);
           }
+        }
           
-          // Use the first entrevista's description as the sintesis, or set a default
+        // Use the first entrevista's description as the sintesis, or set a default
+        if (processedEntrevistas.length > 0) {
+          const firstEntrevista = processedEntrevistas[0];
           setSintesis(firstEntrevista.description || 
             "Nuestra colección de entrevistas reúne conversaciones profundas con los más destacados escritores y artistas latinoamericanos. Cada entrevista revela no solo los procesos creativos detrás de obras maestras, sino también las inspiraciones, luchas y filosofías que han dado forma a la literatura contemporánea.");
         }
@@ -110,7 +139,9 @@ const EntrevistasComponent = () => {
             videoUrl: "https://example.com/interview1.mp4", 
             thumbnailUrl: "/api/placeholder/640/360",
             duration: "12:45",
-            colaboradores: "Gabriel García Márquez, Carlos Fuentes"
+            colaboradores: "Gabriel García Márquez, Carlos Fuentes",
+            authorId: 1,
+            authorName: "Gabriel García Márquez"
           },
           {
             id: 2,
@@ -119,7 +150,9 @@ const EntrevistasComponent = () => {
             videoUrl: "https://example.com/interview2.mp4",
             thumbnailUrl: "/api/placeholder/320/240",
             duration: "8:20",
-            colaboradores: "Jorge Luis Borges, María Kodama"
+            colaboradores: "Jorge Luis Borges, María Kodama",
+            authorId: 2,
+            authorName: "Jorge Luis Borges"
           },
           {
             id: 3,
@@ -128,7 +161,9 @@ const EntrevistasComponent = () => {
             videoUrl: "https://example.com/interview3.mp4",
             thumbnailUrl: "/api/placeholder/320/180",
             duration: "5:30",
-            colaboradores: "Octavio Paz, Elena Poniatowska"
+            colaboradores: "Octavio Paz, Elena Poniatowska",
+            authorId: 3,
+            authorName: "Octavio Paz"
           }
         ];
         
@@ -170,7 +205,8 @@ const EntrevistasComponent = () => {
               maxWidth: '27em',
               lineHeight: '1.5',
               hyphens: 'auto',
-              textAlign: 'justify'         
+              textAlign: 'justify',
+              color: '#fff',         
             }}>
             {sintesis}
           </p>
@@ -268,8 +304,6 @@ const EntrevistasComponent = () => {
                     {video.colaboradores ? video.colaboradores : 'Entrevista exclusiva'}
                   </p>
                 </div>
-                
-                
               </div>
               
               {/* Description button and expandable content */}
@@ -315,7 +349,7 @@ const EntrevistasComponent = () => {
                   marginTop: expandedDescriptions[video.id] ? '10px' : '0',
                 }}>
                   <p style={{
-                    margin: '0',
+                    margin: '0 0 15px 0',
                     color: '#ccc',
                     lineHeight: '1.6',
                     fontSize: '14px',
@@ -323,6 +357,29 @@ const EntrevistasComponent = () => {
                   }}>
                     {video.description}
                   </p>
+                  
+                  {/* Author link */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    marginTop: '10px'
+                  }}>
+                    <Link 
+                      to={`/poemario/${video.authorId}`}
+                      style={{
+                        color: '#fff',
+                        textDecoration: 'none',
+                        fontWeight: 'bold',
+                        fontSize: '14px',
+                        padding: '5px 10px',
+                        borderRadius: '4px',
+                        background: 'rgba(255,255,255,0.1)',
+                        transition: 'background 0.2s ease'
+                      }}
+                    >
+                      {video.authorName} &rarr;
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
