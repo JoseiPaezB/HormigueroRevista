@@ -181,6 +181,43 @@ const EntrevistasComponent = () => {
     fetchData();
   }, []);
 
+  // Función para convertir URL de YouTube en formato embebible
+function getYouTubeEmbedUrl(url) {
+  // Extraer el ID del video de YouTube de diferentes formatos de URL
+  let videoId = '';
+  
+  if (url.includes('youtube.com/watch')) {
+    videoId = new URL(url).searchParams.get('v');
+  } else if (url.includes('youtu.be/')) {
+    videoId = url.split('youtu.be/')[1];
+    // Eliminar parámetros adicionales si existen
+    if (videoId.includes('?')) {
+      videoId = videoId.split('?')[0];
+    }
+  }
+  
+  return `https://www.youtube.com/embed/${videoId}`;
+}
+
+// Función para convertir URL de Google Drive en formato embebible
+function getGoogleDriveEmbedUrl(url) {
+  // Extraer el ID del archivo de Drive
+  let fileId = '';
+  
+  if (url.includes('/file/d/')) {
+    const parts = url.split('/file/d/');
+    if (parts.length > 1) {
+      fileId = parts[1].split('/')[0];
+      // Limpiar cualquier parámetro de la URL
+      if (fileId.includes('?')) {
+        fileId = fileId.split('?')[0];
+      }
+    }
+  }
+  
+  return `https://drive.google.com/file/d/${fileId}/preview`;
+}
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -241,25 +278,62 @@ const EntrevistasComponent = () => {
                 }}
               >
                 {/* Video element */}
-                <video
-                  ref={el => videoRefs.current[video.id] = el}
-                  loop
-                  autoPlay
-                  playsInline
-                  controls
-                  poster={video.thumbnailUrl || "/api/placeholder/640/360"}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    display: 'block',
-                  }}
-                  onPlay={() => handleVideoPlay(video.id)}
-                  onPause={() => handleVideoPause(video.id)}
-                >
-                  <source src={video.videoUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                {video.videoUrl.includes('youtube.com') || video.videoUrl.includes('youtu.be') ? (
+                    // Para videos de YouTube
+                    <iframe
+                      ref={el => videoRefs.current[video.id] = el}
+                      width="100%"
+                      height="100%"
+                      src={getYouTubeEmbedUrl(video.videoUrl)}
+                      title={`YouTube video ${video.id}`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'block',
+                      }}
+                    ></iframe>
+                  ) : video.videoUrl.includes('drive.google.com') ? (
+                    // Para videos de Google Drive
+                    <iframe
+                      ref={el => videoRefs.current[video.id] = el}
+                      width="100%"
+                      height="100%"
+                      src={getGoogleDriveEmbedUrl(video.videoUrl)}
+                      title={`Google Drive video ${video.id}`}
+                      frameBorder="0"
+                      allow="autoplay"
+                      allowFullScreen
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'block',
+                      }}
+                    ></iframe>
+                  ) : (
+                    // Para videos MP4 directos y otros formatos compatibles
+                    <video
+                      ref={el => videoRefs.current[video.id] = el}
+                      loop
+                      autoPlay
+                      playsInline
+                      controls
+                      poster={video.thumbnailUrl || "/api/placeholder/640/360"}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block',
+                      }}
+                      onPlay={() => handleVideoPlay(video.id)}
+                      onPause={() => handleVideoPause(video.id)}
+                    >
+                      <source src={video.videoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
                 
                 {/* Overlay gradient - fades during playback */}
                 <div style={{
