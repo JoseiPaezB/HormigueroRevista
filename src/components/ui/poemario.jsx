@@ -60,7 +60,7 @@ const AuthorBio = () => {
           setAutor(autorData);
           
           // Check if author is visual artist
-          setIsVisualArtist(autorData.tipo_creacion === 'visuales');
+          setIsVisualArtist(autorData.tipo_creacion === 'visuales' || autorData.tipo_creacion === 'entrevista');
 
           // 2. Fetch revista for the header background
           const { data: revistaData, error: revistaError } = await supabase

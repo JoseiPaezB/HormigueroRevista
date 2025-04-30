@@ -111,18 +111,47 @@ const Contenido = () => {
           
         </div>
 
-        {/* Vertical Menu with Ants */}
-        <div className="vertical-menu" style={{
+         {/* Vertical Menu with Ants */}
+         <div className="vertical-menu" style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center', // Add this
-            textAlign: 'center',      // Add this
+            justifyContent: 'center',
+            textAlign: 'center',
             gap: '30px',
             padding: '2px',
             width: '100%', 
             margin: '30px 0'
             }}>
+          {/* Define the keyframes animation for pulsing effect */}
+          <style>
+            {`
+              
+              
+              @keyframes textPulse {
+                0% { opacity: 0.75; }
+                50% { opacity: 1; }
+                100% { opacity: 0.75; }
+              }
+              
+              .pulsing-ant {
+                animation: pulse 2s infinite ease-in-out;
+              }
+              
+              .pulsing-text {
+                animation: textPulse 2s infinite ease-in-out;
+              }
+              
+              .menu-item:hover .pulsing-ant {
+                animation: pulse 1s infinite ease-in-out;
+              }
+              
+              .menu-item:hover .pulsing-text {
+                animation: textPulse 1s infinite ease-in-out;
+              }
+            `}
+          </style>
+
           <Link to="/creaciones" className="menu-item" style={{
             display: 'flex',
             flexDirection: 'column',
@@ -130,20 +159,30 @@ const Contenido = () => {
             textDecoration: 'none',
             color: 'black',
             transition: 'transform 0.2s',
-            justifyContent: 'center', // Add this
-            textAlign: 'center',      // Add this
-            width: '100%'           // Add this
+            justifyContent: 'center',
+            textAlign: 'center',
+            width: '100%'
           }}>
             <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              {/* Place for your ant image */}
-              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+              <img 
+                src={hormigueroLogo} 
+                alt="Ant icon" 
+                width="60" 
+                height="60" 
+                className="pulsing-ant"
+              />
             </div>
-            <div className="menu-text" style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              letterSpacing: '1px',
-            }}>CREACIONES</div>
+            <div 
+              className="menu-text pulsing-text" 
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+              }}
+            >
+              CREACIONES
+            </div>
           </Link>
           
           <Link to="/traducciones" className="menu-item" style={{
@@ -153,20 +192,32 @@ const Contenido = () => {
             textDecoration: 'none',
             color: 'black',
             transition: 'transform 0.2s',
-            justifyContent: 'center', // Add this
-            textAlign: 'center',      // Add this
-            width: '100%',            // Add this
+            justifyContent: 'center',
+            textAlign: 'center',
+            width: '100%',
           }}>
             <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              {/* Place for your ant image */}
-              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+              <img 
+                src={hormigueroLogo} 
+                alt="Ant icon" 
+                width="60" 
+                height="60" 
+                className="pulsing-ant" 
+                style={{ animationDelay: '0.3s' }}
+              />
             </div>
-            <div className="menu-text" style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              letterSpacing: '1px'
-            }}>TRADUCCION</div>
+            <div 
+              className="menu-text pulsing-text" 
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                animationDelay: '0.3s'
+              }}
+            >
+              TRADUCCION
+            </div>
           </Link>
           
           <Link to="/critica" className="menu-item" style={{
@@ -176,20 +227,32 @@ const Contenido = () => {
             textDecoration: 'none',
             color: 'black',
             transition: 'transform 0.2s',
-            justifyContent: 'center', // Add this
-            textAlign: 'center',      // Add this
-            width: '100%',            // Add this
+            justifyContent: 'center',
+            textAlign: 'center',
+            width: '100%',
           }}>
             <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              {/* Place for your ant image */}
-              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+              <img 
+                src={hormigueroLogo} 
+                alt="Ant icon" 
+                width="60" 
+                height="60" 
+                className="pulsing-ant" 
+                style={{ animationDelay: '0.6s' }}
+              />
             </div>
-            <div className="menu-text" style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              letterSpacing: '1px'
-            }}>CRITICA</div>
+            <div 
+              className="menu-text pulsing-text" 
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                animationDelay: '0.6s'
+              }}
+            >
+              CRITICA
+            </div>
           </Link>
           
           <Link to="/rescates" className="menu-item" style={{
@@ -199,21 +262,34 @@ const Contenido = () => {
             textDecoration: 'none',
             color: 'black',
             transition: 'transform 0.2s',
-            justifyContent: 'center', // Add this
-            textAlign: 'center',      // Add this
-            width: '100%',            // Add this
+            justifyContent: 'center',
+            textAlign: 'center',
+            width: '100%',
           }}>
             <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              {/* Place for your ant image */}
-              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+              <img 
+                src={hormigueroLogo} 
+                alt="Ant icon" 
+                width="60" 
+                height="60" 
+                className="pulsing-ant" 
+                style={{ animationDelay: '0.9s' }}
+              />
             </div>
-            <div className="menu-text" style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              letterSpacing: '1px'
-            }}>RESCATES</div>
+            <div 
+              className="menu-text pulsing-text" 
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                animationDelay: '0.9s'
+              }}
+            >
+              RESCATES
+            </div>
           </Link>
+          
           <Link to="/visuales" className="menu-item" style={{
             display: 'flex',
             flexDirection: 'column',
@@ -221,42 +297,67 @@ const Contenido = () => {
             textDecoration: 'none',
             color: 'black',
             transition: 'transform 0.2s',
-            justifyContent: 'center', // Add this
-            textAlign: 'center',      // Add this
-            width: '100%',            // Add this
+            justifyContent: 'center',
+            textAlign: 'center',
+            width: '100%',
           }}>
             <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              {/* Place for your ant image */}
-              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+              <img 
+                src={hormigueroLogo} 
+                alt="Ant icon" 
+                width="60" 
+                height="60" 
+                className="pulsing-ant" 
+                style={{ animationDelay: '1.2s' }}
+              />
             </div>
-            <div className="menu-text" style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              letterSpacing: '1px'
-            }}>VISUALES</div>
+            <div 
+              className="menu-text pulsing-text" 
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                animationDelay: '1.2s'
+              }}
+            >
+              VISUALES
+            </div>
           </Link>
-          <Link to="/entrevistas" className="menu-item" style={{
+          
+          <Link to="/entrevista" className="menu-item" style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             textDecoration: 'none',
             color: 'black',
             transition: 'transform 0.2s',
-            justifyContent: 'center', // Add this
-            textAlign: 'center',      // Add this
-            width: '100%',            // Add this
+            justifyContent: 'center',
+            textAlign: 'center',
+            width: '100%',
           }}>
             <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              {/* Place for your ant image */}
-              <img src={hormigueroLogo} alt="Ant icon" width="60" height="60" style={{ opacity: 0.5 }} />
+              <img 
+                src={hormigueroLogo} 
+                alt="Ant icon" 
+                width="60" 
+                height="60" 
+                className="pulsing-ant" 
+                style={{ animationDelay: '1.5s' }}
+              />
             </div>
-            <div className="menu-text" style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              letterSpacing: '1px'
-            }}>ENTREVISTAS</div>
+            <div 
+              className="menu-text pulsing-text" 
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                letterSpacing: '1px',
+                animationDelay: '1.5s'
+              }}
+            >
+              ENTREVISTAS
+            </div>
           </Link>
         </div>
       </div>
