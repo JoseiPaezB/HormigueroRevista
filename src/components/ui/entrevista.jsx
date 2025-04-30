@@ -214,9 +214,61 @@ function getGoogleDriveEmbedUrl(url) {
       }
     }
   }
+
+  
   
   return `https://drive.google.com/file/d/${fileId}/preview`;
 }
+
+
+function toggleFullScreen(videoElementId) {
+  const element = videoRefs.current[videoElementId];
+  
+  if (!element) return;
+  
+  try {
+    if (!document.fullscreenElement && 
+        !document.webkitFullscreenElement && 
+        !document.mozFullScreenElement && 
+        !document.msFullscreenElement) {
+      // Entrar a pantalla completa - prueba diferentes métodos
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) { /* Safari */
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) { /* IE11 */
+        element.msRequestFullscreen();
+      } else if (element.mozRequestFullScreen) { /* Firefox */
+        element.mozRequestFullScreen();
+      } else {
+        // Fallback para iOS
+        const videoElement = element.querySelector('video');
+        if (videoElement && videoElement.webkitEnterFullscreen) {
+          videoElement.webkitEnterFullscreen();
+        }
+      }
+    } else {
+      // Salir de pantalla completa
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      }
+    }
+  } catch (err) {
+    console.error("Error toggling fullscreen:", err);
+    alert("Tu navegador no soporta pantalla completa. Intenta con otro navegador.");
+  }
+}
+
+
+
+
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -279,24 +331,29 @@ function getGoogleDriveEmbedUrl(url) {
               >
                 {/* Video element */}
                 {video.videoUrl.includes('youtube.com') || video.videoUrl.includes('youtu.be') ? (
-                    // Para videos de YouTube
+  // Para videos de YouTube
+                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                     <iframe
                       ref={el => videoRefs.current[video.id] = el}
                       width="100%"
                       height="100%"
-                      src={getYouTubeEmbedUrl(video.videoUrl)}
+                      src={`${getYouTubeEmbedUrl(video.videoUrl)}?playsinline=1`}
                       title={`YouTube video ${video.id}`}
                       frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                      allowFullScreen={true}
+                      webkitallowfullscreen="true"
+                      mozallowfullscreen="true"
                       style={{
                         width: '100%',
                         height: '100%',
                         display: 'block',
                       }}
                     ></iframe>
-                  ) : video.videoUrl.includes('drive.google.com') ? (
-                    // Para videos de Google Drive
+                  </div>
+                ) : video.videoUrl.includes('drive.google.com') ? (
+                  // Para videos de Google Drive
+                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                     <iframe
                       ref={el => videoRefs.current[video.id] = el}
                       width="100%"
@@ -304,21 +361,27 @@ function getGoogleDriveEmbedUrl(url) {
                       src={getGoogleDriveEmbedUrl(video.videoUrl)}
                       title={`Google Drive video ${video.id}`}
                       frameBorder="0"
-                      allow="autoplay"
-                      allowFullScreen
+                      allow="autoplay; fullscreen"
+                      allowFullScreen={true}
+                      webkitallowfullscreen="true"
+                      mozallowfullscreen="true"
                       style={{
                         width: '100%',
                         height: '100%',
                         display: 'block',
                       }}
                     ></iframe>
-                  ) : (
-                    // Para videos MP4 directos y otros formatos compatibles
+                  </div>
+                ) : (
+                  // Para videos MP4 directos y otros formatos compatibles
+                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                     <video
                       ref={el => videoRefs.current[video.id] = el}
                       loop
                       autoPlay
                       playsInline
+                      webkit-playsinline="true"
+                      x-webkit-airplay="allow"
                       controls
                       poster={video.thumbnailUrl || "/api/placeholder/640/360"}
                       style={{
@@ -333,7 +396,24 @@ function getGoogleDriveEmbedUrl(url) {
                       <source src={video.videoUrl} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
-                  )}
+                    <button 
+                      onClick={() => toggleFullScreen(video.id)}
+                      style={{
+                        position: 'absolute',
+                        bottom: '50px',
+                        right: '10px',
+                        zIndex: 10,
+                        background: 'rgba(0,0,0,0.5)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        padding: '5px 10px'
+                      }}
+                    >
+                      Pantalla Completa
+                    </button>
+                  </div>
+                )}
                 
                 {/* Overlay gradient - fades during playback */}
                 <div style={{
