@@ -348,19 +348,18 @@ function getGoogleDriveEmbedUrl(url) {
                   transition: 'opacity 0.3s ease',
                 }}></div>
                 
+                
+              </div>
+              
+              {/* Description button and expandable content */}
+              <div style={{
+                padding: '15px 20px',
+                borderTop: '1px solid rgba(255,255,255,0.1)',
+              }}>
+                {/* Description toggle button */}
                 {/* Title overlay - disappears during playback */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '20px',
-                  left: '20px',
-                  color: 'white',
-                  zIndex: 2,
-                  textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
-                  opacity: videoPlayingStates[video.id] ? 0 : 1,
-                  transition: 'opacity 0.3s ease',
-                  pointerEvents: 'none',
-                }}>
-                  <h3 style={{
+                
+                <h3 style={{
                     fontSize: '24px',
                     fontWeight: 'bold',
                     margin: '0 0 8px 0',
@@ -377,15 +376,6 @@ function getGoogleDriveEmbedUrl(url) {
                   }}>
                     {video.colaboradores ? video.colaboradores : 'Entrevista exclusiva'}
                   </p>
-                </div>
-              </div>
-              
-              {/* Description button and expandable content */}
-              <div style={{
-                padding: '15px 20px',
-                borderTop: '1px solid rgba(255,255,255,0.1)',
-              }}>
-                {/* Description toggle button */}
                 <button
                   onClick={() => toggleDescription(video.id)}
                   style={{
@@ -403,6 +393,7 @@ function getGoogleDriveEmbedUrl(url) {
                     textAlign: 'left',
                   }}
                 >
+                  
                   <span>DESCRIPCIÓN</span>
                   <span style={{
                     transition: 'transform 0.3s ease',
@@ -411,6 +402,7 @@ function getGoogleDriveEmbedUrl(url) {
                   }}>
                     &#9662;
                   </span>
+                  
                 </button>
                 
                 {/* Expandable description */}
@@ -422,6 +414,7 @@ function getGoogleDriveEmbedUrl(url) {
                   transition: 'height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease',
                   marginTop: expandedDescriptions[video.id] ? '10px' : '0',
                 }}>
+                  
                   <p style={{
                     margin: '0 0 15px 0',
                     color: '#ccc',
@@ -432,6 +425,7 @@ function getGoogleDriveEmbedUrl(url) {
                     {video.description}
                   </p>
                   
+                
                   {/* Author link */}
                   <div style={{
                     display: 'flex',
