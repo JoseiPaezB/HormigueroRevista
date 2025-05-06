@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import portada from '../../assets/images/edicion1.png'; // Fallback image
@@ -17,42 +17,120 @@ const Edicion = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [contributors, setContributors] = useState([]);
-  const [readyToShow, setReadyToShow] = useState(false);
+  const [allAuthors, setAllAuthors] = useState([]);
+  const [visibleAuthorIndex, setVisibleAuthorIndex] = useState(0);
+  const [authorPosition, setAuthorPosition] = useState({ top: '40%', left: '50%' });
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const coverImageRef = useRef(null);
 
-  // Control scroll and content visibility
-
+  // Track window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch revista data on component mount
   useEffect(() => {
-    const fetchRevista = async () => {
+    const fetchData = async () => {
       try {
-        // Fetch the revista with ID 1
-        const { data, error } = await supabase
+        // 1. Fetch the revista with ID 1
+        const { data: revistaData, error: revistaError } = await supabase
           .from('revista')
           .select('*')
           .eq('id', 1)
           .single();
 
-        if (error) throw error;
+        if (revistaError) throw revistaError;
+        setRevista(revistaData);
         
-        setRevista(data);
-        
-        // Parse contributors string into array
-        if (data.contribuyentes) {
-          const contributorsList = data.contribuyentes.split(',').map(name => name.trim());
+        // 2. Parse contributors string into array if it exists
+        if (revistaData.contribuyentes) {
+          const contributorsList = revistaData.contribuyentes.split(',').map(name => name.trim());
           setContributors(contributorsList);
+        }
+
+        // 3. Fetch authors from the autor table
+        const { data: authorsData, error: authorsError } = await supabase
+          .from('autor')
+          .select('nombre')
+          .order('nombre');
+
+        if (authorsError) throw authorsError;
+        
+        // 4. If we have authors from the database, use them
+        if (authorsData && authorsData.length > 0) {
+          const authorNames = authorsData.map(author => author.nombre);
+          setAllAuthors(authorNames);
+          
+          // If no contributors in revista, use authors
+          if (!revistaData.contribuyentes || revistaData.contribuyentes.trim() === '') {
+            setContributors(authorNames);
+          }
         }
         
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching revista:', err);
+        console.error('Error fetching data:', err);
         setError('Failed to load magazine data');
         setLoading(false);
       }
     };
 
-    fetchRevista();
+    fetchData();
   }, []);
+
+  // Generate safe position for the author name
+  const generateSafePosition = () => {
+    // Define safe zones based on device size
+    const isMobile = windowWidth < 768;
+    
+    // Safe zone boundaries (percentage of container)
+    // Avoid the bottom area where "EDICION 1" text appears (typically bottom 30%)
+    const safeZones = [
+      // Top area
+      {
+        topMin: 15,
+        topMax: isMobile ? 40 : 50,
+        leftMin: 20,
+        leftMax: 80
+      },
+      // Left side (avoiding the right where text might overflow on mobile)
+      {
+        topMin: 15, 
+        topMax: 45,
+        leftMin: 20,
+        leftMax: isMobile ? 50 : 70 
+      }
+    ];
+    
+    // Randomly choose a safe zone
+    const safeZone = safeZones[Math.floor(Math.random() * safeZones.length)];
+    
+    // Generate position within the chosen safe zone
+    const topPosition = Math.floor(Math.random() * (safeZone.topMax - safeZone.topMin)) + safeZone.topMin;
+    const leftPosition = Math.floor(Math.random() * (safeZone.leftMax - safeZone.leftMin)) + safeZone.leftMin;
+    
+    return {
+      top: `${topPosition}%`,
+      left: `${leftPosition}%`
+    };
+  };
+
+  // Effect for rotating through author names and positions
+  useEffect(() => {
+    if (!allAuthors.length) return;
+    
+    const interval = setInterval(() => {
+      setVisibleAuthorIndex(prevIndex => (prevIndex + 1) % allAuthors.length);
+      setAuthorPosition(generateSafePosition());
+    }, 3000); // Change author every 3 seconds
+    
+    return () => clearInterval(interval);
+  }, [allAuthors, windowWidth]);
 
   // Format date for display (YYYY-MM-DD to DD/MM/YY)
   const formatDate = (dateString) => {
@@ -65,14 +143,66 @@ const Edicion = () => {
     });
   };
 
+  // Get the current author to display
+  const getCurrentAuthor = () => {
+    if (allAuthors.length === 0) {
+      // Fallback if no authors found
+      return contributors.length > 0 ? contributors[0] : "AUTORES DESTACADOS";
+    }
+    return allAuthors[visibleAuthorIndex];
+  };
+
+  // Determine author font size based on screen width and name length
+  const getAuthorFontSize = () => {
+    const author = getCurrentAuthor() || '';
+    const isMobile = windowWidth < 768;
+    const baseSize = isMobile ? 16 : 22;
+    
+    // Reduce font size for longer names
+    if (author.length > 20) return `${isMobile ? 12 : 18}px`;
+    if (author.length > 15) return `${isMobile ? 14 : 20}px`;
+    return `${baseSize}px`;
+  };
+
+  // Author name style - dynamic based on screen size
+  const authorStyle = {
+    position: 'absolute',
+    top: authorPosition.top,
+    left: authorPosition.left,
+    transform: 'translate(-50%, -50%)',
+    fontSize: getAuthorFontSize(),
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    color: 'white',
+    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+    transition: 'all 0.5s ease-in-out',
+    whiteSpace: 'nowrap',
+    maxWidth: windowWidth < 768 ? '70%' : '90%',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    zIndex: 10
+  };
 
   return (
-    <div className="edition-container" >
+    <div className="edition-container">
       {/* Green gradient cover image */}
-      <div className="cover-image" id="main-content" style={{
-        backgroundImage: `url(${portada})`
-      }}>
+      <div 
+        ref={coverImageRef}
+        className="cover-image" 
+        id="main-content" 
+        style={{
+          backgroundImage: revista?.portada ? `url(${revista.portada})` : `url(${portada})`,
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
         <div className="texture-overlay"></div>
+        
+        {/* Random positioned author */}
+        <div style={authorStyle}>
+          {getCurrentAuthor()?.toUpperCase()}
+        </div>
         
         {/* Issue info overlay */}
         <div className="issue-info">
@@ -80,37 +210,13 @@ const Edicion = () => {
             <h2 className="edition-title">EDICION {revista?.numero || 1}</h2>
           </Link>          
           <p className="edition-date">{formatDate(revista?.fecha) || '04/08/25'}</p>
-          
-          {/* Contributors list */}
-          <div className="contributors-list">
-            {contributors.length > 0 ? (
-              contributors.map((contributor, index) => (
-                <p key={index}>{contributor.toUpperCase()}</p>
-              ))
-            ) : (
-              /* Fallback contributors if none are found */
-              <>
-                <p>JOSÉ NERUDA</p>
-                <p>FEDERICO GARCÍA LORCA</p>
-                <p>EMILY DICKINSON</p>
-                <p>GABRIEL GARCÍA MÁRQUEZ</p>
-                <p>OCTAVIO PAZ</p>
-                <p>SYLVIA PLATH</p>
-                <p>JORGE LUIS BORGES</p>
-                <p>GABRIELA MISTRAL</p>
-                <p>WALT WHITMAN</p>
-                <p>ALEJANDRA PIZARNIK</p>
-              </>
-            )}
-          </div>
         </div>
       </div>
       
       {/* Article preview section */}
       <div className="article-preview">
-        <div className="article-date">{formatDate(revista?.fecha) || '01/08/25'}</div>
         <h2 className="edition-title" style={{ fontWeight: 'bold' }}>
-          {revista?.nombre.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
+          {revista?.nombre?.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
         </h2>
         
         <div className="article-content">
@@ -132,7 +238,7 @@ const Edicion = () => {
         <EventosSection />
       </div>
       <br />
-      <div >
+      <div>
         <Footer />
       </div>
       <div id="contacto"></div>

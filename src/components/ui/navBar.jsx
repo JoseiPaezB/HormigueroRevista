@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
-import { FaInstagram, FaEnvelope, FaSearch, FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
-import { FaBell } from 'react-icons/fa6';
-import { HashLink } from 'react-router-hash-link';
-
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -18,7 +15,6 @@ const Navbar = () => {
   const [revista, setRevista] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [contributors, setContributors] = useState([]);
   
   // Check screen size and update state when it changes
   useEffect(() => {
@@ -36,11 +32,10 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // Check for scroll to eventos
- 
-
-  // Handle clicks outside the menu
+  // Handle clicks outside the menu for mobile
   useEffect(() => {
+    if (!isMobile) return; // Only needed for mobile
+    
     const handleClickOutside = (event) => {
       const navbarElement = document.getElementById('navbar');
       const menuElement = document.getElementById('navbar-menu');
@@ -64,7 +59,7 @@ const Navbar = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [menuOpen]);
+  }, [menuOpen, isMobile]);
 
   // Fetch revista data
   useEffect(() => {
@@ -80,13 +75,6 @@ const Navbar = () => {
         if (error) throw error;
         
         setRevista(data);
-        
-        // Parse contributors string into array
-        if (data.contribuyentes) {
-          const contributorsList = data.contribuyentes.split(',').map(name => name.trim());
-          setContributors(contributorsList);
-        }
-        
         setLoading(false);
       } catch (err) {
         console.error('Error fetching revista:', err);
@@ -100,6 +88,27 @@ const Navbar = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  // Logo and brand size based on screen size
+  const getLogoSize = () => {
+    if (isMobile) {
+      return { width: '30px', height: 'auto' };
+    } else if (window.innerWidth <= 1200) {
+      return { width: '37px', height: 'auto' }; // Smaller for medium screens
+    } else {
+      return { width: '40px', height: 'auto' }; // Smaller for large screens
+    }
+  };
+
+  const getBrandTextSize = () => {
+    if (isMobile) {
+      return '12px';
+    } else if (window.innerWidth <= 1200) {
+      return '13px'; // Smaller for medium screens
+    } else {
+      return '15px'; // Smaller for large screens
+    }
   };
 
   return (
@@ -120,74 +129,138 @@ const Navbar = () => {
           zIndex: 1000,
           boxSizing: 'border-box'
         }}>
-        {!isMobile && (
-          <div style={{ 
-            display: 'flex', 
-            gap: '20px'
-          }}>
-            <a href="#instagram" aria-label="Instagram">
-              <FaInstagram size={20} color="#000" />
-            </a>
-            <a href="#email" aria-label="Email">
-              <FaEnvelope size={20} color="#000" />
-            </a>
-          </div>
-        )}
-
-        {isMobile && <div style={{ width: '20px' }}></div>}
-
+        
+        {/* Left section - Empty on both mobile and desktop */}
         <div style={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center' 
+          width: isMobile ? '20%' : '33%' // Give each section equal width on desktop
         }}>
-          <a href="/#main-content">
+          {/* Empty section to maintain the layout */}
+        </div>
+        
+        {/* Center section - Logo centered in both mobile and desktop */}
+        <div style={{ 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: isMobile ? '60%' : '34%' // Give slightly more space for the logo
+        }}>
+          {/* Logo and text */}
+          <a href="/#main-content" style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center'
+          }}>
             <img
               src={hormigueroLogo}
               alt="Hormiga"
-              style={{ width: isMobile ? '30px' : '60px', height: 'auto' }}
+              style={getLogoSize()}
             />
+            <span style={{ 
+              fontSize: getBrandTextSize(),
+              marginTop: '2px',
+              color: '#000',
+              textTransform: 'uppercase'
+            }}>
+              Hormiguero
+            </span>
           </a>
-          <span style={{ 
-            fontSize: isMobile ? '12px' : '25px',
-            marginTop: '2px',
-            color: '#000',
-            textTransform: 'uppercase'
-          }}>
-            Hormiguero
-          </span>
         </div>
-
-        {/* Right icons */}
+        
+        {/* Right section - All navigation items on desktop, menu icon on mobile */}
         <div style={{ 
-          display: 'flex', 
-          gap: isMobile ? '15px' : '20px'
+          display: 'flex',
+          alignItems: 'center',
+          gap: isMobile ? 0 : '20px',
+          width: isMobile ? '20%' : '33%', // Give each section equal width on desktop
+          justifyContent: 'flex-end' // Push items to the right
         }}>
-          {/* Search icon - only visible on desktop */}
+          {/* Desktop right menu items - all navigation in one place */}
           {!isMobile && (
-            <button aria-label="Search" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-              <FaSearch size={20} color="#000" />
-            </button>
+            <div style={{
+              display: 'flex',
+              flexWrap: window.innerWidth < 1200 ? 'wrap' : 'nowrap',
+              justifyContent: 'flex-end',
+              gap: window.innerWidth < 1200 ? '15px' : '20px'
+            }}>
+              
+              <Link 
+                to="/contenidos" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#000',
+                  textTransform: 'uppercase',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontWeight: '500',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                EDICION {revista?.numero || 1}
+              </Link>
+              
+              <a 
+                href="/#eventos" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#000',
+                  textTransform: 'uppercase',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontWeight: '500',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                EVENTOS
+              </a>
+              
+              <a 
+                href="/#contacto" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#000',
+                  textTransform: 'uppercase',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontWeight: '500',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                CONTACTO
+              </a>
+              
+              <a 
+                href="/#contacto" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#000',
+                  textTransform: 'uppercase',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontWeight: '500',
+                  whiteSpace: 'nowrap'  
+                }}
+              >
+                SUSCRIBETE
+              </a>
+            </div>
           )}
           
-          {/* Menu icon - always visible */}
-          <button 
-            aria-label="Menu" 
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-            onClick={toggleMenu}
-          >
-            {menuOpen ? <FaTimes size={isMobile ? 18 : 20} color="#000" /> : <FaBars size={isMobile ? 18 : 20} color="#000" />}
-          </button>
+          {/* Menu toggle - only visible on mobile */}
+          {isMobile && (
+            <button 
+              aria-label="Menu" 
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              onClick={toggleMenu}
+            >
+              {menuOpen ? <FaTimes size={18} color="#000" /> : <FaBars size={18} color="#000" />}
+            </button>
+          )}
         </div>
       </nav>
 
-      {/* Dropdown menu */}
-      {menuOpen && (
+      {/* Mobile dropdown menu - only rendered on mobile */}
+      {isMobile && menuOpen && (
         <div 
           id="navbar-menu"
           style={{
             position: 'fixed',
-            top: isMobile ? '60px' : '80px', // Adjust based on your navbar height
+            top: '60px', // Adjust based on your navbar height
             left: 0,
             right: 0,
             backgroundColor: 'white',
@@ -208,10 +281,8 @@ const Navbar = () => {
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <a 
                 href="/#main-content" 
-                className="edition-link" 
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
-
               >
                 INICIO
               </a>
@@ -220,54 +291,42 @@ const Navbar = () => {
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <Link 
                 to="/contenidos" 
-                className="edition-link" 
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
               >
-                EDICION {revista?.numero}
+                EDICION {revista?.numero || 1}
               </Link>
             </li>
             
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <a
                 href="/#eventos" 
-                className="edition-link" 
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
-
               >
                 EVENTOS
               </a>
             </li>
+            
+            <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+              <a 
+                href="/#contacto" 
+                style={{ textDecoration: 'none', color: '#000' }}
+                onClick={() => setMenuOpen(false)}
+              >
+                CONTACTO
+              </a>
+            </li>
 
-            {/* Only show these on mobile since they're hidden in the navbar */}
-            {isMobile && (
-              <>
-                <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                  <a 
-                    href="/#contacto" 
-                    className="edition-link" 
-                    style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
-                    onClick={() => setMenuOpen(false)}
-
-                  >
-                    CONTACTO
-                  </a>
-                </li>
-
-                <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                  <a 
-                    href="/#contacto" 
-                    className="edition-link" 
-                    style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center', gap: '10px' }}
-                    onClick={() => setMenuOpen(false)}
-
-                  >
-                    SUSCRIBETE
-                  </a>
-                </li>
-              </>
-            )}
+            <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+              <a 
+                href="/#contacto" 
+                style={{ textDecoration: 'none', color: '#000' }}
+                onClick={() => setMenuOpen(false)}
+              >
+                SUSCRIBETE
+              </a>
+            </li>
           </ul>
         </div>
       )}

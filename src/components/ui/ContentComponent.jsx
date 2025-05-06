@@ -256,7 +256,7 @@ const ContentComponent = ({ contentType }) => {
       
       
       {/* Article preview section */}
-      <div className="article-preview" style={{marginTop: '5rem'}}>
+      <div className="article-preview">
         <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px',fontSize:'50px' }}>
           {displayTitle.toUpperCase()}
         </h2>
@@ -331,7 +331,7 @@ const ContentComponent = ({ contentType }) => {
                 }}>
                   <img 
                     src={book.cover} 
-                    alt={book.title} 
+                    alt={book.author} 
                     style={{
                       width: '100%',
                       height: '100%',
@@ -342,8 +342,8 @@ const ContentComponent = ({ contentType }) => {
                   {isLargeBook ? (
                     // Centered title for large books
                     <div style={titleStyles}>
-                      <h3>{book.title.toUpperCase()}</h3>
-                      <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.author}</p>
+                      <h3>{book.author.toUpperCase()}</h3>
+                      <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.poemCount} POEMAS</p>
                     </div>
                   ) : (
                     // Standard top-aligned title for small/medium books
@@ -357,23 +357,14 @@ const ContentComponent = ({ contentType }) => {
                       width: '100%',
                       background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
                     }}>
-                      <h4 style={titleStyles}>{book.title.toUpperCase()}</h4>
-                      <p style={{margin: 0, fontSize: '10px'}}>{book.author}</p>
+                      <h4 style={titleStyles}>{book.author.toUpperCase()}</h4>
+                      <p style={{margin: 0, fontSize: '10px'}}>
+                      {book.poemCount} {book.poemCount === 1 ? 'POEMA' : 'POEMAS'}
+                    </p>
                     </div>
                   )}
                   
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '5px',
-                    right: '5px',
-                    fontSize: '8px',
-                    color: 'white',
-                    background: 'rgba(0,0,0,0.6)',
-                    padding: '2px 5px',
-                    borderRadius: '2px'
-                  }}>
-                    + {book.poemCount} POEMAS
-                  </div>
+                  
                 </div>
               </Link>
             );
