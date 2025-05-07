@@ -282,10 +282,8 @@ const ContentComponent = ({ contentType }) => {
         <div className="article-content" style={{marginBottom: '3rem'}}>
           <p style={{ 
               textIndent: '1em',
-              maxWidth: '27em',
               lineHeight: '1.5',
               hyphens: 'auto',
-              textAlign: 'justify', 
               color: 'white',          
               }}>
             {content?.sintesis || 'Default synthesis text if none is available.'}
