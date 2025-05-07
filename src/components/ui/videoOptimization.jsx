@@ -1,136 +1,169 @@
-import React, { useState, useEffect } from 'react';
-import ContentComponent from './ContentComponent';
-import { createClient } from '@supabase/supabase-js';
+// Add this to your Creaciones component to optimize video for mobile devices
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+import React, { useState, useEffect, useRef } from 'react';
 
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-const Creaciones = () => {
-  const [videoUrl, setVideoUrl] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+// Video optimization hook
+const useOptimizedVideo = (videoUrl) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const videoRef = useRef(null);
   
-  // Track window resize
+  // Detect mobile devices
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
     };
     
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
+  // Handle video loading
   useEffect(() => {
-    // Function to fetch the video URL from Supabase
-    const fetchVideoUrl = async () => {
-      try {
-        setLoading(true);
+    if (!videoUrl || !videoRef.current) return;
+    
+    const video = videoRef.current;
+    
+    // Reset state when URL changes
+    setIsLoaded(false);
+    setIsPlaying(false);
+    
+    // Video quality settings for mobile
+    if (isMobile) {
+      video.setAttribute('playsinline', '');
+      
+      // Lower resolution for mobile if possible by setting size
+      video.style.maxHeight = '100%';
+      
+      // Reduce framerate for better performance on mobile
+      if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
+        let lastFrameTime = 0;
+        const frameRateLimit = 15; // Lower framerate for mobile
         
-        // Adjust this query based on your actual table and column names
-        const { data, error } = await supabase
-          .from('creaciones')
-          .select('video')
-          .eq('tipo', 'creaciones') // Use appropriate filter
-          .single(); // If you expect only one result
+        const frameCallback = (now, metadata) => {
+          if (now - lastFrameTime > 1000 / frameRateLimit) {
+            lastFrameTime = now;
+            // Allow this frame to render
+          }
+          video.requestVideoFrameCallback(frameCallback);
+        };
         
-        if (error) {
-          console.error('Error fetching video URL:', error);
-        } else if (data) {
-          setVideoUrl(data.video); // Assuming 'video' is the column name
-        }
-      } catch (error) {
-        console.error('Unexpected error:', error);
-      } finally {
-        setLoading(false);
+        video.requestVideoFrameCallback(frameCallback);
       }
+    }
+    
+    // Handle video events
+    const handleCanPlay = () => {
+      setIsLoaded(true);
     };
+    
+    const handlePlay = () => {
+      setIsPlaying(true);
+    };
+    
+    const handleError = (e) => {
+      console.error('Video error:', e);
+    };
+    
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('error', handleError);
+    
+    return () => {
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('error', handleError);
+    };
+  }, [videoUrl, isMobile, videoRef]);
+  
+  return { isLoaded, isPlaying, isMobile, videoRef };
+};
 
-    fetchVideoUrl();
-  }, []);
-
-  // Always show video background when available
-  const shouldShowVideo = videoUrl;
-
+// Example usage in your component:
+/*
+const MyComponent = () => {
+  const [videoUrl, setVideoUrl] = useState('your-video-url.mp4');
+  const { isLoaded, isPlaying, isMobile, videoRef } = useOptimizedVideo(videoUrl);
+  
   return (
-    <div 
-      style={{
-        position: 'relative',
-        width: '100%',
-        minHeight: '100vh',
-        backgroundColor: 'rgba(0, 0, 0, 0.85)', // Dark fallback color
-        overflow: 'hidden' // Prevent any content from breaking out
-      }}
-    >
-      {/* Video Background - Not using position:fixed to avoid layout issues */}
-      {!loading && shouldShowVideo && (
-        <div 
-          style={{ 
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            overflow: 'hidden',
-            zIndex: 0
-          }}
-        >
-          <video 
-            style={{ 
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              pointerEvents: 'none',
-              opacity: 0.7 // Increased opacity for better video visibility
-            }}
-            autoPlay 
-            loop 
-            muted
-            playsInline
-            disablePictureInPicture 
-            controlsList="nodownload nofullscreen noremoteplayback"
-            onContextMenu={(e) => e.preventDefault()}
-            preload="auto" // Ensure video loads quickly
-          >
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+    <div>
+      <video 
+        ref={videoRef}
+        style={{
+          opacity: isLoaded ? 0.8 : 0,
+          transition: 'opacity 0.5s ease',
+          objectFit: 'cover',
+          width: '100%',
+          height: '100%'
+        }}
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src={videoUrl} type="video/mp4" />
+      </video>
+      
+      {!isLoaded && (
+        <div className="loading-placeholder">
+          Loading video...
         </div>
       )}
-      
-      {/* Dark overlay to improve content visibility */}
-      <div 
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: shouldShowVideo ? 'rgba(0, 0, 0, 0.3)' : 'transparent', // Lighter overlay to let more video show through
-          zIndex: 1
-        }}
-      />
-      
-      {/* Content container - Important to set position relative and z-index */}
-      <div 
-        style={{ 
-          position: 'relative',
-          zIndex: 2,
-          width: '100%',
-          paddingTop: '80px', // Account for your fixed navbar height
-          color: 'white',
-          minHeight: '100vh',
-          overflowX: 'hidden' // Prevent horizontal scroll
-        }}
-      >
-        <ContentComponent contentType="creaciones" />
-      </div>
     </div>
   );
 };
+*/
 
-export default Creaciones;
+// Additional mobile optimizations for ContentComponent
+const mobileOptimizations = {
+  // Reduce animation effects on mobile
+  reduceMotion: () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return prefersReducedMotion || window.innerWidth < 768;
+  },
+  
+  // Optimize image loading for book covers
+  lazyLoadImages: (imageRef, src) => {
+    if (!imageRef.current) return;
+    
+    // Use Intersection Observer for lazy loading
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          imageRef.current.src = src;
+          observer.disconnect();
+        }
+      });
+    }, { rootMargin: '100px' });
+    
+    observer.observe(imageRef.current);
+    
+    return () => {
+      if (imageRef.current) {
+        observer.disconnect();
+      }
+    };
+  },
+  
+  // Adjust typography for better mobile reading
+  mobileTypography: (windowWidth) => {
+    if (windowWidth < 576) {
+      return {
+        titleFontSize: '28px',
+        subtitleFontSize: '16px',
+        bodyFontSize: '14px',
+        lineHeight: 1.4
+      };
+    }
+    return {
+      titleFontSize: '50px',
+      subtitleFontSize: '20px',
+      bodyFontSize: '16px',
+      lineHeight: 1.5
+    };
+  }
+};
+
+export { useOptimizedVideo, mobileOptimizations };
