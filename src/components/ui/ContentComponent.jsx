@@ -280,14 +280,18 @@ const ContentComponent = ({ contentType }) => {
           SINTESIS
         </h3>
         <div className="article-content" style={{marginBottom: '3rem'}}>
-          <p style={{ 
-              textIndent: '1em',
-              lineHeight: '1.5',
-              hyphens: 'auto',
-              color: 'white',          
-              }}>
-            {content?.sintesis || 'Default synthesis text if none is available.'}
-          </p>
+        <p style={{ 
+        textIndent: '1em',
+        lineHeight: '1.5',
+        hyphens: 'auto',
+        color: 'white',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo negro semitransparente 
+        padding: '10px',                        // Espacio interior
+        borderRadius: '4px',                    // Esquinas redondeadas
+        backdropFilter: 'blur(2px)',            // Efecto de desenfoque (opcional)
+      }}>
+        {content?.sintesis || 'Default synthesis text if none is available.'}
+      </p>
         </div>
 
         {/* Book covers grid */}
