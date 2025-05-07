@@ -161,7 +161,7 @@ body, html {
   }
   
   .cover-image {
-    height: 40vh;
+    height: 37vh;
   }
   
   .contributors-list {
@@ -197,7 +197,7 @@ body, html {
 @media (max-width: 480px) {
   .cover-image {
     height:   
-    100vh;
+    90vh;
   }
   
   .article-preview {
