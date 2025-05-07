@@ -207,7 +207,7 @@ const Edicion = () => {
         {/* Issue info overlay */}
         <div className="issue-info">
           <Link to="/contenidos" className="edition-link" style={{color: 'white'}}>
-            <h2 className="edition-title">EDICION {revista?.numero || 1}</h2>
+            <h2 className="portada">EDICION {revista?.numero || 1}</h2>
           </Link>          
           <p className="edition-date">{formatDate(revista?.fecha) || '04/08/25'}</p>
         </div>

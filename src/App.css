@@ -6,7 +6,7 @@ a{
   color: inherit;
 }
 .image_2{
-  height:300px !important;
+  height:40vh !important;
 }
 .edition-container {
   width: 100%;
@@ -21,7 +21,7 @@ a{
 .cover-image {
   position: relative;
   background-image: url('../../assets/images/edicion1.png');
-  height: 800px; /* Adjust this value as needed */
+  height: 60vh; /* Adjust this value as needed */
   width: 100%;
   background-size: cover;
   background-position: center;
@@ -132,7 +132,7 @@ a{
     text-align: left;
   }
   .article-content{
-    max-width: 330px;
+    max-width: 44vh;
     font-size: clamp(11px, 3vw, 14px);
 
 
@@ -149,7 +149,7 @@ a{
   }
   
   .cover-image {
-    height: 250px;
+    height: 33.3vh;
   }
   
   .contributors-list {
@@ -185,7 +185,7 @@ a{
 @media (max-width: 480px) {
   .cover-image {
     height:   
-    700px;
+    93vh;
   }
   
   .article-preview {
