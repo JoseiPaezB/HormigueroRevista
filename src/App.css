@@ -34,7 +34,7 @@ body, html {
 .cover-image {
   position: relative;
   background-image: url('../../assets/images/edicion1.png');
-  height: 60vh; /* Adjust this value as needed */
+  height: 100vh; /* Adjust this value as needed */
   width: 100%;
   background-size: cover;
   background-position: center;
@@ -61,22 +61,22 @@ body, html {
   text-transform: uppercase;
   width: 90%;
   max-width: 400px;
+
 }
 
 .edition-title {
   text-align:center !important;
   font-weight: normal;
-  font-size: clamp(20px, 5vw, 28px);
+  font-size: clamp(20px, 5vw, 3rem);
 }
 .portada {
   text-align:left;
-  font-weight: normal;
-  font-size: clamp(20px, 5vw, 28px);
+  font-size: clamp(2rem, 5vw, 3rem);
 }
 
 .edition-date {
   margin: 0;
-  font-size: clamp(12px, 3vw, 14px);
+  font-size: clamp(1.3rem, 3vw, 1.5rem);
 }
 
 /* Contributors list */
@@ -191,6 +191,14 @@ body, html {
     text-align: left;
   }.ant-bottom-left, .ant-top-right{
     margin-left:0 !important;
+    margin-right:0 !important;
+
+  }.event-image-container{
+    border-radius: 8px;
+
+  }.carousel-controls{
+    margin-top: -1rem !important;
+    margin-bottom:2rem !important;
   }
 }
 
@@ -210,6 +218,10 @@ body, html {
     left: 10px;
   }.eventos-title {
     text-align: left !important;
+  }.ant-bottom-left, .ant-top-right{
+    
+    width: 200px;
+
   }
 }
 
@@ -239,7 +251,6 @@ body, html {
   position: absolute;
   top: 0;
   right: 0;
-  width: 200px;
   height: auto;
   z-index: -1;
   margin-right:7rem
@@ -249,7 +260,6 @@ body, html {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 200px;
   height: auto;
   z-index: -1;
   margin-left:7rem
@@ -353,7 +363,8 @@ body, html {
   }
   
   .carousel-content {
-    max-width: 400px;
+    max-width: 40rem;
+    height:30rem;
     margin: 0 auto;
   }
 }
@@ -364,7 +375,7 @@ body, html {
 }
 
 .eventos-title {
-  font-size: clamp(18px, 4vw, 24px);
+  font-size: clamp(18px, 4vw, 3rem);
   text-transform: uppercase;
   font-weight: bold;
   margin: 0 0 20px 0;
@@ -390,7 +401,6 @@ body, html {
   width: 100%;
   margin-bottom: 15px;
   overflow: hidden;
-  border-radius: 8px;
 }
 
 .event-image {
@@ -617,7 +627,6 @@ body, html {
 
 @media (min-width: 768px) {
   .footer-grid {
-    grid-template-columns: repeat(4, 1fr);
   }
 
   .footer-bottom-content {
@@ -705,3 +714,67 @@ body, html {
 }
 
 /* Visuales Component Styles */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 4rem;
+  background: none;
+  border: none;
+  color: black;
+  z-index: 10;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.carousel-arrow:hover {
+  background: none;
+  transform: translateY(-50%) scale(1.5); /* Combina ambas transformaciones */
+}
+
+.left-arrow {
+  left: 1rem;
+}
+
+.right-arrow {
+  right: 1rem;
+}
+
+@media (max-width: 840px) {
+  .carousel-arrow {
+    display: none;
+  }
+}
+.indicator{
+  transition: transform 0.3s ease;
+}
+
+.indicator:hover {
+  transform: scale(1.5);
+}
+.next-button{
+  font-size:1rem !important;
+}
+@media screen and (min-width: 840px){
+  .footer-heading{
+    font-size:3rem;
+  }.newsletter-form {
+    display: flex;
+    gap: 0.5rem;
+    width: 50%;
+  }.footer-section,.newsletter-text,.copyright,.newsletter-input{
+    gap:0rem; 
+    font-size: 1.3rem;
+  }.footer-container {
+    max-width: none;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+  }.footer-bottom {
+   
+    border-top: none;
+  }
+
+}
+  

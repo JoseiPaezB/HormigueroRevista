@@ -189,7 +189,7 @@ const Navbar = () => {
                   textDecoration: 'none', 
                   color: '#000',
                   textTransform: 'uppercase',
-                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '18px',
                   fontWeight: '500',
                   whiteSpace: 'nowrap'
                 }}
@@ -203,7 +203,7 @@ const Navbar = () => {
                   textDecoration: 'none', 
                   color: '#000',
                   textTransform: 'uppercase',
-                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '18px',
                   fontWeight: '500',
                   whiteSpace: 'nowrap'
                 }}
@@ -217,7 +217,7 @@ const Navbar = () => {
                   textDecoration: 'none', 
                   color: '#000',
                   textTransform: 'uppercase',
-                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '18px',
                   fontWeight: '500',
                   whiteSpace: 'nowrap'
                 }}
@@ -231,7 +231,7 @@ const Navbar = () => {
                   textDecoration: 'none', 
                   color: '#000',
                   textTransform: 'uppercase',
-                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '18px',
                   fontWeight: '500',
                   whiteSpace: 'nowrap'  
                 }}
