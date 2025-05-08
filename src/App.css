@@ -197,8 +197,6 @@ body, html {
     border-radius: 8px;
 
   }.carousel-controls{
-    margin-top: -1rem !important;
-    margin-bottom:2rem !important;
   }
 }
 
