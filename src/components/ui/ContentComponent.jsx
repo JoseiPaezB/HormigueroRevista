@@ -331,7 +331,7 @@ const isDesktop = windowWidth > 840; // Define el umbral para desktop igual que 
             </>
           )}
         </div>
-        <div className="article-content" style={{marginBottom: '3rem'}}>
+        <div className="article-content" style={{marginBottom: '3rem', display: 'flex', justifyContent: 'center'}}>
         <p style={{ 
         textIndent: '1em',
         lineHeight: '1.5',
