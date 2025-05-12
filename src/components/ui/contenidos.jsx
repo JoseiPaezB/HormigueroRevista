@@ -125,7 +125,7 @@ const Contenido = () => {
             </>
           )}
         </div>
-        <h3 className="title" style={{ fontWeight: 'bold',fontSize: '2.7rem'}}>
+        <h3 className="title" style={{ fontWeight: 'bold', fontSize:isDesktop ? '2.5rem' : '1.8rem' }}>
           SINTESIS
         </h3>
         <div className="article-content" >

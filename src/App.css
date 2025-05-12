@@ -67,7 +67,7 @@ body, html {
 .edition-title {
   text-align:center !important;
   font-weight: normal;
-  font-size: clamp(20px, 5vw, 3rem);
+  font-size: clamp(2.3rem, 5vw, 3rem);
 }
 .portada {
   text-align:left;
