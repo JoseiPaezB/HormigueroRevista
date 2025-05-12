@@ -226,7 +226,7 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
           </h3>
           <p style={{
             lineHeight: '1.5',
-            fontFamily: 'monospace',
+            
             fontSize: '14px',
             textAlign: 'justify',
             whiteSpace: 'pre-line'
@@ -254,7 +254,7 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
             gap: '12px',
           }}>
             <p style={{
-              fontFamily: 'monospace',
+              
               fontSize: '14px',
             }}>
               {formatDate(event.fecha_inicio)} 
@@ -295,7 +295,7 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
               <Clock size={16} /> HORA
             </h3>
             <div style={{
-              fontFamily: 'monospace',
+              
               fontSize: '14px',
               display: 'grid',
               gridTemplateColumns: '80px auto',
@@ -323,7 +323,7 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
           <h3 style={{
             fontWeight: 'bold',
             fontSize: '16px',
-            fontFamily: 'JetBrains Mono, monospace',
+            fontFamily: 'JetBrains Mono',
             marginBottom: '10px',
             display: 'flex',
             alignItems: 'center',
@@ -333,7 +333,7 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
           </h3>
           <p style={{
             lineHeight: '1.5',
-            fontFamily: 'monospace',
+            
             fontSize: '14px'
           }}>
             {event.ubicacion}
@@ -356,7 +356,7 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
             </h3>
             <p style={{
               lineHeight: '1.5',
-              fontFamily: 'monospace',
+              
               fontSize: '14px'
             }}>
               {event.contactos.toUpperCase()}

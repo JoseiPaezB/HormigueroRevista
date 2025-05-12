@@ -397,7 +397,7 @@ const Poema = () => {
         }}>
           {/* Poem section */}
           <div style={{
-            fontFamily: 'monospace',
+            
             fontSize: isDesktop ? '1.3rem':'14px',
             lineHeight: '1.8',
             textAlign: 'left',
