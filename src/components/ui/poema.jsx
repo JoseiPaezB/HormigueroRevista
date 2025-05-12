@@ -505,13 +505,12 @@ const Poema = () => {
         onClick={() => navigate(-1)}
          style={{
           background: 'none',
-          bottom: '20px',        // distancia desde abajo
-          left: '50%',           // horizontal centrado
+          position: 'relative', // Change from no position to relative
+          margin: '40px auto',  // Use margin instead of absolute positioning
           border: 'none',
           borderRadius: '50%',
-          flexDirection: 'column',   // para que el texto esté abajo de la imagen
-
-          width: isDesktop ? '70x':'auto',
+          flexDirection: 'column',
+          width: isDesktop ? '70px' : 'auto',
           height: '70px',
           cursor: 'pointer',
           display: 'flex',
@@ -519,7 +518,7 @@ const Poema = () => {
           justifyContent: 'center',
           transition: 'transform 0.2s ease, background-color 0.2s ease',
           padding: '8px',
-          zIndex: 1000              // asegúrate de que esté por encima de otros elementos
+          zIndex: 100  // Lower z-index           // asegúrate de que esté por encima de otros elementos
 
         }}
         onMouseEnter={(e) => {
