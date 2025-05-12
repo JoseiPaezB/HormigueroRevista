@@ -19,6 +19,17 @@ const Contenido = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [contributors, setContributors] = useState([]);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // Track window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch revista data on component mount
   useEffect(() => {
@@ -63,14 +74,28 @@ const Contenido = () => {
     });
   };
 
+  // Array of menu items for the grid
+  const menuItems = [
+    { path: "/creaciones", title: "CREACIONES", delay: 0 },
+    { path: "/traducciones", title: "TRADUCCION", delay: 0.3 },
+    { path: "/critica", title: "CRITICA", delay: 0.6 },
+    { path: "/rescates", title: "RESCATES", delay: 0.9 },
+    { path: "/visuales", title: "VISUALES", delay: 1.2 },
+    { path: "/entrevista", title: "ENTREVISTAS", delay: 1.5 }
+  ];
+
+  // Determine grid layout based on screen width
+  const isDesktop = windowWidth > 840;
+  const gridColumns = isDesktop ? 3 : 1; // 3 columns for desktop, 1 for mobile
+  
   return (
     <div className="edition-container">
-      {/* Green gradient cover image */}
+      {/* Cover image with title */}
       <div className="cover-image image_2" style={{
-        backgroundImage: `url(${portada})`,
+        backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
+        position: 'relative',
+        marginTop: '60px' // Space for navbar
       }}>
-        
-        {/* Issue info overlay */}
         
       </div>
       
@@ -100,32 +125,32 @@ const Contenido = () => {
             </>
           )}
         </div>
-        <h3 className="title" style={{ fontWeight: 'bold' }}>
+        <h3 className="title" style={{ fontWeight: 'bold',fontSize: '2.7rem'}}>
           SINTESIS
         </h3>
         <div className="article-content" >
           <p style={{marginRight: '1.3rem'}}>
             {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
           </p>
-          
         </div>
 
-         {/* Vertical Menu with Ants */}
-         <div className="vertical-menu" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            gap: '30px',
-            padding: '2px',
-            width: '100%', 
-            margin: '30px 0'
-            }}>
+        {/* Menu Grid with Numbered Ants */}
+        <div className="vertical-menu" style={{
+          display: 'grid',
+          gap: '30px',
+          padding: '8px',
+          width: '100%',
+          margin: '30px 0',
+          fontSize: '1.3rem'
+        }}>
           {/* Define the keyframes animation for pulsing effect */}
           <style>
             {`
-              
+              @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+              }
               
               @keyframes textPulse {
                 0% { opacity: 0.75; }
@@ -148,221 +173,93 @@ const Contenido = () => {
               .menu-item:hover .pulsing-text {
                 animation: textPulse 1s infinite ease-in-out;
               }
+
+              .menu-item:hover .index-number {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+              }
             `}
           </style>
 
-          <Link to="/creaciones" className="menu-item" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: 'black',
-            transition: 'transform 0.2s',
-            justifyContent: 'center',
-            textAlign: 'center',
-            width: '100%'
-          }}>
-            <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              <img 
-                src={hormigueroLogo} 
-                alt="Ant icon" 
-                width="60" 
-                height="60" 
-                className="pulsing-ant"
-              />
-            </div>
-            <div 
-              className="menu-text pulsing-text" 
+          {/* Map through menu items */}
+          {menuItems.map((item, index) => (
+            <Link 
+              key={index}
+              to={item.path} 
+              className="menu-item" 
               style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                letterSpacing: '1px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textDecoration: 'none',
+                color: 'black',
+                transition: 'transform 0.2s',
+                justifyContent: 'center',
+                textAlign: 'center',
+                padding: '15px',
+                position: 'relative',
+               
               }}
+              
             >
-              CREACIONES
-            </div>
-          </Link>
-          
-          <Link to="/traducciones" className="menu-item" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: 'black',
-            transition: 'transform 0.2s',
-            justifyContent: 'center',
-            textAlign: 'center',
-            width: '100%',
-          }}>
-            <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              <img 
-                src={hormigueroLogo} 
-                alt="Ant icon" 
-                width="60" 
-                height="60" 
-                className="pulsing-ant" 
-                style={{ animationDelay: '0.3s' }}
-              />
-            </div>
-            <div 
-              className="menu-text pulsing-text" 
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                letterSpacing: '1px',
-                animationDelay: '0.3s'
-              }}
-            >
-              TRADUCCION
-            </div>
-          </Link>
-          
-          <Link to="/critica" className="menu-item" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: 'black',
-            transition: 'transform 0.2s',
-            justifyContent: 'center',
-            textAlign: 'center',
-            width: '100%',
-          }}>
-            <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              <img 
-                src={hormigueroLogo} 
-                alt="Ant icon" 
-                width="60" 
-                height="60" 
-                className="pulsing-ant" 
-                style={{ animationDelay: '0.6s' }}
-              />
-            </div>
-            <div 
-              className="menu-text pulsing-text" 
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                letterSpacing: '1px',
-                animationDelay: '0.6s'
-              }}
-            >
-              CRITICA
-            </div>
-          </Link>
-          
-          <Link to="/rescates" className="menu-item" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: 'black',
-            transition: 'transform 0.2s',
-            justifyContent: 'center',
-            textAlign: 'center',
-            width: '100%',
-          }}>
-            <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              <img 
-                src={hormigueroLogo} 
-                alt="Ant icon" 
-                width="60" 
-                height="60" 
-                className="pulsing-ant" 
-                style={{ animationDelay: '0.9s' }}
-              />
-            </div>
-            <div 
-              className="menu-text pulsing-text" 
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                letterSpacing: '1px',
-                animationDelay: '0.9s'
-              }}
-            >
-              RESCATES
-            </div>
-          </Link>
-          
-          <Link to="/visuales" className="menu-item" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: 'black',
-            transition: 'transform 0.2s',
-            justifyContent: 'center',
-            textAlign: 'center',
-            width: '100%',
-          }}>
-            <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              <img 
-                src={hormigueroLogo} 
-                alt="Ant icon" 
-                width="60" 
-                height="60" 
-                className="pulsing-ant" 
-                style={{ animationDelay: '1.2s' }}
-              />
-            </div>
-            <div 
-              className="menu-text pulsing-text" 
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                letterSpacing: '1px',
-                animationDelay: '1.2s'
-              }}
-            >
-              VISUALES
-            </div>
-          </Link>
-          
-          <Link to="/entrevista" className="menu-item" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: 'black',
-            transition: 'transform 0.2s',
-            justifyContent: 'center',
-            textAlign: 'center',
-            width: '100%',
-          }}>
-            <div className="ant-icon" style={{ marginBottom: '10px' }}>
-              <img 
-                src={hormigueroLogo} 
-                alt="Ant icon" 
-                width="60" 
-                height="60" 
-                className="pulsing-ant" 
-                style={{ animationDelay: '1.5s' }}
-              />
-            </div>
-            <div 
-              className="menu-text pulsing-text" 
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                letterSpacing: '1px',
-                animationDelay: '1.5s'
-              }}
-            >
-              ENTREVISTAS
-            </div>
-          </Link>
+              {/* Index number behind ant icon */}
+              <div 
+                className="index-number "
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  fontSize: '80px',
+                  fontWeight: 'bold',
+                  color: 'balck',
+                  zIndex: 0,
+                  transition: 'opacity 0.3s, transform 0.3s',
+                  pointerEvents: 'none'
+                }}
+              >
+                {index + 1}
+              </div>
+              
+              <div className="ant-icon" style={{ 
+                marginBottom: '10px',
+                position: 'relative',
+                zIndex: 1,
+                opacity:0.5
+              }}>
+                <img 
+                  src={hormigueroLogo} 
+                  alt="Ant icon" 
+                  width="60" 
+                  height="60" 
+                  className="pulsing-ant"
+                  style={{ 
+                    animationDelay: `${item.delay}s`,
+                    position: 'relative',
+                    zIndex: 2
+                  }}
+                />
+              </div>
+              
+              <div 
+                className="menu-text pulsing-text" 
+                style={{
+                  fontFamily: 'JetBrains Mono, monospace',
+                  fontSize: windowWidth > 728 ? '1.7rem' : '18px',
+
+                  letterSpacing: '1px',
+                  animationDelay: `${item.delay}s`,
+                  position: 'relative',
+                  zIndex: 1,
+                  marginTop: '1rem'
+                }}
+              >
+                {item.title}
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
-
-      {/* Additional articles section */}
-      
     </div>
   );
 };

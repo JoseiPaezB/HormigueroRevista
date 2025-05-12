@@ -26,6 +26,8 @@ const AuthorBio = () => {
     const [revista, setRevista] = useState(null);
     const [poemario, setPoemario] = useState(null);
     const [isVisualArtist, setIsVisualArtist] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    
 
     // Default book covers mapping
     const defaultCovers = {
@@ -198,7 +200,7 @@ const AuthorBio = () => {
         };
       } else {
         return { 
-          height: '180px', 
+          height: isDesktop ? '390px':'180px', 
           width: 'auto', 
           gridColumn: 'span 1',
           gridRow: 'span 1',
@@ -221,16 +223,17 @@ const AuthorBio = () => {
           fontWeight: 'bold',
           letterSpacing: '1px',
           textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-          width: '80%',
-          textTransform: 'uppercase',
+          padding: isDesktop ? '0' : '10px',
+          width: isDesktop ? '100%' : 'auto',
         };
       }
       
       return {
         margin: '0 0 5px 0', 
-        fontSize: '14px',
+        fontSize: isDesktop ? '2.5rem':'14px',
         fontWeight: 'bold',
-        letterSpacing: '0.5px'
+        letterSpacing: '0.5px',
+
       };
     };
 
@@ -243,6 +246,8 @@ const AuthorBio = () => {
     // Generate first letter for emphasized display
     const firstLetter = authorName.charAt(0);
     const restOfName = authorName.substring(1);
+    const isDesktop = windowWidth > 840; // Define el umbral para desktop igual que en getTitleStyles
+
 
     return (
       <div className="bio-container">
@@ -255,7 +260,7 @@ const AuthorBio = () => {
         <div style={{
           display: 'flex',
           flexDirection: 'column',
-          maxWidth: '400px',
+          maxWidth: isDesktop ?  '800px':'400px',
           overflow: 'hidden',
           fontFamily: 'JetBrains Mono, monospace',
           margin: '20px auto'
@@ -263,19 +268,19 @@ const AuthorBio = () => {
           
           {/* Content section */}
           <div style={{
-            padding: '20px',
+            padding: isDesktop ? '20px':'8px',
             backgroundColor: 'white',
             position: 'relative'
           }}>
             {/* First paragraph with first letter emphasized */}
             <p style={{ 
-              margin: '0 0 15px 0',
+              margin: isDesktop ? '0':'0 0 15px 0',
               fontWeight: 'normal',
-              fontSize: '14px',
+              fontSize: isDesktop ? '2rem':'14px',
               lineHeight: '1.5'
             }}>
               <span style={{ 
-                fontSize: '28px', 
+                fontSize: isDesktop ? '4rem':'28px' , 
                 fontWeight: 'bold',
                 float: 'left',
                 marginRight: '2px',
@@ -286,13 +291,13 @@ const AuthorBio = () => {
             
             {/* Second paragraph with image */}
             <div style={{ 
-              display: 'flex', 
+              display: isDesktop ?  'normal':'flex', 
               gap: '15px',
               marginBottom: '20px' 
             }}>
               {/* Second paragraph text */}
               <p style={{
-                fontSize: '14px',
+                fontSize: isDesktop ? '2rem':'14px',
                 lineHeight: '1.5',
                 margin: 0,
                 flex: 1
@@ -307,14 +312,15 @@ const AuthorBio = () => {
                   </span>
                 )}
               </p>
+
+
               
               {/* Author image */}
               <img 
                 src={autor?.imagen || eventImage} 
                 alt={autor?.nombre || "Author"} 
                 style={{
-                  width: '100px',
-                  height: '140px',
+                  height: isDesktop ? '400px' : '140px',
                   objectFit: 'cover',
                   alignSelf: 'flex-start',
                   border: '1px solid #eee'
@@ -357,7 +363,7 @@ const AuthorBio = () => {
           <>
             {poemario && (
               <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>
-                {poemario.titulo.toUpperCase()}
+               SUS POEMAS
               </h2>
             )}
             
@@ -430,7 +436,6 @@ const AuthorBio = () => {
                           background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
                         }}>
                           <h4 style={titleStyles}>{book.title}</h4>
-                          <p style={{margin: 0, fontSize: '10px'}}>{book.author}</p>
                         </div>
                       )}
                       
@@ -438,7 +443,7 @@ const AuthorBio = () => {
                         position: 'absolute',
                         bottom: '5px',
                         right: '5px',
-                        fontSize: '8px',
+                        fontSize: isDesktop ? '14px' : '8px',
                         color: 'white',
                         background: 'rgba(0,0,0,0.6)',
                         padding: '2px 5px',

@@ -188,15 +188,16 @@ const Edicion = () => {
     <div className="edition-container">
       {/* Green gradient cover image */}
       <div 
-        ref={coverImageRef}
-        className="cover-image" 
-        id="main-content" 
-        style={{
-          backgroundImage: revista?.portada ? `url(${revista.portada})` : `url(${portada})`,
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
+      ref={coverImageRef}
+      className="cover-image" 
+      id="main-content" 
+      style={{
+        backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+
         <div className="texture-overlay"></div>
         
         {/* Random positioned author */}

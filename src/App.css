@@ -16,7 +16,7 @@ body, html {
 
 
 .image_2{
-  height:20rem !important;
+  height: 30rem !important; 
 }
 .edition-container {
   width: 100%;
@@ -71,6 +71,8 @@ body, html {
 }
 .portada {
   text-align:left;
+  font-weight: normal;
+
   font-size: clamp(2rem, 5vw, 3rem);
 }
 
@@ -82,7 +84,7 @@ body, html {
 /* Contributors list */
 .contributors-list {
   margin-top: 20px;
-  font-size: clamp(10px, 2.5vw, 12px);
+  font-size: clamp(10px, 2.5vw, 1.7rem);
   line-height: 1.6;
   max-width: 100%;
 }
@@ -196,7 +198,11 @@ body, html {
   }.event-image-container{
     border-radius: 8px;
 
-  }.carousel-controls{
+  }.ver-mas-button{
+    padding: '8px 20px',
+
+  }.image_2{
+    height: 20rem !important;
   }
 }
 
@@ -386,6 +392,16 @@ body, html {
   overflow: hidden;
 }
 
+.responsive-text {
+  margin: 0;
+  font-size: 10px;
+}
+
+@media (min-width: 768px) {
+  .responsive-text {
+    font-size: 1.3rem;
+  }
+}
 
 
 .event-item {

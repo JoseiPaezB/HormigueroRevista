@@ -250,7 +250,6 @@ const EventosSection = () => {
                       <div className="ver-mas-container" style={{ textAlign: 'center', marginTop: 'auto' }}>
                         <button className="ver-mas-button" style={{
                           position: 'relative',
-                          padding: '8px 20px',
                           border: 'none',
                           fontWeight: 'bold',
                           cursor: 'pointer',
@@ -358,9 +357,9 @@ const EventosSection = () => {
                   <span
                     key={index}
                     style={{
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
+                      width: '15px',
+                      height: '5px',
+                      borderRadius: '0%',
                       backgroundColor: currentSlide === index ? '#000' : '#ccc',
                       cursor: 'pointer',
                       transition: 'transform 0.2s ease, background-color 0.2s ease'

@@ -24,6 +24,8 @@ const ContentComponent = ({ contentType }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [contributors, setContributors] = useState([]);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
 
   // Default book covers mapping
   const defaultCovers = {
@@ -39,6 +41,11 @@ const ContentComponent = ({ contentType }) => {
 
   // Fetch data on component mount
   useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    
     const fetchData = async () => {
       try {
         // 1. Fetch revista with ID 1
@@ -125,6 +132,76 @@ const ContentComponent = ({ contentType }) => {
     fetchData();
   }, [contentType]);
   
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  // Modifica la función getBookSize para usar porcentajes en desktop
+  const getBookSize = (poemCount, sizeCategory) => {
+    const isDesktop = windowWidth > 840; // Define el umbral para desktop
+    
+    // En desktop, usar porcentajes para las alturas
+    if (isDesktop) {
+      if (sizeCategory === 'large') {
+        return { 
+          height: '45vh', // 80% de la altura de la ventana para libros grandes
+          width: '75%', 
+          gridColumn: 'span 2',
+          gridRow: 'span 1',
+          isLarge: true
+        };
+      } else if (sizeCategory === 'medium') {
+        return { 
+          height: '45vh', // 65% para libros medianos
+          width: 'auto', 
+          gridColumn: 'span 1',
+          gridRow: 'span 2',
+          isMedium: true
+        };
+      } else {
+        return { 
+          height: '45vh', // 50% para libros pequeños
+          width: 'auto', 
+          gridColumn: 'span 1',
+          gridRow: 'span 1',
+          isSmall: true
+        };
+      }
+    } 
+    // En móvil, mantener las alturas en píxeles originales
+    else {
+      if (sizeCategory === 'large') {
+        return { 
+          height: '280px', 
+          width: '100%', 
+          gridColumn: 'span 2',
+          gridRow: 'span 1',
+          isLarge: true
+        };
+      } else if (sizeCategory === 'medium') {
+        return { 
+          height: '240px', 
+          width: 'auto', 
+          gridColumn: 'span 1',
+          gridRow: 'span 2',
+          isMedium: true
+        };
+      } else {
+        return { 
+          height: '180px', 
+          width: 'auto', 
+          gridColumn: 'span 1',
+          gridRow: 'span 1',
+          isSmall: true
+        };
+      }
+    }
+  };
   // Format date for display (YYYY-MM-DD to DD/MM/YY)
   const formatDate = (dateString) => {
     if (!dateString) return '01/08/25';
@@ -192,61 +269,39 @@ const ContentComponent = ({ contentType }) => {
   const arrangedBooks = arrangeBooks(poemarios);
 
   // Function to determine book size based on poem count
-  const getBookSize = (poemCount, sizeCategory) => {
-    // Use the explicit size category for consistent sizing
-    if (sizeCategory === 'large') {
-      return { 
-        height: '280px', 
-        width: '100%', 
-        gridColumn: 'span 2',
-        gridRow: 'span 1',
-        isLarge: true
-      };
-    } else if (sizeCategory === 'medium') {
-      return { 
-        height: '240px', 
-        width: 'auto', 
-        gridColumn: 'span 1',
-        gridRow: 'span 2',
-        isMedium: true
-      };
-    } else {
-      return { 
-        height: '180px', 
-        width: 'auto', 
-        gridColumn: 'span 1',
-        gridRow: 'span 1',
-        isSmall: true
-      };
-    }
-  };
+  
 
   // Function to get title styling based on book size
-  const getTitleStyles = (sizeInfo) => {
-    if (sizeInfo.isLarge) {
-      return {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        textAlign: 'center',
-        color: 'white',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        letterSpacing: '1px',
-        textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-        width: '80%',
-        textTransform: 'uppercase',
-      };
-    }
-    
+ // Function to get title styling based on book size
+ const getTitleStyles = (sizeInfo) => {
+  const isDesktop = windowWidth > 840; // Define el umbral para desktop
+  
+  if (sizeInfo.isLarge) {
     return {
-      margin: '0 0 5px 0', 
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      textAlign: 'center',
+      color: 'white',
+      fontSize: isDesktop ? '3rem' : '24px', // 3rem para desktop, 24px para móvil
       fontWeight: 'bold',
-      letterSpacing: '0.5px'
+      letterSpacing: '1px',
+      textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+      width: '80%',
+      textTransform: 'uppercase',
     };
+  }
+  
+  return {
+    margin: isDesktop ? '0 0 0 0' : '0 0 5px 0', 
+    fontWeight: 'bold',
+    letterSpacing: '0.5px',
+    fontSize: isDesktop ? '2.7rem' : 'inherit', // 1.5rem para desktop, heredado para móvil
+    textAlign: isDesktop ? 'center' : 'left', // Centrado en desktop, izquierda en móvil
   };
-
+};
+const isDesktop = windowWidth > 840; // Define el umbral para desktop igual que en getTitleStyles
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -257,7 +312,7 @@ const ContentComponent = ({ contentType }) => {
       
       {/* Article preview section */}
       <div className="article-preview">
-        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px',fontSize:'50px' }}>
+        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px',fontSize: isDesktop ?'4rem':'50px',marginTop:'3rem' }}>
           {displayTitle.toUpperCase()}
         </h2>
         <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem'}}>
@@ -276,9 +331,6 @@ const ContentComponent = ({ contentType }) => {
             </>
           )}
         </div>
-        <h3 className="title" style={{ fontWeight: 'bold' }}>
-          SINTESIS
-        </h3>
         <div className="article-content" style={{marginBottom: '3rem'}}>
         <p style={{ 
         textIndent: '1em',
@@ -286,9 +338,10 @@ const ContentComponent = ({ contentType }) => {
         hyphens: 'auto',
         color: 'white',
         backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo negro semitransparente 
-        padding: '10px',                        // Espacio interior
+        padding: '14px',                        // Espacio interior
         borderRadius: '4px',                    // Esquinas redondeadas
         backdropFilter: 'blur(2px)',            // Efecto de desenfoque (opcional)
+        maxWidth: isDesktop ? '900px' : '100%', 
       }}>
         {content?.sintesis || 'Default synthesis text if none is available.'}
       </p>
@@ -335,36 +388,47 @@ const ContentComponent = ({ contentType }) => {
                     src={book.cover} 
                     alt={book.author} 
                     style={{
-                      width: '100%',
+                      width: isDesktop ? '65%' : '100%',
                       height: '100%',
                       objectFit: 'cover'
                     }}
                   />
+
                   
-                  {isLargeBook ? (
-                    // Centered title for large books
-                    <div style={titleStyles}>
-                      <h3>{book.author.toUpperCase()}</h3>
-                      <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.poemCount} POEMAS</p>
-                    </div>
-                  ) : (
-                    // Standard top-aligned title for small/medium books
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      padding: '10px',
-                      color: 'white',
-                      textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
-                      width: '100%',
-                      background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
-                    }}>
-                      <h4 style={titleStyles}>{book.author.toUpperCase()}</h4>
-                      <p style={{margin: 0, fontSize: '10px'}}>
-                      {book.poemCount} {book.poemCount === 1 ? 'POEMA' : 'POEMAS'}
-                    </p>
-                    </div>
-                  )}
+                  
+                {isLargeBook ? (
+  // Centered title for large books
+                <div style={titleStyles}>
+                  <h3>{book.author.toUpperCase()}</h3>
+                  <p className='responsive-text' style={{ textTransform: 'uppercase'}}>{book.poemCount} POEMAS</p>
+                </div>
+              ) : (
+                // Standard top-aligned title for small/medium books con centrado en desktop
+                <div style={{
+                  position: 'absolute',
+                  top: isDesktop ? '50%' : 0,
+                  left: 0,
+                  padding: '10px',
+                  color: 'white',
+                  textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+                  width: '100%',
+                  background: isDesktop 
+                    ? 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 100%)'
+                    : 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',
+                  transform: isDesktop ? 'translateY(-50%)' : 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: isDesktop ? 'center' : 'flex-start',
+                }}>
+                  <h4 style={titleStyles}>{book.author.toUpperCase()}</h4>
+                  <p className="responsive-text" style={{ 
+                    textAlign: isDesktop ? 'center' : 'left',
+                    width: '100%'
+                  }}>
+                    {book.poemCount} {book.poemCount === 1 ? 'POEMA' : 'POEMAS'}
+                  </p>
+                </div>
+              )}
                   
                   
                 </div>
