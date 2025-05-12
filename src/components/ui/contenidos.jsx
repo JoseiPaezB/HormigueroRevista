@@ -4,6 +4,12 @@ import HormigueadosSection from './hormigueados'; // Adjust the path as necessar
 import EventosSection from './eventos';
 import {Link} from 'react-router-dom';
 import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
+import homrigueroLogo1 from '../../assets/uno.svg'; // Adjust the path as necessary
+import homrigueroLogo2 from '../../assets/dos.svg'; // Adjust the path as necessary
+import homrigueroLogo3 from '../../assets/cinco2.svg'; // Adjust the path as necessary
+import homrigueroLogo4 from '../../assets/cuatro.svg'; // Adjust the path as necessary
+import homrigueroLogo5 from '../../assets/tres2.svg'; // Adjust the path as necessary
+import homrigueroLogo6 from '../../assets/seis.svg'; // Adjust the path as necessary
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
@@ -182,82 +188,105 @@ const Contenido = () => {
           </style>
 
           {/* Map through menu items */}
-          {menuItems.map((item, index) => (
-            <Link 
-              key={index}
-              to={item.path} 
-              className="menu-item" 
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textDecoration: 'none',
-                color: 'black',
-                transition: 'transform 0.2s',
-                justifyContent: 'center',
-                textAlign: 'center',
-                padding: '15px',
-                position: 'relative',
-               
-              }}
-              
-            >
-              {/* Index number behind ant icon */}
-              <div 
-                className="index-number "
+          {menuItems.map((item, index) => {
+            // Determine which SVG to use based on index
+            let antIcon;
+            switch(index) {
+              case 0:
+                antIcon = homrigueroLogo1; // First icon for CREACIONES
+                break;
+              case 1:
+                antIcon = homrigueroLogo2; // Second icon for TRADUCCION
+                break;
+              case 2:
+                antIcon = homrigueroLogo3; // Third icon for CRITICA
+                break;
+              case 3:
+                antIcon = homrigueroLogo4; // Fourth icon for RESCATES
+                break;
+              case 4:
+                antIcon = homrigueroLogo5; // Fifth icon for VISUALES
+                break;
+              case 5:
+                antIcon = homrigueroLogo6; // Sixth icon for ENTREVISTAS
+                break;
+              default:
+                antIcon = hormigueroLogo; // Fallback to the default icon
+            }
+            
+            return (
+              <Link 
+                key={index}
+                to={item.path} 
+                className="menu-item" 
                 style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  fontSize: '80px',
-                  fontWeight: 'bold',
-                  color: 'balck',
-                  zIndex: 0,
-                  transition: 'opacity 0.3s, transform 0.3s',
-                  pointerEvents: 'none'
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textDecoration: 'none',
+                  color: 'black',
+                  transition: 'transform 0.2s',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  padding: '15px',
+                  position: 'relative',
                 }}
               >
-                {index + 1}
-              </div>
-              
-              <div className="ant-icon" style={{ 
-                marginBottom: '10px',
-                position: 'relative',
-                zIndex: 1,
-                opacity:0.5
-              }}>
-                <img 
-                  src={hormigueroLogo} 
-                  alt="Ant icon" 
-                  width="60" 
-                  height="60" 
-                  className="pulsing-ant"
-                  style={{ 
-                    animationDelay: `${item.delay}s`,
-                    position: 'relative',
-                    zIndex: 2
+                {/* Index number behind ant icon */}
+                <div 
+                  className="index-number"
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '80px',
+                    fontWeight: 'bold',
+                    color: 'balck',
+                    zIndex: 0,
+                    transition: 'opacity 0.3s, transform 0.3s',
+                    pointerEvents: 'none'
                   }}
-                />
-              </div>
-              
-              <div 
-                className="menu-text pulsing-text" 
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: windowWidth > 728 ? '1.7rem' : '18px',
-
-                  letterSpacing: '1px',
-                  animationDelay: `${item.delay}s`,
+                >
+                  {index + 1}
+                </div>
+                
+                <div className="ant-icon" style={{ 
+                  marginBottom: '10px',
                   position: 'relative',
                   zIndex: 1,
-                  marginTop: '1rem'
-                }}
-              >
-                {item.title}
-              </div>
-            </Link>
-          ))}
+                  opacity: 0.7
+                }}>
+                  <img 
+                    src={antIcon} // Use the specific SVG for this menu item
+                    alt={`${item.title} icon`} 
+                    width="60" 
+                    height="60" 
+                    className="pulsing-ant"
+                    style={{ 
+                      animationDelay: `${item.delay}s`,
+                      position: 'relative',
+                      zIndex: 2
+                    }}
+                  />
+                </div>
+                
+                <div 
+                  className="menu-text pulsing-text" 
+                  style={{
+                    fontSize: windowWidth > 728 ? '1.7rem' : '18px',
+                    letterSpacing: '1px',
+                    animationDelay: `${item.delay}s`,
+                    position: 'relative',
+                    zIndex: 1,
+                    marginTop: '1rem'
+                  }}
+                >
+                  {item.title}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>
