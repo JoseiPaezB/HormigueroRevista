@@ -150,7 +150,7 @@ const ContentComponent = ({ contentType }) => {
       if (sizeCategory === 'large') {
         return { 
           height: '45vh', // 80% de la altura de la ventana para libros grandes
-          width: '75%', 
+          width: 'auto', 
           gridColumn: 'span 2',
           gridRow: 'span 1',
           isLarge: true
@@ -177,8 +177,8 @@ const ContentComponent = ({ contentType }) => {
     else {
       if (sizeCategory === 'large') {
         return { 
-          height: '280px', 
-          width: '100%', 
+          height: '240px', 
+          width: 'auto', 
           gridColumn: 'span 2',
           gridRow: 'span 1',
           isLarge: true

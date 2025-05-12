@@ -207,7 +207,6 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
           fontWeight: 'bold',
           textAlign: 'left',
           fontSize: '28px',
-          fontFamily: 'JetBrains Mono, monospace',
           marginTop: '10px',
           marginBottom: '30px'
         }}>
@@ -219,7 +218,6 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
           <h3 style={{
             fontWeight: 'bold',
             fontSize: '16px',
-            fontFamily: 'JetBrains Mono, monospace',
             marginBottom: '10px'
           }}>
             DESCRIPCIÓN
@@ -240,7 +238,6 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
           <h3 style={{
             fontWeight: 'bold',
             fontSize: '16px',
-            fontFamily: 'JetBrains Mono, monospace',
             marginBottom: '10px',
             display: 'flex',
             alignItems: 'center',
@@ -272,7 +269,6 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
               borderRadius: '4px',
               fontSize: '12px',
               fontWeight: 'bold',
-              fontFamily: 'JetBrains Mono, monospace',
             }}>
               <AlertCircle size={12} />
               {eventStatus.text}
@@ -286,7 +282,6 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
             <h3 style={{
               fontWeight: 'bold',
               fontSize: '16px',
-              fontFamily: 'JetBrains Mono, monospace',
               marginBottom: '10px',
               display: 'flex',
               alignItems: 'center',
@@ -323,7 +318,6 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
           <h3 style={{
             fontWeight: 'bold',
             fontSize: '16px',
-            fontFamily: 'JetBrains Mono',
             marginBottom: '10px',
             display: 'flex',
             alignItems: 'center',
@@ -346,7 +340,6 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
             <h3 style={{
               fontWeight: 'bold',
               fontSize: '16px',
-              fontFamily: 'JetBrains Mono, monospace',
               marginBottom: '10px',
               display: 'flex',
               alignItems: 'center',
@@ -381,7 +374,6 @@ const calculateEventStatus = (startDateStr, endDateStr, startTimeStr, endTimeStr
                 color: 'white',
                 padding: '12px 24px',
                 textDecoration: 'none',
-                fontFamily: 'JetBrains Mono, monospace',
                 fontWeight: 'bold',
                 fontSize: '14px',
                 borderRadius: '4px'

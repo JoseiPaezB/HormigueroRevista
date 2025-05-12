@@ -432,7 +432,6 @@ const Poema = () => {
               fontWeight: 'bold',
               marginBottom: '30px',
               textTransform: 'uppercase',
-              fontFamily: 'JetBrains Mono, monospace',
               fontSize: isDesktop ? '1.7rem':'18px'
             }}>
               MAS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}

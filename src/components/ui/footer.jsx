@@ -186,7 +186,6 @@ const Footer = () => {
                   alignItems: 'center',
                   gap: '8px',
                   fontSize: '14px',
-                  fontFamily: 'JetBrains Mono, monospace',
                 }}
               >
                 {subscriptionStatus.success ? (

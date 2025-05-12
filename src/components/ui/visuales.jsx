@@ -338,18 +338,8 @@ const Visuales = () => {
   return (
     <div className="visuales-container">
       {/* Cover image */}
-      {visualesSection?.imagen && (
-        <div className="cover-image image_2" style={{
-          backgroundImage: `url(${visualesSection.imagen})`,
-          height: '30vh'
-        }}>
-        </div>
-      )}
       
-      <div className="visuales-content" style={{ padding: '0 20px' }}>
-        <div className="article-date" style={{ textAlign: 'center', margin: '20px 0' }}>
-          {formatDate(revista?.fecha)}
-        </div>
+      <div className="visuales-content" style={{ padding: '0 20px', marginTop: '6rem' }}>
         
         <h2 className="visuales-title" style={{ 
           fontWeight: 'bold', 
@@ -360,44 +350,53 @@ const Visuales = () => {
           VISUALES
         </h2>
         
-        {/* Author selection dropdown */}
+        {/* Author selection - REPLACED DROPDOWN WITH CLICKABLE BUTTONS */}
         <div style={{
-            maxWidth: '400px',
-            margin: '0 auto 30px',
-            textAlign: 'center'
+          maxWidth: '700px',
+          margin: '0 auto 30px',
+          textAlign: 'center'
+        }}>
+          
+          
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '10px',
+            marginBottom: '20px'
           }}>
-            <label htmlFor="author-select" style={{
-              display: 'block',
-              marginBottom: '10px',
-              fontWeight: 'bold',
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '14px'
-            }}>
-              SELECCIONAR ARTISTA
-            </label>
-            <select
-              id="author-select"
-              value={selectedAuthor ? selectedAuthor.id : ""}
-              onChange={handleAuthorChange}
+            <span 
+            onClick={() => setSelectedAuthor(null)}
+            style={{
+              cursor: 'pointer',
+              textDecoration: !selectedAuthor ? 'underline' : 'none',
+              fontWeight: !selectedAuthor ? 'bold' : 'normal',
+              color: !selectedAuthor ? '#000' : '#666',
+              transition: 'all 0.2s ease',    textTransform: 'uppercase'  // <-- esta es la forma correcta
+
+            }}
+          >
+            Sintesis
+          </span>
+            
+          {authors.map(author => (
+            <span
+              key={author.id}
+              onClick={() => handleAuthorChange({ target: { value: author.id } })}
               style={{
-                padding: '8px 12px',
-                backgroundColor: 'white',
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '14px',
                 cursor: 'pointer',
-                background: '#fff',
-                border: 'none',
+                textDecoration: selectedAuthor && selectedAuthor.id === author.id ? 'underline' : 'none',
+                fontWeight: selectedAuthor && selectedAuthor.id === author.id ? 'bold' : 'normal',
+                color: selectedAuthor && selectedAuthor.id === author.id ? '#000' : '#666',
+                transition: 'all 0.2s ease'
               }}
             >
-              <option value="">Todos los artistas</option>
-              {authors.map(author => (
-                <option key={author.id} value={author.id}>
-                  {author.nombre}
-                </option>
-              ))}
-            </select>
+              {author.nombre.toUpperCase()}
+            </span>
+          ))}
           </div>
-
+        </div>
+  
         {/* Conditional rendering based on whether an author is selected */}
         {selectedAuthor ? (
           <>
@@ -410,7 +409,6 @@ const Visuales = () => {
               <h3 style={{
                 fontWeight: 'bold',
                 margin: '0 0 15px 0',
-                fontFamily: 'JetBrains Mono, monospace'
               }}>
                 {selectedAuthor.nombre.toUpperCase()}
               </h3>
@@ -504,27 +502,11 @@ const Visuales = () => {
           // Show general section info when no author is selected
           <>
             {/* Contributors section */}
-            {contributors.length > 0 && (
-              <div className="contributors-list" style={{
-                textAlign: 'center', 
-                marginBottom: '30px'
-              }}>
-                {contributors.map((contributor, index) => (
-                  <p key={index} style={{marginBottom: '10px'}}>{contributor.toUpperCase()}</p>
-                ))}
-              </div>
-            )}
+            
             
             {/* Synthesis/Description */}
             {visualesSection?.sintesis && (
               <div style={{ maxWidth: '700px', margin: '0 auto 40px' }}>
-                <h3 className="title" style={{ 
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  marginBottom: '20px'
-                }}>
-                  SINTESIS
-                </h3>
                 <p style={{ 
                   textIndent: '1em',
                   lineHeight: '1.5',
@@ -542,7 +524,6 @@ const Visuales = () => {
               textAlign: 'center', 
               padding: '40px 0',
               color: '#666',
-              fontFamily: 'JetBrains Mono, monospace',
               fontSize: '14px',
               maxWidth: '600px',
               margin: '0 auto'
@@ -552,7 +533,7 @@ const Visuales = () => {
           </>
         )}
       </div>
-
+  
       {/* Popup for detailed view */}
       {showPopup && selectedPiece && (
         <div className="popup-overlay" 
@@ -599,7 +580,7 @@ const Visuales = () => {
             >
               ✕
             </button>
-
+  
             
             <div className="popup-image-container" style={{
                height: '500px',  // Fixed height
@@ -707,7 +688,6 @@ const Visuales = () => {
                   justifyContent: 'center',
                   gap: '8px',
                   marginBottom: '20px',
-                  fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '16px'
                   }}>
                   {/* Replace with your actual image source */}
@@ -737,7 +717,6 @@ const Visuales = () => {
                       border: '1px solid #aaa',
                       marginBottom: '15px',
                       fontSize: '14px',
-                      fontFamily: 'JetBrains Mono, monospace',
                       outline: 'none',
                       transition: 'border 0.2s, box-shadow 0.2s'
                   }}
@@ -757,7 +736,6 @@ const Visuales = () => {
                       border: 'none',
                       borderRadius: '4px',
                       cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                      fontFamily: 'JetBrains Mono, monospace',
                       fontSize: '14px',
                       opacity: isSubmitting ? 0.7 : 1
                     }}
@@ -774,14 +752,12 @@ const Visuales = () => {
               }}>
                 <h3 style={{
                   marginBottom: '15px',
-                  fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '20px',
                   fontWeight: 'bold'
                 }}>
                   GRACIAS
                 </h3>
                 <p style={{
-                  fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '14px',
                   marginBottom: '10px'
                 }}>

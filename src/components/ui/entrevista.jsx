@@ -233,9 +233,6 @@ function getGoogleDriveEmbedUrl(url) {
             <p key={index} style={{marginBottom: '10px'}}>{contributor}</p>
           ))}
         </div>
-        <h3 className="title" style={{ fontWeight: 'bold' }}>
-          SINTESIS
-        </h3>
         <div className="article-content" style={{marginBottom: '3rem'}}>
           <p style={{ 
               textIndent: '1em',
