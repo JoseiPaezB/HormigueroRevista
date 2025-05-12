@@ -502,49 +502,20 @@ const Poema = () => {
         
         {/* Back button */}
         <div 
-        onClick={() => navigate(-1)}
-         style={{
-          background: 'none',
-          position: 'relative', // Change from no position to relative
-          margin: '40px auto',  // Use margin instead of absolute positioning
-          border: 'none',
-          borderRadius: '50%',
-          flexDirection: 'column',
-          width: isDesktop ? '70px' : 'auto',
-          height: '70px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'transform 0.2s ease, background-color 0.2s ease',
-          padding: '8px',
-          zIndex: 100  // Lower z-index           // asegúrate de que esté por encima de otros elementos
-
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'scale(1.1)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
-        }}
-      >
-        <img 
-          src={hormigueroLogo} 
-          alt="Anterior" 
+          onClick={() => navigate(-1)}
           style={{
-            width: '100%',
-            height: '100%',
-            transform: 'rotate(-90deg)',
-            transition: 'transform 0.3s ease',
-            background:'none'
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginTop: '30px',
+            marginBottom: '30px',
+            cursor: 'pointer'
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'rotate(-90deg)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'rotate(-90deg)';
-          }}
-        />
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
           <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
             Regresar
           </span>
