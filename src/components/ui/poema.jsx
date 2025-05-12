@@ -512,10 +512,23 @@ const Poema = () => {
             cursor: 'pointer'
           }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+         <img 
+            src={hormigueroLogo} 
+            alt="Siguiente" 
+            style={{
+              width: '40px',
+              
+              transform: 'rotate(270deg)', // Start at 270 degrees
+              transition: 'transform 0.3s ease',
+              background: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'rotate(90deg)'; // Rotate to 90 degrees on hover
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'rotate(270deg)'; // Return to 270 degrees when not hovering
+            }}
+          />
           <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
             Regresar
           </span>
