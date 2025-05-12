@@ -97,7 +97,7 @@ const HormigueadosSection = () => {
   return (
     <div className="hormigueados-section" style={{ marginTop: '4rem' }}>
       <div className="hormigueados-header">
-        <h2 className="edition-title" style={{ fontWeight: 'bold' }}>LOS MAS HORMIGUEADOS</h2>
+        <h2 className="edition-title" style={{ fontWeight: 'bold',fontSize:'clamp(18px, 4vw, 3rem)',marginBottom:'-1rem' }}>LOS MAS HORMIGUEADOS</h2>
         <img src={antTopRight} alt="Ant animation" className="ant-top-right" />
       </div>
 
