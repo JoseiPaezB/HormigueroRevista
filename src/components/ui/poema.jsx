@@ -29,6 +29,8 @@ const Poema = () => {
   const [userName, setUserName] = useState('');
   const [hormiguearSuccess, setHormiguearSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
   
   const masPoemasSectionRef = useRef(null);
   const articleContainerRef = useRef(null);
@@ -344,6 +346,7 @@ const Poema = () => {
 
   // Determine if we have other poems to show
   const hasOtherPoems = otrosPoemas && otrosPoemas.length > 0;
+  const isDesktop = windowWidth > 840;
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -395,7 +398,7 @@ const Poema = () => {
           {/* Poem section */}
           <div style={{
             fontFamily: 'monospace',
-            fontSize: '14px',
+            fontSize: isDesktop ? '1.3rem':'14px',
             lineHeight: '1.8',
             textAlign: 'left',
             padding: 0,
@@ -430,7 +433,7 @@ const Poema = () => {
               marginBottom: '30px',
               textTransform: 'uppercase',
               fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '18px'
+              fontSize: isDesktop ? '1.7rem':'18px'
             }}>
               MAS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}
             </h3>
@@ -446,14 +449,14 @@ const Poema = () => {
                   key={otroPoema.id} 
                   onClick={() => handleGoToPoem(otroPoema.id)}
                   style={{
-                    width: '150px',
+                    width: isDesktop ? '300px': '150px',
                     cursor: 'pointer',
                     marginBottom: '20px'
                   }}
                 >
                   <div style={{
                     position: 'relative',
-                    height: '200px',
+                    height: isDesktop ? '375px' :'200px',
                     width: '100%',
                     marginBottom: '10px',
                     boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
@@ -473,7 +476,7 @@ const Poema = () => {
                       position: 'absolute',
                       bottom: '5px',
                       right: '5px',
-                      fontSize: '8px',
+                      fontSize: isDesktop ? '12px' :'8px',
                       color: 'white',
                       background: 'rgba(0,0,0,0.6)',
                       padding: '2px 5px',
@@ -483,7 +486,7 @@ const Poema = () => {
                     </div>
                   </div>
                   <h4 style={{
-                    fontSize: '11px',
+                    fontSize: isDesktop ? '1.2rem': '11px',
                     textAlign: 'center',
                     fontWeight: 'bold',
                     textTransform: 'uppercase',
@@ -499,20 +502,50 @@ const Poema = () => {
         
         {/* Back button */}
         <div 
-          onClick={() => navigate(-1)}
+        onClick={() => navigate(-1)}
+         style={{
+          background: 'none',
+          bottom: '20px',        // distancia desde abajo
+          left: '50%',           // horizontal centrado
+          border: 'none',
+          borderRadius: '50%',
+          flexDirection: 'column',   // para que el texto esté abajo de la imagen
+
+          width: isDesktop ? '70x':'auto',
+          height: '70px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'transform 0.2s ease, background-color 0.2s ease',
+          padding: '8px',
+          zIndex: 1000              // asegúrate de que esté por encima de otros elementos
+
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.1)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
+      >
+        <img 
+          src={hormigueroLogo} 
+          alt="Anterior" 
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginTop: '30px',
-            marginBottom: '30px',
-            cursor: 'pointer'
+            width: '100%',
+            height: '100%',
+            transform: 'rotate(-90deg)',
+            transition: 'transform 0.3s ease',
+            background:'none'
           }}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'rotate(-90deg)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'rotate(-90deg)';
+          }}
+        />
           <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
             Regresar
           </span>
