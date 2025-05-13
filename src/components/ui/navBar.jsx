@@ -276,7 +276,6 @@ const Navbar = () => {
             listStyleType: 'none',
             margin: 0,
             padding: 0,
-            fontFamily: '"JetBrains Mono", monospace',
           }}>
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <a 

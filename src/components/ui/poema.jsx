@@ -383,7 +383,6 @@ const Poema = () => {
             fontWeight: 'bold',
             textAlign: 'left',
             fontSize: '24px',
-            fontFamily: 'JetBrains Mono, monospace',
             margin: 0 // Remove default margin
           }}>
             {poema?.titulo?.toUpperCase() || fallbackPoem.title}
@@ -589,7 +588,6 @@ const Poema = () => {
                   justifyContent: 'center',
                   gap: '8px',
                   marginBottom: '20px',
-                  fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '16px'
                   }}>
                   <img 
@@ -620,7 +618,6 @@ const Poema = () => {
                       border: isFocused ? '1px solid black' : '1px solid #aaa',
                       marginBottom: '15px',
                       fontSize: '14px',
-                      fontFamily: 'JetBrains Mono, monospace',
                       outline: 'none',
                       boxShadow: isFocused ? '0 0 0 2px black' : 'none',
                       transition: 'border 0.2s, box-shadow 0.2s'
@@ -641,7 +638,6 @@ const Poema = () => {
                       border: 'none',
                       borderRadius: '4px',
                       cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                      fontFamily: 'JetBrains Mono, monospace',
                       fontSize: '14px',
                       opacity: isSubmitting ? 0.7 : 1
                     }}
@@ -658,14 +654,12 @@ const Poema = () => {
               }}>
                 <h3 style={{
                   marginBottom: '15px',
-                  fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '20px',
                   fontWeight: 'bold'
                 }}>
                   GRACIAS
                 </h3>
                 <p style={{
-                  fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '14px',
                   marginBottom: '10px'
                 }}>

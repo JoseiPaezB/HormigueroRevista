@@ -262,7 +262,6 @@ const AuthorBio = () => {
           flexDirection: 'column',
           maxWidth: isDesktop ?  '800px':'400px',
           overflow: 'hidden',
-          fontFamily: 'JetBrains Mono, monospace',
           margin: '20px auto'
         }}>
           
