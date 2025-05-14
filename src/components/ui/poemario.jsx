@@ -249,216 +249,348 @@ const AuthorBio = () => {
     const isDesktop = windowWidth > 840; // Define el umbral para desktop igual que en getTitleStyles
 
 
-    return (
-      <div className="bio-container">
-        <div className="cover-image image_2" style={{
-          backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
-          height: '30vh'
-        }}>
-        </div>
-        
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          maxWidth: isDesktop ?  '800px':'400px',
-          overflow: 'hidden',
-          margin: '20px auto'
-        }}>
+return (
+  <div className="bio-container">
+    <div className="cover-image image_2" style={{
+      backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
+      height: '30vh'
+    }}>
+    </div>
+    
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      maxWidth: isDesktop ? 'none' : '400px',
+      width: isDesktop ? '75%' : 'auto',
+      overflow: 'hidden',
+      margin: '20px auto'
+    }}>
+      
+      {/* Content section */}
+      <div style={{
+        padding: isDesktop ? '20px' : '8px',
+        backgroundColor: 'white',
+        position: 'relative'
+      }}>
+        {(() => {
+          // Get the semblanza text
+          const fullSemblanza = autor?.semblanza || '';
           
-          {/* Content section */}
-          <div style={{
-            padding: isDesktop ? '20px':'8px',
-            backgroundColor: 'white',
-            position: 'relative'
-          }}>
-            {/* First paragraph with first letter emphasized */}
-            <p style={{ 
-              margin: isDesktop ? '0':'0 0 15px 0',
-              fontWeight: 'normal',
-              fontSize: isDesktop ? '2rem':'14px',
-              lineHeight: '1.5'
-            }}>
-              <span style={{ 
-                fontSize: isDesktop ? '4rem':'28px' , 
-                fontWeight: 'bold',
-                float: 'left',
-                marginRight: '2px',
-                lineHeight: '1'
-              }}>{firstLetter}</span>
-              {restOfName} {autor?.semblanza || 'es un creador de quien no tenemos información biográfica detallada. Su obra habla por sí misma, transitando los caminos de la expresión artística con una voz única y personal.'}
-            </p>
+          // Check if we need to split the text (if longer than 100 chars)
+          if (fullSemblanza.length > 100) {
+            // Find all the periods in the text
+            const periods = [];
+            let dotIndex = fullSemblanza.indexOf('. ');
             
-            {/* Second paragraph with image */}
-            <div style={{ 
-              display: isDesktop ?  'normal':'flex', 
-              gap: '15px',
-              marginBottom: '20px' 
-            }}>
-              {/* Second paragraph text */}
-              <p style={{
-                fontSize: isDesktop ? '2rem':'14px',
-                lineHeight: '1.5',
-                margin: 0,
-                flex: 1
-              }}>
-                {isVisualArtist ? (
-                  <span>
-                    {autor?.bio_corta || 'Su trabajo explora las posibilidades de la expresión visual, creando obras que desafían la percepción y expanden los límites del arte. A través de sus piezas, nos invita a explorar nuevas formas de ver y entender el mundo que nos rodea.'}
-                  </span>
-                ) : (
-                  <span>
-                    En <i>{poemario?.titulo || 'su obra'}</i>, {autor?.bio_corta || 'el lenguaje rompe la lógica y el tiempo. Escribe versos breves, fulgurantes, que se abren como cuchillas. Una poética intensa que resuena con fuerza en el lector.'}
-                  </span>
-                )}
-              </p>
-
-
-              
-              {/* Author image */}
-              <img 
-                src={autor?.imagen || eventImage} 
-                alt={autor?.nombre || "Author"} 
-                style={{
-                  height: isDesktop ? '400px' : '140px',
-                  objectFit: 'cover',
-                  alignSelf: 'flex-start',
-                  border: '1px solid #eee'
-                }}
-              />
-            </div>
+            while (dotIndex !== -1) {
+              periods.push(dotIndex + 1); // Include the period
+              dotIndex = fullSemblanza.indexOf('. ', dotIndex + 1);
+            }
             
-            {/* Visual artist specific section */}
-            {isVisualArtist && (
-              <div style={{
-                marginTop: '30px',
-                textAlign: 'center'
-              }}>
-                <div 
-                  onClick={() => navigate(-1)}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    marginTop: '30px',
-                    marginBottom: '30px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
-                    Regresar
-                  </span>
+            // If no periods found, don't split the text
+            if (periods.length === 0) {
+              return (
+                <div style={{ 
+                  fontSize: isDesktop ? '2rem' : '14px',
+                  lineHeight: '1.5'
+                }}>
+                  {/* Author image floating right since no good breaking point */}
+                  <img 
+                    src={autor?.imagen || eventImage} 
+                    alt={autor?.nombre || "Author"} 
+                    style={{
+                      float: 'right',
+                      height: isDesktop ? '400px' : '140px',
+                      objectFit: 'cover',
+                      margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
+                      border: '1px solid #eee'
+                    }}
+                  />
+                  
+                  {/* Author name and full semblanza */}
+                  <p style={{ marginBottom: '15px' }}>
+                    <span style={{ 
+                      fontSize: isDesktop ? '4rem' : '28px', 
+                      fontWeight: 'bold',
+                      float: 'left',
+                      marginRight: '2px',
+                      lineHeight: '1'
+                    }}>
+                      {firstLetter}
+                    </span>
+                    {restOfName}, {/* Author name with comma */}
+                    {fullSemblanza}
+                  </p>
                 </div>
+              );
+            }
+            
+            // Find the period closest to the middle of the text
+            const middle = fullSemblanza.length / 2;
+            let breakIndex = periods[0]; // Default to first period
+            let closestDistance = Math.abs(periods[0] - middle);
+            
+            // Find the period closest to the middle
+            for (let i = 1; i < periods.length; i++) {
+              const distance = Math.abs(periods[i] - middle);
+              // If this period is closer to the middle than our current best
+              if (distance < closestDistance) {
+                breakIndex = periods[i];
+                closestDistance = distance;
+              }
+              // If we've passed the middle, we can stop looking
+              if (periods[i] > middle) {
+                break;
+              }
+            }
+            
+            // Make sure we have a minimum first part length (at least 50 chars)
+            if (breakIndex < 50 && periods.length > 1) {
+              breakIndex = periods[1]; // Use the second period instead
+            }
+            
+            // Split the semblanza at the chosen period
+            const firstPart = fullSemblanza.substring(0, breakIndex);
+            const secondPart = fullSemblanza.substring(breakIndex).trim();
+            
+            return (
+              <>
+                {/* Author name and first part of semblanza */}
+                <div style={{ 
+                  fontSize: isDesktop ? '2rem' : '14px',
+                  lineHeight: '1.5'
+                }}>
+                  <p style={{ marginBottom: '15px' }}>
+                    <span style={{ 
+                      fontSize: isDesktop ? '4rem' : '28px', 
+                      fontWeight: 'bold',
+                      float: 'left',
+                      marginRight: '2px',
+                      lineHeight: '1'
+                    }}>
+                      {firstLetter}
+                    </span>
+                    {restOfName}, {/* Author name with comma */}
+                    {firstPart}
+                  </p>
+                </div>
+                
+                {/* Author image between text parts - LARGER SIZE */}
+                <div style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  margin: isDesktop ? '40px 0' : '30px 0' // Increased margins
+                }}>
+                  <img 
+                    src={autor?.imagen || eventImage} 
+                    alt={autor?.nombre || "Author"} 
+                    style={{
+                      height: isDesktop ? '500px' : '200px', // Increased height
+                      width: isDesktop ? '50%':'75%',
+                      objectFit: 'cover',
+                      border: '1px solid #eee',
+                      boxShadow: '0 4px 10px rgba(0,0,0,0.1)' // Added shadow for emphasis
+                    }}
+                  />
+                </div>
+                
+                {/* Second part of semblanza */}
+                <div style={{ 
+                  fontSize: isDesktop ? '2rem' : '14px',
+                  lineHeight: '1.5'
+                }}>
+                  <p style={{ marginBottom: '15px' }}>{secondPart}</p>
+                </div>
+              </>
+            );
+          } 
+          // For short semblanzas, keep image on the right (smaller size)
+          else {
+            return (
+              <div style={{ 
+                fontSize: isDesktop ? '2rem' : '14px',
+                lineHeight: '1.5'
+              }}>
+                {/* Author image floating right */}
+                <img 
+                  src={autor?.imagen || eventImage} 
+                  alt={autor?.nombre || "Author"} 
+                  style={{
+                    float: 'right',
+                    height: isDesktop ? '400px' : '140px',
+                    objectFit: 'cover',
+                    margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
+                    border: '1px solid #eee'
+                  }}
+                />
+                
+                {/* First paragraph with author name and semblanza */}
+                <p style={{ marginBottom: '15px' }}>
+                  <span style={{ 
+                    fontSize: isDesktop ? '4rem' : '28px', 
+                    fontWeight: 'bold',
+                    float: 'left',
+                    marginRight: '2px',
+                    lineHeight: '1'
+                  }}>
+                    {firstLetter}
+                  </span>
+                  {restOfName}, {/* Author name with comma */}
+                  {fullSemblanza}
+                </p>
               </div>
-            )}
-          </div>
+            );
+          }
+        })()}
+        
+        {/* Bio corta section */}
+        <div style={{ 
+          clear: 'both',
+          marginBottom: '20px',
+          marginTop: '30px'
+        }}>
+          <p style={{
+            fontSize: isDesktop ? '2rem' : '14px',
+            lineHeight: '1.5',
+            margin: 0
+          }}>
+            {autor?.bio_corta || ''}
+          </p>
         </div>
         
-        {/* Only show poemario title and works if not a visual artist */}
-        {!isVisualArtist && (
-          <>
-            {poemario && (
-              <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>
-               SUS POEMAS
-              </h2>
-            )}
-            
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
-              gap: '20px',
-              marginBottom: '40px',
-              padding: '0 20px', // Add horizontal padding
-              maxWidth: '800px', // Set a maximum width
-              margin: '20px auto' // Center the grid with automatic horizontal margins
-            }}>
-              {arrangedBooks.map((book, index) => {
-                const sizeStyles = getBookSize(book.wordCount, book.sizeCategory);
-                const titleStyles = getTitleStyles(sizeStyles);
-                const isLargeBook = sizeStyles.isLarge;
-                
-                // For large books, ensure they start at the beginning of a row
-                // by placing them in positions that align with the grid
-                const gridPosition = {};
-                if (isLargeBook) {
-                  gridPosition.gridColumn = '1 / span 2'; // Always span full width
-                }
-                
-                return (
-                  <Link 
-                    key={book.id} 
-                    to={book.link} 
-                    style={{
-                      textDecoration: 'none', 
-                      color: 'inherit',
-                      ...gridPosition
-                    }}
-                  >
-                    <div style={{
-                      position: 'relative',
-                      overflow: 'hidden',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                      transition: 'transform 0.3s ease',
-                      height: sizeStyles.height,
-                      width: '100%', // Always use full width of grid cell
-                    }}>
-                      <img 
-                        src={book.cover} 
-                        alt={book.title} 
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                      />
-                      
-                      {isLargeBook ? (
-                        // Centered title for large books
-                        <div style={titleStyles}>
-                          <h3>{book.title}</h3>
-                          <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.author}</p>
-                        </div>
-                      ) : (
-                        // Standard top-aligned title for small/medium books
-                        <div style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          padding: '10px',
-                          color: 'white',
-                          textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
-                          width: '100%',
-                          background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
-                        }}>
-                          <h4 style={titleStyles}>{book.title}</h4>
-                        </div>
-                      )}
-                      
-                      <div style={{
-                        position: 'absolute',
-                        bottom: '5px',
-                        right: '5px',
-                        fontSize: isDesktop ? '14px' : '8px',
-                        color: 'white',
-                        background: 'rgba(0,0,0,0.6)',
-                        padding: '2px 5px',
-                        borderRadius: '2px'
-                      }}>
-                        {book.wordCount} PALABRAS
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
+        {/* Visual artist specific section */}
+        {isVisualArtist && (
+          <div style={{
+            marginTop: '30px',
+            textAlign: 'center'
+          }}>
+            <div 
+              onClick={() => navigate(-1)}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                marginTop: '30px',
+                marginBottom: '30px',
+                cursor: 'pointer'
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
+                Regresar
+              </span>
             </div>
-          </>
+          </div>
         )}
       </div>
-    );
+    </div>
+    
+    {/* Only show poemario title and works if not a visual artist */}
+    {!isVisualArtist && (
+      <>
+        {poemario && (
+          <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>
+           SUS POEMAS
+          </h2>
+        )}
+        
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
+          gap: '20px',
+          marginBottom: '40px',
+          padding: '0 20px', // Add horizontal padding
+          maxWidth: '800px', // Set a maximum width
+          margin: '20px auto' // Center the grid with automatic horizontal margins
+        }}>
+          {arrangedBooks.map((book, index) => {
+            const sizeStyles = getBookSize(book.wordCount, book.sizeCategory);
+            const titleStyles = getTitleStyles(sizeStyles);
+            const isLargeBook = sizeStyles.isLarge;
+            
+            // For large books, ensure they start at the beginning of a row
+            // by placing them in positions that align with the grid
+            const gridPosition = {};
+            if (isLargeBook) {
+              gridPosition.gridColumn = '1 / span 2'; // Always span full width
+            }
+            
+            return (
+              <Link 
+                key={book.id} 
+                to={book.link} 
+                style={{
+                  textDecoration: 'none', 
+                  color: 'inherit',
+                  ...gridPosition
+                }}
+              >
+                <div style={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  transition: 'transform 0.3s ease',
+                  height: sizeStyles.height,
+                  width: '100%', // Always use full width of grid cell
+                }}>
+                  <img 
+                    src={book.cover} 
+                    alt={book.title} 
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                  
+                  {isLargeBook ? (
+                    // Centered title for large books
+                    <div style={titleStyles}>
+                      <h3>{book.title}</h3>
+                      <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.author}</p>
+                    </div>
+                  ) : (
+                    // Standard top-aligned title for small/medium books
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      padding: '10px',
+                      color: 'white',
+                      textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+                      width: '100%',
+                      background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
+                    }}>
+                      <h4 style={titleStyles}>{book.title}</h4>
+                    </div>
+                  )}
+                  
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '5px',
+                    right: '5px',
+                    fontSize: isDesktop ? '14px' : '8px',
+                    color: 'white',
+                    background: 'rgba(0,0,0,0.6)',
+                    padding: '2px 5px',
+                    borderRadius: '2px'
+                  }}>
+                    {book.wordCount} PALABRAS
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </>
+    )}
+  </div>
+);
 };
 
 export default AuthorBio;
