@@ -306,139 +306,228 @@ const isDesktop = windowWidth > 840; // Define el umbral para desktop igual que 
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="edition-container">
-      {/* Cover image */}
+  <div className="edition-container">
+    {/* Cover image */}
+    
+    {/* Article preview section */}
+    <div className="article-preview">
+      <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', fontSize: isDesktop ? '4rem' : '50px', marginTop: '3rem' }}>
+        {displayTitle.toUpperCase()}
+      </h2>
       
-      
-      {/* Article preview section */}
-      <div className="article-preview">
-        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px',fontSize: isDesktop ?'4rem':'50px',marginTop:'3rem' }}>
-          {displayTitle.toUpperCase()}
-        </h2>
-        <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem'}}>
-          {contributors.length > 0 ? (
-            contributors.map((contributor, index) => (
-              <p key={index} style={{marginBottom: '10px'}}>{contributor.toUpperCase()}</p>
-            ))
-          ) : (
-            /* Fallback contributors if none are found */
-            <>
-              <p style={{marginBottom: '10px'}}>JOSÉ NERUDA – "Veinte poemas de amor y una canción desesperada"</p>
-              <p style={{marginBottom: '10px'}}>FEDERICO GARCÍA LORCA – "Romancero gitano"</p>
-              <p style={{marginBottom: '10px'}}>EMILY DICKINSON – "Poems by Emily Dickinson"</p>
-              <p style={{marginBottom: '10px'}}>GABRIEL GARCÍA MÁRQUEZ – "Obra poética completa"</p>
-              <p style={{marginBottom: '10px'}}>OCTAVIO PAZ – "Piedra de sol"</p>
-            </>
-          )}
-        </div>
-        <div className="article-content" style={{marginBottom: '3rem', display: 'flex', justifyContent: 'center'}}>
-        <p style={{ 
-        textIndent: '1em',
-        lineHeight: '1.5',
-        hyphens: 'auto',
-        color: 'white',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo negro semitransparente 
-        padding: '14px',                        // Espacio interior
-        borderRadius: '4px',                    // Esquinas redondeadas
-        backdropFilter: 'blur(2px)',            // Efecto de desenfoque (opcional)
-        maxWidth: isDesktop ? '900px' : '100%', 
-      }}>
-        {content?.sintesis || 'Default synthesis text if none is available.'}
-      </p>
-        </div>
-
-        {/* Book covers grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
-          gap: '20px',
-          marginBottom: '40px'
-        }}>
-          {arrangedBooks.map((book, index) => {
-            const sizeStyles = getBookSize(book.poemCount, book.sizeCategory);
-            const titleStyles = getTitleStyles(sizeStyles);
-            const isLargeBook = sizeStyles.isLarge;
-            
-            // For large books, ensure they start at the beginning of a row
-            const gridPosition = {};
-            if (isLargeBook) {
-              gridPosition.gridColumn = '1 / span 2'; // Always span full width
-            }
+      {/* Contributors list - Made clickable with scroll functionality */}
+      <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem',display:'grid'}}>
+        {contributors.length > 0 ? (
+          contributors.map((contributor, index) => {
+            // Find the matching book for this contributor
+            const matchingBook = arrangedBooks.find(book => 
+              book.author.toLowerCase() === contributor.toLowerCase() ||
+              contributor.toLowerCase().includes(book.author.toLowerCase()) ||
+              book.author.toLowerCase().includes(contributor.toLowerCase())
+            );
             
             return (
-              <Link 
-                key={book.id} 
-                to={book.link} 
+              <p 
+                key={index} 
+                onClick={() => {
+                  if (matchingBook) {
+                    // Create an ID for the book element based on the book's id
+                    const bookElementId = `book-${matchingBook.id}`;
+                    
+                    // Find the book element by ID
+                    const bookElement = document.getElementById(bookElementId);
+                    
+                    if (bookElement) {
+                      // Scroll to the element with smooth animation
+                      bookElement.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                      });
+                      
+                      // Apply a highlight animation class
+                      bookElement.classList.add('highlight-animation');
+                      
+                      // Remove the animation class after it completes
+                      setTimeout(() => {
+                        bookElement.classList.remove('highlight-animation');
+                      }, 2000); // Animation duration
+                    }
+                  }
+                }}
                 style={{
-                  textDecoration: 'none', 
-                  color: 'inherit',
-                  ...gridPosition
+                  marginBottom: '10px',
+                  cursor: matchingBook ? 'pointer' : 'default',
+                  position: 'relative',
+                  display: 'inline-block',
+                  transition: 'transform 0.2s ease',
+                  // Add underline or visual indicator that it's clickable
+                }}
+                // Add hover effects
+                onMouseEnter={(e) => {
+                  if (matchingBook) {
+                    e.currentTarget.style.transform = 'translateX(10px)';
+                    e.currentTarget.style.color = 'black'; // Highlight color on hover
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (matchingBook) {
+                    e.currentTarget.style.transform = 'translateX(0)';
+                    e.currentTarget.style.color = 'inherit';
+                  }
                 }}
               >
-                <div style={{
+                {contributor.toUpperCase()}
+              </p>
+            );
+          })
+        ) : (
+          /* Fallback contributors if none are found */
+          <>
+            <p style={{marginBottom: '10px'}}>JOSÉ NERUDA – "Veinte poemas de amor y una canción desesperada"</p>
+            <p style={{marginBottom: '10px'}}>FEDERICO GARCÍA LORCA – "Romancero gitano"</p>
+            <p style={{marginBottom: '10px'}}>EMILY DICKINSON – "Poems by Emily Dickinson"</p>
+            <p style={{marginBottom: '10px'}}>GABRIEL GARCÍA MÁRQUEZ – "Obra poética completa"</p>
+            <p style={{marginBottom: '10px'}}>OCTAVIO PAZ – "Piedra de sol"</p>
+          </>
+        )}
+      </div>
+      
+      <div className="article-content" style={{marginBottom: '3rem', display: 'flex', justifyContent: 'center'}}>
+        <p style={{ 
+          textIndent: '1em',
+          lineHeight: '1.5',
+          hyphens: 'auto',
+          color: 'white',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo negro semitransparente 
+          padding: '14px',                        // Espacio interior
+          borderRadius: '4px',                    // Esquinas redondeadas
+          backdropFilter: 'blur(2px)',            // Efecto de desenfoque (opcional)
+          maxWidth: isDesktop ? '900px' : '100%', 
+        }}>
+          {content?.sintesis || 'Default synthesis text if none is available.'}
+        </p>
+      </div>
+
+      {/* Book covers grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
+        gap: '20px',
+        marginBottom: '40px'
+      }}>
+        {arrangedBooks.map((book, index) => {
+          const sizeStyles = getBookSize(book.poemCount, book.sizeCategory);
+          const titleStyles = getTitleStyles(sizeStyles);
+          const isLargeBook = sizeStyles.isLarge;
+          
+          // For large books, ensure they start at the beginning of a row
+          const gridPosition = {};
+          if (isLargeBook) {
+            gridPosition.gridColumn = '1 / span 2'; // Always span full width
+          }
+          
+          return (
+            <Link 
+              key={book.id} 
+              to={book.link} 
+              style={{
+                textDecoration: 'none', 
+                color: 'inherit',
+                ...gridPosition
+              }}
+            >
+              {/* Add an ID to each book div to use for scrolling */}
+              <div 
+                id={`book-${book.id}`} // Add this ID to target for scrolling
+                style={{
                   position: 'relative',
                   overflow: 'hidden',
                   borderRadius: '4px',
                   boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                  transition: 'transform 0.3s ease',
+                  transition: 'all 0.3s ease', // Modified transition to include all properties
                   height: sizeStyles.height,
                   width: '100%', // Always use full width of grid cell
-                }}>
-                  <img 
-                    src={book.cover} 
-                    alt={book.author} 
-                    style={{
-                      width: isDesktop ? '65%' : '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-
-                  
-                  
+                }}
+              >
+                <img 
+                  src={book.cover} 
+                  alt={book.author} 
+                  style={{
+                    width: isDesktop ? '65%' : '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                />
+                
                 {isLargeBook ? (
-  // Centered title for large books
-                <div style={titleStyles}>
-                  <h3>{book.author.toUpperCase()}</h3>
-                  <p className='responsive-text' style={{ textTransform: 'uppercase'}}>{book.poemCount} POEMAS</p>
-                </div>
-              ) : (
-                // Standard top-aligned title for small/medium books con centrado en desktop
-                <div style={{
-                  position: 'absolute',
-                  top: isDesktop ? '50%' : 0,
-                  left: 0,
-                  padding: '10px',
-                  color: 'white',
-                  textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
-                  width: '100%',
-                  background: isDesktop 
-                    ? 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 100%)'
-                    : 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',
-                  transform: isDesktop ? 'translateY(-50%)' : 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: isDesktop ? 'center' : 'flex-start',
-                }}>
-                  <h4 style={titleStyles}>{book.author.toUpperCase()}</h4>
-                  <p className="responsive-text" style={{ 
-                    textAlign: isDesktop ? 'center' : 'left',
-                    width: '100%'
+                  // Centered title for large books
+                  <div style={titleStyles}>
+                    <h3>{book.author.toUpperCase()}</h3>
+                    <p className='responsive-text' style={{ textTransform: 'uppercase'}}>{book.poemCount} POEMAS</p>
+                  </div>
+                ) : (
+                  // Standard top-aligned title for small/medium books con centrado en desktop
+                  <div style={{
+                    position: 'absolute',
+                    top: isDesktop ? '50%' : 0,
+                    left: 0,
+                    padding: '10px',
+                    color: 'white',
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+                    width: '100%',
+                    background: isDesktop 
+                      ? 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 100%)'
+                      : 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',
+                    transform: isDesktop ? 'translateY(-50%)' : 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: isDesktop ? 'center' : 'flex-start',
                   }}>
-                    {book.poemCount} {book.poemCount === 1 ? 'POEMA' : 'POEMAS'}
-                  </p>
-                </div>
-              )}
-                  
-                  
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                    <h4 style={titleStyles}>{book.author.toUpperCase()}</h4>
+                    <p className="responsive-text" style={{ 
+                      textAlign: isDesktop ? 'center' : 'left',
+                      width: '100%'
+                    }}>
+                      {book.poemCount} {book.poemCount === 1 ? 'POEMA' : 'POEMAS'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
-  );
+    
+    {/* Add CSS for the highlight animation */}
+    <style jsx>{`
+      @keyframes highlight-pulse {
+        0% { 
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          transform: scale(1);
+        }
+        50% { 
+          box-shadow: 0 0 20px 5px rgba(227, 226, 220, 0.4);
+          transform: scale(1.05);
+        }
+        100% { 
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          transform: scale(1);
+        }
+      }
+      
+      .highlight-animation {
+        animation: highlight-pulse 2s ease;
+      }
+      
+      /* Optional: Add a smooth hover effect for the book items as well */
+      #book-container > div:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      }
+    `}</style>
+  </div>
+);
 };
 
 export default ContentComponent;
