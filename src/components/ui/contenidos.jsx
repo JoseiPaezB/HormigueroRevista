@@ -11,13 +11,80 @@ import homrigueroLogo4 from '../../assets/cuatro.svg'; // Adjust the path as nec
 import homrigueroLogo5 from '../../assets/tres2.svg'; // Adjust the path as necessary
 import homrigueroLogo6 from '../../assets/seis.svg'; // Adjust the path as necessary
 import { createClient } from '@supabase/supabase-js';
+import mosquito from '../../assets/images/mosquito.svg';
+// import ant from '../../assets/images/ant.svg';
+import bee from '../../assets/images/bee.svg';
+import fly from '../../assets/images/roach.svg';
+import ant from '../../assets/images/libelula.svg';
+import FlyingInsectsSwarm from './FlyingMosquito'; // Adjust the path as needed
 
 // Initialize Supabase client
+const insects = [
+    {
+      src: mosquito,
+      type: 'mosquito',
+      size: 30,
+      // Optional: customize further
+      // speed: 2.5,
+      // initialPosition: { x: 100, y: 100 }
+    },
+    {
+      src: ant,
+      type: 'ant',
+      size: 25
+    },
+    {
+      src: bee,
+      type: 'bee',
+      size: 35
+    },
+    {
+      src: fly,
+      type: 'fly',
+      size: 28
+    },
+    {
+      src: mosquito, // You can reuse the same SVG with different behavior
+      type: 'default',
+      size: 32
+    }
+  ];
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Custom styles for text formatting
+const CustomStyles = () => (
+  <style>{`
+    /* Apply text justification on all screen sizes */
+    .article-content p {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+    }
+    
+    /* Desktop-specific width constraints */
+    @media (min-width: 768px) {
+      .article-content {
+        max-width: 70%;
+        margin: 0 auto;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .article-content {
+        max-width: 60%;
+      }
+    }
+    
+    @media (min-width: 1280px) {
+      .article-content {
+        max-width: 50%;
+      }
+    }
+  `}</style>
+);
 
 const Contenido = () => {
   // State for revista data
@@ -96,6 +163,9 @@ const Contenido = () => {
   
   return (
     <div className="edition-container">
+      {/* Include custom styles */}
+      <CustomStyles />
+      
       {/* Cover image with title */}
       <div className="cover-image image_2" style={{
         backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
@@ -108,7 +178,7 @@ const Contenido = () => {
       {/* Article preview section */}
       <div className="article-preview">
         <h2 className="edition-title" style={{ fontWeight: 'bold' }}>
-          {revista?.nombre.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
+          {revista?.nombre?.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
         </h2>
         <div className="contributors-list">
           {contributors.length > 0 ? (
@@ -131,11 +201,15 @@ const Contenido = () => {
             </>
           )}
         </div>
-        <h3 id="sintesis"className="title" style={{ fontWeight: 'bold', fontSize:isDesktop ? '2.5rem' : '1.8rem' }}>
+        <h3 id="sintesis" className="title" style={{ 
+          fontWeight: 'bold', 
+          fontSize: isDesktop ? '2.5rem' : '1.8rem',
+          textAlign: 'center' 
+        }}>
           SINTESIS
         </h3>
-        <div className="article-content" >
-          <p style={{marginRight: isDesktop ?'1.3rem' : '0rem'}}>
+        <div className="article-content">
+          <p>
             {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
           </p>
         </div>
@@ -289,7 +363,10 @@ const Contenido = () => {
           })}
         </div>
       </div>
+      <FlyingInsectsSwarm insects={insects} />
+
     </div>
+    
   );
 };
 

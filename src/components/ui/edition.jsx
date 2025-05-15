@@ -11,6 +11,38 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Add custom styles for the article content
+const CustomStyles = () => (
+  <style>{`
+    /* Apply text justification on all screen sizes */
+    .article-content p {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+    }
+    
+    /* Desktop-specific width constraints */
+    @media (min-width: 768px) {
+      .article-content {
+        max-width: 70%;
+        margin: 0 auto;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .article-content {
+        max-width: 60%;
+      }
+    }
+    
+    @media (min-width: 1280px) {
+      .article-content {
+        max-width: 50%;
+      }
+    }
+  `}</style>
+);
+
 const Edicion = () => {
   // State for revista data
   const [revista, setRevista] = useState(null);
@@ -186,18 +218,20 @@ const Edicion = () => {
 
   return (
     <div className="edition-container">
+      {/* Include custom styles */}
+      <CustomStyles />
+      
       {/* Green gradient cover image */}
       <div 
-      ref={coverImageRef}
-      className="cover-image" 
-      id="main-content" 
-      style={{
-        backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
-        position: 'relative',
-        overflow: 'hidden'
-      }}
-    >
-
+        ref={coverImageRef}
+        className="cover-image" 
+        id="main-content" 
+        style={{
+          backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
         <div className="texture-overlay"></div>
         
         {/* Random positioned author */}
@@ -228,8 +262,6 @@ const Edicion = () => {
           <a href="/contenidos#sintesis" className="read-more">
             Leer más...
           </a>
-
-
         </div>
       </div>
 

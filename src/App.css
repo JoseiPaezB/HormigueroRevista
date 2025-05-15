@@ -777,7 +777,7 @@ body, html {
   }.newsletter-form {
     display: flex;
     gap: 0.5rem;
-    width: 50%;
+    width: 35%;
   }.footer-section,.newsletter-text,.copyright,.newsletter-input{
     gap:0rem; 
     font-size: 1.3rem;
@@ -791,4 +791,3 @@ body, html {
   }
 
 }
-  

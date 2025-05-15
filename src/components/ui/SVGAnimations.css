@@ -1,0 +1,100 @@
+/* SVG Animation Styles */
+
+/* Pulse animation for SVGs */
+.svg-animation-pulse {
+  animation: svg-pulse 2s ease;
+}
+
+@keyframes svg-pulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* Fade animation for SVGs */
+.svg-animation-fade {
+  animation: svg-fade 2s ease;
+}
+
+@keyframes svg-fade {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* Rotate animation for SVGs */
+.svg-animation-rotate {
+  animation: svg-rotate 2s ease;
+}
+
+@keyframes svg-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Shake animation for SVGs */
+.svg-animation-shake {
+  animation: svg-shake 0.5s ease;
+}
+
+@keyframes svg-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-5px);
+  }
+  40%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Color animation for SVGs */
+.svg-animation-color {
+  animation: svg-color 2s ease;
+}
+
+@keyframes svg-color {
+  0%, 100% {
+    filter: saturate(1);
+  }
+  50% {
+    filter: saturate(1.5) hue-rotate(10deg);
+  }
+}
+
+/* Glow animation for SVGs */
+.svg-animation-glow {
+  animation: svg-glow 2s ease;
+}
+
+@keyframes svg-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+  }
+}

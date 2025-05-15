@@ -145,28 +145,36 @@ const EventosSection = () => {
             {currentEvents.map((event, index) => (
               event ? (
                 // Actual event card
-                <div 
-                  key={event.id} 
-                  className="event-item-desktop"
-                  style={{
-                    overflow: 'hidden',
-                    boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1)',
-                    transition: 'all 0.3s ease',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    backgroundColor: 'white',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-8px)';
-                    e.currentTarget.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.1)';
-                  }}
-                >
+                <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%'
+              }}>
+                  <div
+                    key={event.id}
+                    className="event-item-desktop"
+                    style={{
+                      overflow: 'hidden',
+                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1)',
+                      transition: 'all 0.3s ease',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      backgroundColor: 'white',
+                      cursor: 'pointer',
+                      width: '75%',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-8px)';
+                      e.currentTarget.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.1)';
+                    }}
+                  >
+                
                   <Link to={`/evento/${event.id}`} style={{ textDecoration: 'none', color: 'inherit', height: '100%', display: 'flex', flexDirection: 'column' }}>
                     <div className="event-image-container" style={{ flexShrink: 0 }}>
                       <img
@@ -285,6 +293,7 @@ const EventosSection = () => {
                       </div>
                     </div>
                   </Link>
+                </div>
                 </div>
               ) : (
                 // Empty placeholder when we don't have enough events

@@ -135,7 +135,7 @@ const HormigueadosSection = () => {
               <div 
                 style={{
                   position: 'relative',
-                  height: '300px',
+                  height: '500px',
                   width: '100%',
                   overflow: 'hidden',
                   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
