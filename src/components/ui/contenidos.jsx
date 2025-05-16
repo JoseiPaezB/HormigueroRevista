@@ -17,6 +17,7 @@ import bee from '../../assets/images/bee.svg';
 import fly from '../../assets/images/roach.svg';
 import ant from '../../assets/images/libelula.svg';
 import FlyingInsectsSwarm from './FlyingMosquito'; // Adjust the path as needed
+import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
 
 // Initialize Supabase client
 const insects = [
@@ -170,7 +171,7 @@ const Contenido = () => {
       <div className="cover-image image_2" style={{
         backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
         position: 'relative',
-        marginTop: '60px' // Space for navbar
+        marginTop: isDesktop ? '60px':'none' // Space for navbar
       }}>
         
       </div>
@@ -363,8 +364,10 @@ const Contenido = () => {
           })}
         </div>
       </div>
-      <FlyingInsectsSwarm insects={insects} />
-
+       <InsectColony 
+            insects={insects}
+            count={40} // Total number of insects (will cycle through your array)
+          />
     </div>
     
   );

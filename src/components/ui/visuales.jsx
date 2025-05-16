@@ -3,9 +3,14 @@ import { createClient } from '@supabase/supabase-js';
 import FloatingHormiguearButton from './hormiguearButton';
 import { Link} from 'react-router-dom';
 import hormigueroLogo2 from '../../assets/anticon2.svg'; // Adjust the path as necessary
+import ScrollRevealItem from './scrollRevealItem';
+import InsectColony from './MovingSvgBackground';
+import authorSvg from '../../assets/cinco2.svg'; // Adjust the path as necessary
+import ant from '../../assets/uno.svg'; // Adjust the path as necessary
+
 
 // Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;  
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -27,6 +32,32 @@ const Visuales = () => {
   // New state for authors and selected author - initialize as null
   const [authors, setAuthors] = useState([]);
   const [selectedAuthor, setSelectedAuthor] = useState(null);
+  const getFirstName = (fullName) => {
+  // Split the name by spaces
+  const nameParts = fullName.split(' ');
+  // Return just the first part
+  return nameParts[0];
+};
+  const insects = [
+      
+      {
+        src: ant,
+        type: 'ant',
+        size: 25
+      },
+       {
+        src: ant,
+        type: 'mosquito',
+        size: 15
+      },
+      {
+        src: ant,
+        type: 'bee',
+        size: 15
+      }
+       
+      
+    ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,23 +170,8 @@ const Visuales = () => {
     // Define size variations (for grid column/row spanning)
     const sizeVariations = [
       // Small - default size
-      { 
-        colSpan: 1, 
-        rowSpan: 1, 
-        width: '100%',
-        height: '100%',
-        size: 'small',
-        aspectRatio: Math.random() > 0.5 ? '3/4' : '4/3'  // Mix of portrait and landscape
-      },
       // Medium - spans 1 column, 2 rows OR 2 columns, 1 row
-      { 
-        colSpan: Math.random() > 0.5 ? 1 : 2, 
-        rowSpan: Math.random() > 0.5 ? 2 : 1,
-        width: '100%',
-        height: '100%', 
-        size: 'medium',
-        aspectRatio: Math.random() > 0.5 ? '3/4' : '4/3'
-      },
+      
       // Large - spans 2 columns and 2 rows
       { 
         colSpan: 2, 
@@ -172,13 +188,8 @@ const Visuales = () => {
     let sizeIndex;
     const random = Math.random();
     
-    if (random < 0.6) {
-      sizeIndex = 0; // 60% small
-    } else if (random < 0.9) {
-      sizeIndex = 1; // 30% medium
-    } else {
-      sizeIndex = 2; // 10% large
-    }
+    
+    sizeIndex = 0; // 60% small
     
     // Special case: Make first image potentially larger to create focal point
     if (index === 0 && Math.random() > 0.5) {
@@ -334,443 +345,393 @@ const Visuales = () => {
 
   if (loading) return <div>Loading visual pieces...</div>;
   if (error) return <div>{error}</div>;
+  const isDesktop = window.innerWidth > 768;
 
-  return (
-    <div className="visuales-container">
-      {/* Cover image */}
+  
+return (
+  <div className="visuales-container">
+    {/* Cover image */}
+    
+    <div className="visuales-content" style={{ padding: '0 20px', marginTop: '6rem' }}>
       
-      <div className="visuales-content" style={{ padding: '0 20px', marginTop: '6rem' }}>
+      <h2 className="visuales-title" style={{ 
+        fontWeight: 'bold', 
+        textAlign: 'center',
+        margin: '30px 0',
+        textTransform: 'uppercase'
+      }}>
+        VISUALES
+      </h2>
+      
+      {/* Author selection - REPLACED DROPDOWN WITH CLICKABLE BUTTONS */}
+      <div style={{
+        maxWidth: '700px',
+        margin: '0 auto 30px',
+        textAlign: 'center'
+      }}>
         
-        <h2 className="visuales-title" style={{ 
-          fontWeight: 'bold', 
-          textAlign: 'center',
-          margin: '30px 0',
-          textTransform: 'uppercase'
-        }}>
-          VISUALES
-        </h2>
         
-        {/* Author selection - REPLACED DROPDOWN WITH CLICKABLE BUTTONS */}
         <div style={{
-          maxWidth: '700px',
-          margin: '0 auto 30px',
-          textAlign: 'center'
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '10px',
+          marginBottom: '20px'
         }}>
-          
-          
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: '10px',
-            marginBottom: '20px'
-          }}>
-            <span 
-            onClick={() => setSelectedAuthor(null)}
-            style={{
-              cursor: 'pointer',
-              textDecoration: !selectedAuthor ? 'underline' : 'none',
-              fontWeight: !selectedAuthor ? 'bold' : 'normal',
-              color: !selectedAuthor ? '#000' : '#666',
-              transition: 'all 0.2s ease',    textTransform: 'uppercase'  // <-- esta es la forma correcta
-
-            }}
-          >
-            Sintesis
-          </span>
-            
-          {authors.map(author => (
-            <span
-              key={author.id}
-              onClick={() => handleAuthorChange({ target: { value: author.id } })}
-              style={{
-                cursor: 'pointer',
-                textDecoration: selectedAuthor && selectedAuthor.id === author.id ? 'underline' : 'none',
-                fontWeight: selectedAuthor && selectedAuthor.id === author.id ? 'bold' : 'normal',
-                color: selectedAuthor && selectedAuthor.id === author.id ? '#000' : '#666',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              {author.nombre.toUpperCase()}
-            </span>
-          ))}
-          </div>
-        </div>
-  
-        {/* Conditional rendering based on whether an author is selected */}
-        {selectedAuthor ? (
-          <>
-            {/* Show selected author info if available */}
-            <div style={{
-              maxWidth: '700px',
-              margin: '0 auto 30px',
-              textAlign: 'center'
-            }}>
-              <h3 style={{
-                fontWeight: 'bold',
-                margin: '0 0 15px 0',
-              }}>
-                {selectedAuthor.nombre.toUpperCase()}
-              </h3>
-              {selectedAuthor.semblanza && (
-                <>
-                  <p>{selectedAuthor.semblanza.slice(0, Math.floor(selectedAuthor.semblanza.length / 2))}</p>
-                  <Link to={`/poemario/${selectedAuthor.id}`}>Leer más...</Link>
-                </>
-              )}
-            </div>
-            
-            {/* Enhanced Collage Layout with CSS Grid - only show when author is selected */}
-            <div className="collage-container" style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-              gridAutoRows: 'minmax(150px, auto)',
-              gap: '20px',
-              padding: '20px',
-              maxWidth: '1200px',
-              margin: '0 auto'
-            }}>
-              {visuales.length > 0 ? (
-                visuales.map((piece, index) => (
-                  <div 
-                    key={piece.id || index}
-                    className="collage-item"
-                    onClick={() => handlePieceClick(piece)}
-                    style={{
-                      gridColumn: `span ${piece.colSpan}`,
-                      gridRow: `span ${piece.rowSpan}`,
-                      margin: piece.margin,
-                      overflow: 'hidden',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                      cursor: 'pointer',
-                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                      aspectRatio: piece.aspectRatio,
-                      transform: 'none',
-                      position: 'relative',
-                      zIndex: 0
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.05)';
-                      e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
-                      e.currentTarget.style.zIndex = 1;
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
-                      e.currentTarget.style.zIndex = 0;
-                    }}
-                  >
-                    <img 
-                      src={piece.pieza || `https://source.unsplash.com/random/300x${200 + index}?art`} 
-                      alt={piece.nombre_pieza || 'Visual piece'}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        display: 'block'
-                      }}
-                    />
-                    <div className="hover-overlay" style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
-                      padding: '15px 10px 10px',
-                      transform: 'translateY(100%)',
-                      transition: 'transform 0.3s ease',
-                      color: 'white',
-                      pointerEvents: 'none'
-                    }}>
-                      <h4 style={{ margin: '0 0 5px', fontSize: '16px' }}>
-                        {piece.nombre_pieza || 'Untitled'}
-                      </h4>
-                      <p style={{ margin: 0, fontSize: '12px', opacity: 0.8 }}>
-                        {piece.autor?.nombre || 'Unknown artist'}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p style={{ gridColumn: 'span 2', textAlign: 'center', padding: '40px 0' }}>
-                  No hay obras visuales disponibles para este artista.
-                </p>
-              )}
-            </div>
-          </>
-        ) : (
-          // Show general section info when no author is selected
-          <>
-            {/* Contributors section */}
-            
-            
-            {/* Synthesis/Description */}
-            {visualesSection?.sintesis && (
-              <div style={{ maxWidth: '700px', margin: '0 auto 40px' }}>
-                <p style={{ 
-                  textIndent: '1em',
-                  lineHeight: '1.5',
-                  hyphens: 'auto',
-                  textAlign: 'justify',
-                  fontSize: '12px',
-                }}>
-                  {visualesSection.sintesis}
-                </p>
-              </div>
-            )}
-            
-            {/* Message to select an author */}
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '40px 0',
-              color: '#666',
-              fontSize: '14px',
-              maxWidth: '600px',
-              margin: '0 auto'
-            }}>
-              Por favor, selecciona un artista para ver sus obras visuales.
-            </div>
-          </>
-        )}
-      </div>
-  
-      {/* Popup for detailed view */}
-      {showPopup && selectedPiece && (
-        <div className="popup-overlay" 
-          onClick={closePopup}
+          <span 
+          onClick={() => setSelectedAuthor(null)}
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.8)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000
+            cursor: 'pointer',
+            textDecoration: !selectedAuthor ? 'underline' : 'none',
+            fontWeight: !selectedAuthor ? 'bold' : 'normal',
+            color: !selectedAuthor ? '#000' : '#666',
+            transition: 'all 0.2s ease',
+            textTransform: 'uppercase'
           }}
         >
-          <div 
-            className="popup-content" 
-            onClick={(e) => e.stopPropagation()}
+          Artista
+        </span>
+          
+        {authors.map(author => (
+          <span
+            key={author.id}
+            onClick={() => handleAuthorChange({ target: { value: author.id } })}
             style={{
-              backgroundColor: '#fff',
-              borderRadius: '8px',
-              width: '90%',
-              maxWidth: '1000px',
-              maxHeight: '90vh',
-              overflow: 'auto',
-              display: 'flex',
-              flexDirection: 'column'
+              cursor: 'pointer',
+              textDecoration: selectedAuthor && selectedAuthor.id === author.id ? 'underline' : 'none',
+              fontWeight: selectedAuthor && selectedAuthor.id === author.id ? 'bold' : 'normal',
+              color: selectedAuthor && selectedAuthor.id === author.id ? '#000' : '#666',
+              transition: 'all 0.2s ease'
             }}
           >
-            <button
-              onClick={closePopup}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                background: 'none',
-                border: 'none',
-                fontSize: '18px',
-                cursor: 'pointer',
-                color: 'white',
-              }}
-            >
-              ✕
-            </button>
-  
-            
-            <div className="popup-image-container" style={{
-               height: '500px',  // Fixed height
-               maxWidth: '800px', // Maximum width
-               margin: '0 auto',  // Center horizontally
-               overflow: 'hidden',
-               display: 'flex',
-               justifyContent: 'center',
-               alignItems: 'center',
-               backgroundColor: '#f8f8f8', // Light background to show image boundaries
-               border: '1px solid #eee'
-            }}>
-              <img 
-                src={selectedPiece.pieza || `https://source.unsplash.com/random/800x600?art`}
-                alt={selectedPiece.nombre_pieza || 'Visual piece'} 
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-                }}
-              />
-            </div>
-            
-            <div className="popup-details" style={{
-              padding: '20px'
-            }}>
-              <h2 style={{ 
-                marginTop: 0, 
-                marginBottom: '10px',
-                fontWeight: 'bold'
-              }}>
-                {selectedPiece.nombre_pieza || 'Untitled'}
-              </h2>
-              
-              <h4 style={{ 
-                color: '#666',
-                marginBottom: '20px',
-                fontWeight: 'normal'
-              }}>
-                {selectedPiece.autor?.nombre || 'Unknown artist'}
-              </h4>
-              
-              <div className="piece-description">
-                <p style={{ textAlign: 'justify' }}>
-                  {selectedPiece.descripcion_pieza || 
-                   'No description available for this piece.'}
-                </p>
-              </div>
-              
-              <FloatingHormiguearButton 
-                handleHormiguear={handleHormiguear}
-                offsetBeforeStop={150}
-              />
-            </div>
-          </div>
+          Hormigas de {getFirstName(author.nombre).toUpperCase()}
+
+          </span>
+        ))}
         </div>
+      </div>
+
+      {/* Conditional rendering based on whether an author is selected */}
+      {selectedAuthor ? (
+        <>
+          {/* Show selected author info if available */}
+          
+          
+          {/* Author name background */}
+          {/* These will be stacked one after another vertically */}
+           {/* Regular sized ants */}
+          <InsectColony 
+            insects={insects}
+            count={40} // Total number of insects (will cycle through your array)
+          />
+  
+
+          
+          {/* Angled Grid Layout - only show when author is selected */}
+          <div className="angled-grid-container" style={{
+            maxWidth: '1000px',
+            margin: '0 auto',
+            padding: '20px',
+            position: 'relative'
+          }}>
+            {visuales.length > 0 ? (
+              visuales.map((piece, index) => (
+                <ScrollRevealItem 
+                  key={piece.id || index}
+                  index={index}
+                  piece={piece}
+                  handlePieceClick={handlePieceClick}
+                  totalPieces={visuales.length}
+                />
+              ))
+            ) : (
+              <p style={{ textAlign: 'center', padding: '40px 0' }}>
+                No hay obras visuales disponibles para este artista.
+              </p>
+            )}
+          </div>
+        </>
+      ) : (
+        // Show general section info when no author is selected
+        <>
+          {/* Contributors section */}
+          
+          {authors.map(author => (
+          <div
+            key={author.id}
+            onClick={() => handleAuthorChange({ target: { value: author.id } })}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '20px 0',
+              padding: '20px',
+
+            }}
+          >
+            <h3>{author.nombre.toUpperCase()}</h3>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',}}>
+              <p style={{width: isDesktop ? '70%' :'100%',
+                textAlign: 'justify',
+                fontSize: '14px',
+                color: '#000',
+                margin: '10px 0'
+              }}>{author.semblanza}</p>
+            </div>
+
+          </div>
+        ))}
+          {/* Synthesis/Description */}
+          
+          
+          {/* Message to select an author */}
+          
+        </>
       )}
-      
-      {/* Hormiguear Modal */}
-      {showHormiguearModal && (
-        <div onClick={closeModal} style={{
+    </div>
+
+    {/* Popup for detailed view */}
+    {showPopup && selectedPiece && (
+      <div className="popup-overlay" 
+        onClick={closePopup}
+        style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0,0,0,0.8)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           zIndex: 1000
-        }}>
-          <div onClick={(e) => e.stopPropagation()} style={{
-            backgroundColor: 'white',
-            padding: '20px',
+        }}
+      >
+        <div 
+          className="popup-content" 
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            backgroundColor: '#fff',
             borderRadius: '8px',
-            width: '300px',
-            maxWidth: '90%',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            position: 'relative'
+            width: '90%',
+            maxWidth: '1000px',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <button
+            onClick={closePopup}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: 'none',
+              border: 'none',
+              fontSize: '18px',
+              cursor: 'pointer',
+              color: 'white',
+            }}
+          >
+            ✕
+          </button>
+
+          
+          <div className="popup-image-container" style={{
+             height: '500px',  // Fixed height
+             maxWidth: '800px', // Maximum width
+             margin: '0 auto',  // Center horizontally
+             overflow: 'hidden',
+             display: 'flex',
+             justifyContent: 'center',
+             alignItems: 'center',
+             backgroundColor: '#f8f8f8', // Light background to show image boundaries
+             border: '1px solid #eee'
           }}>
-            {/* Close button */}
-            <button
-              onClick={closeModal}
+            <img 
+              src={selectedPiece.pieza || `https://source.unsplash.com/random/800x600?art`}
+              alt={selectedPiece.nombre_pieza || 'Visual piece'} 
               style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                background: 'none',
-                border: 'none',
-                fontSize: '18px',
-                cursor: 'pointer',
-                color: 'black',
+                maxWidth: '100%',
+                maxHeight: '100%',
+                objectFit: 'contain',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
               }}
-            >
-              ✕
-            </button>
+            />
+          </div>
+          
+          <div className="popup-details" style={{
+            padding: '20px'
+          }}>
+            <h2 style={{ 
+              marginTop: 0, 
+              marginBottom: '10px',
+              fontWeight: 'bold'
+            }}>
+              {selectedPiece.nombre_pieza || 'Untitled'}
+            </h2>
             
-            {!hormiguearSuccess ? (
-              <form onSubmit={submitHormiguear}>
-                <h3 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  marginBottom: '20px',
-                  fontSize: '16px'
-                  }}>
-                  {/* Replace with your actual image source */}
-                  <img 
-                    src={hormigueroLogo2} 
-                    alt="Hormiga" 
-                    style={{ width:'30px', height: 'auto' }} 
-                    />
-                  HORMIGUEAR OBRA VISUAL
-                </h3>
-                <p style={{
-                  marginBottom: '15px',
-                  textAlign: 'center',
-                  fontSize: '14px'
-                }}>
-                  Por favor, ingresa tu nombre para hormiguear esta obra visual
-                </p>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="Tu nombre"
-                  style={{
-                      width: '95%',
-                      padding: '8px',
-                      borderRadius: '4px',
-                      border: '1px solid #aaa',
-                      marginBottom: '15px',
-                      fontSize: '14px',
-                      outline: 'none',
-                      transition: 'border 0.2s, box-shadow 0.2s'
-                  }}
-                  
-                  />
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#000',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                      fontSize: '14px',
-                      opacity: isSubmitting ? 0.7 : 1
-                    }}
-                  >
-                    {isSubmitting ? 'ENVIANDO...' : 'ENVIAR'}
-                  </button>
-                </div>
-              </form>
-            ) : (
-              // Modified success screen
-              <div style={{
-                textAlign: 'center',
-                padding: '20px 0'
-              }}>
-                <h3 style={{
-                  marginBottom: '15px',
-                  fontSize: '20px',
-                  fontWeight: 'bold'
-                }}>
-                  GRACIAS
-                </h3>
-                <p style={{
-                  fontSize: '14px',
-                  marginBottom: '10px'
-                }}>
-                  POR HABER HORMIGUEADO<br />
-                  ESTA OBRA VISUAL
-                </p>
-              </div>
-            )}
+            <h4 style={{ 
+              color: '#666',
+              marginBottom: '20px',
+              fontWeight: 'normal'
+            }}>
+              {selectedPiece.autor?.nombre || 'Unknown artist'}
+            </h4>
+            
+            <div className="piece-description">
+              <p style={{ textAlign: 'justify' }}>
+                {selectedPiece.descripcion_pieza || 
+                 'No description available for this piece.'}
+              </p>
+            </div>
+            
+            <FloatingHormiguearButton 
+              handleHormiguear={handleHormiguear}
+              offsetBeforeStop={150}
+            />
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+    
+    {/* Hormiguear Modal */}
+    {showHormiguearModal && (
+      <div onClick={closeModal} style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000
+      }}>
+        <div onClick={(e) => e.stopPropagation()} style={{
+          backgroundColor: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          width: '300px',
+          maxWidth: '90%',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          position: 'relative'
+        }}>
+          {/* Close button */}
+          <button
+            onClick={closeModal}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: 'none',
+              border: 'none',
+              fontSize: '18px',
+              cursor: 'pointer',
+              color: 'black',
+            }}
+          >
+            ✕
+          </button>
+          
+          {!hormiguearSuccess ? (
+            <form onSubmit={submitHormiguear}>
+              <h3 style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                marginBottom: '20px',
+                fontSize: '16px'
+                }}>
+                {/* Replace with your actual image source */}
+                <img 
+                  src={hormigueroLogo2} 
+                  alt="Hormiga" 
+                  style={{ width:'30px', height: 'auto' }} 
+                  />
+                HORMIGUEAR OBRA VISUAL
+              </h3>
+              <p style={{
+                marginBottom: '15px',
+                textAlign: 'center',
+                fontSize: '14px'
+              }}>
+                Por favor, ingresa tu nombre para hormiguear esta obra visual
+              </p>
+              <input
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Tu nombre"
+                style={{
+                    width: '95%',
+                    padding: '8px',
+                    borderRadius: '4px',
+                    border: '1px solid #aaa',
+                    marginBottom: '15px',
+                    fontSize: '14px',
+                    outline: 'none',
+                    transition: 'border 0.2s, box-shadow 0.2s'
+                }}
+                
+                />
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center'
+              }}>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#000',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    opacity: isSubmitting ? 0.7 : 1
+                  }}
+                >
+                  {isSubmitting ? 'ENVIANDO...' : 'ENVIAR'}
+                </button>
+              </div>
+            </form>
+          ) : (
+            // Modified success screen
+            <div style={{
+              textAlign: 'center',
+              padding: '20px 0'
+            }}>
+              <h3 style={{
+                marginBottom: '15px',
+                fontSize: '20px',
+                fontWeight: 'bold'
+              }}>
+                GRACIAS
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                marginBottom: '10px'
+              }}>
+                POR HABER HORMIGUEADO<br />
+                ESTA OBRA VISUAL
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default Visuales;
