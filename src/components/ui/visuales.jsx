@@ -382,7 +382,6 @@ return (
           onClick={() => setSelectedAuthor(null)}
           style={{
             cursor: 'pointer',
-            textDecoration: !selectedAuthor ? 'underline' : 'none',
             fontWeight: !selectedAuthor ? 'bold' : 'normal',
             color: !selectedAuthor ? '#000' : '#666',
             transition: 'all 0.2s ease',
@@ -398,13 +397,12 @@ return (
             onClick={() => handleAuthorChange({ target: { value: author.id } })}
             style={{
               cursor: 'pointer',
-              textDecoration: selectedAuthor && selectedAuthor.id === author.id ? 'underline' : 'none',
               fontWeight: selectedAuthor && selectedAuthor.id === author.id ? 'bold' : 'normal',
               color: selectedAuthor && selectedAuthor.id === author.id ? '#000' : '#666',
               transition: 'all 0.2s ease'
             }}
           >
-          Hormigas de {getFirstName(author.nombre).toUpperCase()}
+          OBRAS
 
           </span>
         ))}
