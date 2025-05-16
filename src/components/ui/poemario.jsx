@@ -552,7 +552,6 @@ return (
                     // Centered title for large books
                     <div style={titleStyles}>
                       <h3>{book.title}</h3>
-                      <p style={{fontSize: '16px', margin: '5px 0 0 0', textTransform: 'uppercase'}}>{book.author}</p>
                     </div>
                   ) : (
                     // Standard top-aligned title for small/medium books
