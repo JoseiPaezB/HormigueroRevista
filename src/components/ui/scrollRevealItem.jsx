@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
-
-
-
-
 const ScrollRevealItem = ({ piece, index, handlePieceClick, totalPieces }) => {
   const [isVisible, setIsVisible] = useState(false);
   const itemRef = useRef(null);
@@ -12,18 +8,17 @@ const ScrollRevealItem = ({ piece, index, handlePieceClick, totalPieces }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // When item enters viewport with 20% visibility
+        // When item enters viewport
         if (entry.isIntersecting) {
-          // Set a delay based on index to create sequential reveal
+          // Add a small delay for staggered appearance
           setTimeout(() => {
             setIsVisible(true);
-            // Once revealed, unobserve
-            observer.unobserve(entry.target);
-          }, 150 * index); // Slight staggered reveal
+          }, 150 * index);
         } else {
-          // When item exits viewport
+          // When item exits viewport - make it fade out
           setIsVisible(false);
         }
+        // Don't unobserve - keep tracking for both entering and exiting
       },
       {
         threshold: 0.2, // Trigger when 20% of the item is visible
@@ -40,18 +35,18 @@ const ScrollRevealItem = ({ piece, index, handlePieceClick, totalPieces }) => {
         observer.unobserve(itemRef.current);
       }
     };
-  }, []);
+  }, [index]); // Added index to dependencies
 
   // Generate a dynamic position and rotation for the image
   const getPositionStyle = (index, total) => {
     // Different positions based on index
-   const positions = [
-  { left: '3%', maxWidth: '88%' },     // Increased from 50% to 75%
-  { left: '25%', maxWidth: '80%' },    // Increased from 55% to 80%
-  { left: '10%', maxWidth: '85%' },    // Increased from 60% to 85%
-  { left: '20%', maxWidth: '70%' },    // Increased from 45% to 70%
-  { left: '5%', maxWidth: '78%' }      // Increased from 40% to 78%
-];
+    const positions = [
+      { left: '3%', maxWidth: '88%' },
+      { left: '25%', maxWidth: '80%' },
+      { left: '10%', maxWidth: '85%' },
+      { left: '20%', maxWidth: '70%' },
+      { left: '5%', maxWidth: '78%' }
+    ];
     
     // Use modulo to cycle through positions for more than 5 images
     const posIndex = index % positions.length;
@@ -81,7 +76,7 @@ const ScrollRevealItem = ({ piece, index, handlePieceClick, totalPieces }) => {
       style={{
         position: 'relative',
         marginBottom: '60px',
-        opacity: isVisible ? 1 : 0,
+        opacity: isVisible ? 1 : 0, // Fade in/out based on visibility
         transform: isVisible ? 
           `translateY(0) rotate(${posStyle.transform})` : 
           'translateY(50px) rotate(0deg)',
@@ -109,9 +104,8 @@ const ScrollRevealItem = ({ piece, index, handlePieceClick, totalPieces }) => {
         onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
         onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
       />
-      
     </div>
   );
 };
 
-export default ScrollRevealItem;    
+export default ScrollRevealItem;
