@@ -315,7 +315,7 @@ const Contenido = () => {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    fontSize: '80px',
+                    fontSize: '60px',
                     fontWeight: 'bold',
                     color: 'balck',
                     zIndex: 0,
