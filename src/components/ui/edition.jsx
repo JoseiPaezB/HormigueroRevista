@@ -188,11 +188,11 @@ const Edicion = () => {
   const getAuthorFontSize = () => {
     const author = getCurrentAuthor() || '';
     const isMobile = windowWidth < 768;
-    const baseSize = isMobile ? 16 : 22;
+    const baseSize = isMobile ? 10 : 15;
     
     // Reduce font size for longer names
     if (author.length > 20) return `${isMobile ? 12 : 18}px`;
-    if (author.length > 15) return `${isMobile ? 14 : 20}px`;
+    if (author.length > 15) return `${isMobile ? 12 : 18}px`;
     return `${baseSize}px`;
   };
 
