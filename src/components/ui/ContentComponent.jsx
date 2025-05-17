@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import SVGRenderer from './SVGRenderer'; // Import the SVGRenderer component
+import {useRef} from 'react';
 
 // Import your book cover images
 import bookCover1 from '../../assets/images/1res.png';
@@ -205,6 +206,43 @@ const ContentComponent = ({ contentType }) => {
     }
   };
   
+  const FadeInElement = ({ children, delay = 0 }) => {
+  const ref = useRef(null);
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Retrasar la animación según el parámetro de retardo para efecto escalonado
+          setTimeout(() => {
+            entry.target.classList.add('fade-in-visible');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1 // Activar cuando al menos el 10% del elemento es visible
+    });
+    
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [delay]);
+  
+  return (
+    <div ref={ref} className="fade-in-element">
+      {children}
+    </div>
+  );
+};
   // Format date for display (YYYY-MM-DD to DD/MM/YY)
   const formatDate = (dateString) => {
     if (!dateString) return '01/08/25';
@@ -441,8 +479,9 @@ const ContentComponent = ({ contentType }) => {
             if (isLargeBook) {
               gridPosition.gridColumn = '1 / span 2'; // Always span full width
             }
-            
+            const delay = index * 100;
             return (
+          <FadeInElement key={book.id} delay={delay}>
               <Link 
                 key={book.id} 
                 to={book.link} 
@@ -522,6 +561,8 @@ const ContentComponent = ({ contentType }) => {
                   )}
                 </div>
               </Link>
+            </FadeInElement>
+
             );
           })}
         </div>

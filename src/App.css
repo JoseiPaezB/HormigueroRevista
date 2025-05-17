@@ -791,3 +791,69 @@ body, html {
   }
 
 }
+
+/* Estilos mejorados para animaciones de aparición y desaparición con scroll */
+
+/* Estado inicial - elementos invisible */
+.fade-in-element {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+/* Estado final - elementos completamente visibles */
+.fade-in-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Estado para cuando el elemento sale de la vista - funciona en scroll hacia arriba y abajo */
+.fade-out {
+  opacity: 0;
+  transform: translateY(-30px); /* Dirección inversa cuando desaparece al hacer scroll hacia arriba */
+  transition: opacity 0.4s ease-in, transform 0.4s ease-in;
+}
+
+/* Variaciones de efectos de entrada */
+.fade-in-element.fade-left {
+  transform: translateX(-30px);
+}
+
+.fade-in-element.fade-right {
+  transform: translateX(30px);
+}
+
+.fade-in-element.zoom {
+  transform: scale(0.95);
+}
+
+/* Variaciones para salidas */
+.fade-left.fade-out {
+  transform: translateX(30px); /* Dirección inversa para salida */
+}
+
+.fade-right.fade-out {
+  transform: translateX(-30px); /* Dirección inversa para salida */
+}
+
+.zoom.fade-out {
+  transform: scale(1.05); /* Dirección inversa para salida */
+}
+
+/* Animación de pulso para elementos destacados */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.highlight-animation {
+  animation: pulse 1.5s infinite;
+}
