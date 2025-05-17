@@ -103,7 +103,7 @@ const Navbar = () => {
 
   const getBrandTextSize = () => {
     if (isMobile) {
-      return '12px';
+      return '10px';
     } else if (window.innerWidth <= 1200) {
       return '13px'; // Smaller for medium screens
     } else {
@@ -161,7 +161,7 @@ const Navbar = () => {
               color: '#000',
               textTransform: 'uppercase'
             }}>
-              Hormiguero
+              Hormiguero de poemas
             </span>
           </a>
         </div>

@@ -150,12 +150,10 @@ const Contenido = () => {
 
   // Array of menu items for the grid
   const menuItems = [
-    { path: "/creaciones", title: "CREACIONES", delay: 0 },
-    { path: "/traducciones", title: "TRADUCCION", delay: 0.3 },
-    { path: "/critica", title: "CRITICA", delay: 0.6 },
-    { path: "/rescates", title: "RESCATES", delay: 0.9 },
-    { path: "/visuales", title: "VISUALES", delay: 1.2 },
-    { path: "/entrevista", title: "ENTREVISTAS", delay: 1.5 }
+    { path: "/creaciones", title: "EL HORMIGUERO", delay: 0 },
+    { path: "/critica", title: "OTROS BICHOS", delay: 0.3 },
+    { path: "/visuales", title: "A OJO DE HORMIGA", delay: 1.2 },
+    //{ path: "/entrevista", title: "ENTREVISTAS", delay: 1.5 }
   ];
 
   // Determine grid layout based on screen width
@@ -252,7 +250,7 @@ const Contenido = () => {
               }
               
               .menu-item:hover .pulsing-text {
-                animation: textPulse 1s infinite ease-in-out;
+                animation: textPulse 0.5s infinite ease-in-out;
               }
 
               .menu-item:hover .index-number {
@@ -308,43 +306,7 @@ const Contenido = () => {
                 }}
               >
                 {/* Index number behind ant icon */}
-                <div 
-                  className="index-number"
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    fontSize: '60px',
-                    fontWeight: 'bold',
-                    color: 'balck',
-                    zIndex: 0,
-                    transition: 'opacity 0.3s, transform 0.3s',
-                    pointerEvents: 'none'
-                  }}
-                >
-                  {index + 1}
-                </div>
-                
-                <div className="ant-icon" style={{ 
-                  marginBottom: '10px',
-                  position: 'relative',
-                  zIndex: 1,
-                  opacity: 0.7
-                }}>
-                  <img 
-                    src={antIcon} // Use the specific SVG for this menu item
-                    alt={`${item.title} icon`} 
-                    width="60" 
-                    height="60" 
-                    className="pulsing-ant"
-                    style={{ 
-                      animationDelay: `${item.delay}s`,
-                      position: 'relative',
-                      zIndex: 2
-                    }}
-                  />
-                </div>
+               
                 
                 <div 
                   className="menu-text pulsing-text" 
@@ -354,7 +316,7 @@ const Contenido = () => {
                     animationDelay: `${item.delay}s`,
                     position: 'relative',
                     zIndex: 1,
-                    marginTop: '1rem'
+                    fontWeight: 'bold',
                   }}
                 >
                   {item.title}
