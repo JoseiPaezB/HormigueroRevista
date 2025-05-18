@@ -103,7 +103,7 @@ const Navbar = () => {
 
   const getBrandTextSize = () => {
     if (isMobile) {
-      return '10px';
+      return '9px';
     } else if (window.innerWidth <= 1200) {
       return '13px'; // Smaller for medium screens
     } else {
@@ -148,7 +148,8 @@ const Navbar = () => {
           <a href="/#main-content" style={{ 
             display: 'flex', 
             flexDirection: 'column', 
-            alignItems: 'center'
+            alignItems: 'center',
+
           }}>
             <img
               src={hormigueroLogo}
@@ -159,7 +160,8 @@ const Navbar = () => {
               fontSize: getBrandTextSize(),
               marginTop: '2px',
               color: '#000',
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              fontFamily: 'JetBrains Mono, monospace',
             }}>
               Hormiguero de poemas
             </span>
