@@ -179,34 +179,7 @@ const Contenido = () => {
         <h2 className="edition-title" style={{ fontWeight: 'bold' }}>
           {revista?.nombre?.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
         </h2>
-        <div className="contributors-list">
-          {contributors.length > 0 ? (
-            contributors.map((contributor, index) => (
-              <p key={index}>{contributor.toUpperCase()}</p>
-            ))
-          ) : (
-            /* Fallback contributors if none are found */
-            <>
-              <p>JOSÉ NERUDA</p>
-              <p>FEDERICO GARCÍA LORCA</p>
-              <p>EMILY DICKINSON</p>
-              <p>GABRIEL GARCÍA MÁRQUEZ</p>
-              <p>OCTAVIO PAZ</p>
-              <p>SYLVIA PLATH</p>
-              <p>JORGE LUIS BORGES</p>
-              <p>GABRIELA MISTRAL</p>
-              <p>WALT WHITMAN</p>
-              <p>ALEJANDRA PIZARNIK</p>
-            </>
-          )}
-        </div>
-        <h3 id="sintesis" className="title" style={{ 
-          fontWeight: 'bold', 
-          fontSize: isDesktop ? '2.5rem' : '1.8rem',
-          textAlign: 'center' 
-        }}>
-          SINTESIS
-        </h3>
+        
         <div className="article-content">
           <p>
             {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
