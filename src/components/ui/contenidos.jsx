@@ -176,12 +176,50 @@ const Contenido = () => {
       
       {/* Article preview section */}
       <div className="article-preview">
-        <h2 className="edition-title" style={{ fontWeight: 'bold' }}>
-          {revista?.nombre?.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
-        </h2>
+       <h2 className="edition-title" style={{ fontWeight: '300' }}>
+        {revista?.nombre ? 
+          (() => {
+            // Dividir el título en palabras
+            const words = revista.nombre.toUpperCase().split(' ');
+            
+            // Si solo hay una palabra, simplemente mostrarla
+            if (words.length === 1) {
+              return words[0];
+            }
+            
+            // Si hay al menos dos palabras
+            return (
+              <>
+                {/* Primera palabra con el estilo normal */}
+                {words[0]}{' '}
+                
+                {/* Segunda palabra con estilo diferente */}
+                <span style={{ fontWeight: '1000' }}>{words[1]}</span>
+                
+                {/* Palabras intermedias (si hay más de dos palabras) */}
+                {words.length > 2 && words.slice(2, -1).map((word, index) => (
+                  <React.Fragment key={index}>
+                    {' '}{word}
+                  </React.Fragment>
+                ))}
+                
+                {/* Última palabra (si hay más de una palabra) con estilo diferente */}
+                {words.length > 1 && (
+                  <>
+                    {' '}
+                    <span style={{ fontWeight: '1000' }}>{words[words.length - 1]}</span>
+                  </>
+                )}
+              </>
+            );
+          })()
+          : 
+          'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'
+        }
+      </h2>
         
         <div className="article-content">
-          <p>
+          <p id="sintesis">
             {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
           </p>
         </div>
@@ -193,7 +231,9 @@ const Contenido = () => {
           padding: '8px',
           width: '100%',
           margin: '30px 0',
-          fontSize: '1.3rem'
+          fontSize: '1.3rem',
+          position: 'relative' // Asegura que los insectos se posicionen relativos a este contenedor
+
         }}>
           {/* Define the keyframes animation for pulsing effect */}
           <style>
@@ -232,6 +272,19 @@ const Contenido = () => {
               }
             `}
           </style>
+          <div style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            width: '100%', 
+            height: '100%', 
+            zIndex: 0 // Para estar detrás de los elementos del menú
+          }}>
+            <InsectColony 
+              insects={insects}
+              count={25}
+            />
+          </div>
 
           {/* Map through menu items */}
           {menuItems.map((item, index) => {
@@ -299,10 +352,6 @@ const Contenido = () => {
           })}
         </div>
       </div>
-       <InsectColony 
-            insects={insects}
-            count={40} // Total number of insects (will cycle through your array)
-          />
     </div>
     
   );

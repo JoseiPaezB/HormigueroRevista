@@ -175,8 +175,8 @@ body, html {
   
   .contributors-list p {
     margin-right: 5px;
-    font-size: 10px;
-    line-height: 1.2;
+    font-size: 12px;
+    line-height: 2;
   }
   
   .contributors-list p:after {

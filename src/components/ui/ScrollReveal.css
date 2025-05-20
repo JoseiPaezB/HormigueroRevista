@@ -1,0 +1,65 @@
+/* ScrollReveal.css */
+
+/* Contenedor principal para componentes con animaciones de scroll */
+.scroll-reveal-container {
+  overflow-x: hidden; /* Prevenir scroll horizontal causado por transformaciones */
+  position: relative;
+}
+
+/* Clase para elementos individuales con animación de scroll */
+.scroll-reveal-item {
+  /* Estilos base ya aplicados inline en el componente */
+}
+
+/* Estilo para forzar la visibilidad durante la navegación por anclaje */
+.force-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Animación flotante para elementos */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Variaciones de velocidad para animaciones */
+.scroll-reveal-slow {
+  transition-duration: 1s !important;
+}
+
+.scroll-reveal-fast {
+  transition-duration: 0.3s !important;
+}
+
+/* Variaciones de retraso para grupos de elementos */
+.scroll-reveal-delay-1 {
+  transition-delay: 0.1s !important;
+}
+
+.scroll-reveal-delay-2 {
+  transition-delay: 0.2s !important;
+}
+
+.scroll-reveal-delay-3 {
+  transition-delay: 0.3s !important;
+}
+
+/* Variaciones de curvas de animación */
+.scroll-reveal-ease-in {
+  transition-timing-function: ease-in !important;
+}
+
+.scroll-reveal-ease-out {
+  transition-timing-function: ease-out !important;
+}
+
+.scroll-reveal-bounce {
+  transition-timing-function: cubic-bezier(0.17, 0.67, 0.83, 0.67) !important;
+}

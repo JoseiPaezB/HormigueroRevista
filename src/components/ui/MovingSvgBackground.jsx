@@ -6,7 +6,7 @@ const Insect = ({
   type = 'default',
   size = 30,
   opacity = 0.7,
-  zIndex = -1,
+  zIndex = 1, // Cambiado para estar por encima del contenido del menú
   initialPosition,
   speed = 1,
   rotationSpeed = 0.5,
@@ -96,7 +96,7 @@ const Insect = ({
   
   return (
     <div style={{
-      position: 'fixed',
+      position: 'absolute', // Cambiado de 'fixed' a 'absolute'
       left: `${position.x}%`,
       top: `${position.y}%`,
       transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
@@ -120,30 +120,31 @@ const Insect = ({
 };
 
 // Insects colony component
+// Modificación del componente InsectColony
 const InsectColony = ({ insects = [], count = 5 }) => {
-  // Generate the insect instances with randomized properties
+  // Genera los insectos basados en el count
   const generateInsects = () => {
     const insectInstances = [];
     let insectIndex = 0;
     
     for (let i = 0; i < count; i++) {
-      // Cycle through the provided insects array
+      // Cicla a través del array de insectos proporcionado
       const insectTemplate = insects[insectIndex % insects.length];
       insectIndex++;
       
-      // Create instance with randomized values
+      // Crea instancia con valores aleatorios
       insectInstances.push({
         id: i,
         src: insectTemplate.src,
         type: insectTemplate.type,
-        size: insectTemplate.size || Math.floor(Math.random() * 20) + 20, // 20-40px default
-        opacity: insectTemplate.opacity || (Math.random() * 0.4) + 0.4, // 0.4-0.8 default
+        size: insectTemplate.size || Math.floor(Math.random() * 20) + 20, // 20-40px por defecto
+        opacity: insectTemplate.opacity || (Math.random() * 0.4) + 0.4, // 0.4-0.8 por defecto
         initialPosition: insectTemplate.initialPosition || { 
           x: Math.random() * 100, 
           y: Math.random() * 100 
         },
-        speed: insectTemplate.speed || (Math.random() * 0.8) + 0.3, // 0.3-1.1 default
-        zIndex: insectTemplate.zIndex || -1 - Math.floor(Math.random() * 3), // -1 to -3 default
+        speed: insectTemplate.speed || (Math.random() * 0.8) + 0.3, // 0.3-1.1 por defecto
+        zIndex: insectTemplate.zIndex || 1 + Math.floor(Math.random() * 3), // 1 a 3 por defecto
         moveStyle: insectTemplate.moveStyle || 'wander'
       });
     }
@@ -151,11 +152,21 @@ const InsectColony = ({ insects = [], count = 5 }) => {
     return insectInstances;
   };
   
-  // Create insect instances when component mounts
-  const [insectInstances] = useState(generateInsects);
+  // Actualizar el estado cuando cambia count
+  const [insectInstances, setInsectInstances] = useState([]);
+  
+  // Regenerar insectos cuando count o insects cambian
+  useEffect(() => {
+    setInsectInstances(generateInsects());
+  }, [count, insects]); // Dependencias para regenerar cuando estos valores cambien
   
   return (
-    <>
+    <div style={{ 
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden'
+    }}>
       {insectInstances.map(insect => (
         <Insect
           key={insect.id}
@@ -169,7 +180,7 @@ const InsectColony = ({ insects = [], count = 5 }) => {
           moveStyle={insect.moveStyle}
         />
       ))}
-    </>
+    </div>
   );
 };
 

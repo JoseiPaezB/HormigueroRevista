@@ -206,23 +206,38 @@ const ContentComponent = ({ contentType }) => {
     }
   };
   
-  const FadeInElement = ({ children, delay = 0 }) => {
+ const FadeInElement = ({ children, delay = 0 }) => {
   const ref = useRef(null);
   
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
+    // Función para manejar la animación del elemento
+    const handleIntersection = (entries) => {
       entries.forEach(entry => {
+        // Si el elemento está entrando en el viewport (desde arriba o abajo)
         if (entry.isIntersecting) {
-          // Retrasar la animación según el parámetro de retardo para efecto escalonado
+          // Aplicar la animación de entrada con el retraso especificado
           setTimeout(() => {
-            entry.target.classList.add('fade-in-visible');
+            if (ref.current) {
+              ref.current.classList.add('fade-in-visible');
+              ref.current.classList.remove('fade-out');
+            }
           }, delay);
-          observer.unobserve(entry.target);
+        } 
+        // Si el elemento está saliendo del viewport
+        else {
+          // Cuando sale del viewport, prepararlo para la siguiente animación
+          // Sólo si no estamos en modo de clic
+          if (ref.current && !document.body.classList.contains('clicking-mode')) {
+            ref.current.classList.remove('fade-in-visible');
+            ref.current.classList.add('fade-out');
+          }
         }
       });
-    }, {
+    };
+    
+    const observer = new IntersectionObserver(handleIntersection, {
       root: null,
-      rootMargin: '0px',
+      rootMargin: '10px', // Un pequeño margen para activar un poco antes
       threshold: 0.1 // Activar cuando al menos el 10% del elemento es visible
     });
     
@@ -311,66 +326,73 @@ const ContentComponent = ({ contentType }) => {
 
   // Function to get title styling based on book size
   const getTitleStyles = (sizeInfo, isHighlighted) => {
-    const isDesktop = windowWidth > 840; // Define el umbral para desktop
-    
-    if (sizeInfo.isLarge) {
-      return {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        textAlign: 'center',
-        color: isHighlighted ? '#ffeb3b' : 'white', // Change color to yellow when highlighted
-        fontSize: isDesktop ? '3rem' : '24px', // 3rem para desktop, 24px para móvil
-        fontWeight: 'bold',
-        letterSpacing: '1px',
-        textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-        width: '80%',
-        textTransform: 'uppercase',
-      };
-    }
-    
+  const isDesktop = windowWidth > 840;
+  
+  if (sizeInfo.isLarge) {
     return {
-      margin: isDesktop ? '0 0 0 0' : '0 0 5px 0', 
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      textAlign: 'center',
+      color: isHighlighted ? 'white' : 'white',
+      fontSize: isDesktop ? '3rem' : '24px',
       fontWeight: 'bold',
-      letterSpacing: '0.5px',
-      fontSize: isDesktop ? '2.7rem' : 'inherit', // 1.5rem para desktop, heredado para móvil
-      textAlign: isDesktop ? 'center' : 'left', // Centrado en desktop, izquierda en móvil
-      color: isHighlighted ? '#ffeb3b' : 'white', // Change color to yellow when highlighted
+      letterSpacing: '1px',
+      textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+      width: '80%',
+      textTransform: 'uppercase',
+      textDecoration: isHighlighted ? 'underline' : 'none', // Agregar subrayado
+      textDecorationColor: '#ffeb3b', // Color del subrayado
+      textDecorationThickness: '3px', // Grosor del subrayado
     };
+  }
+  
+  return {
+    margin: isDesktop ? '0 0 0 0' : '0 0 5px 0',
+    fontWeight: 'bold',
+    letterSpacing: '0.5px',
+    fontSize: isDesktop ? '2.7rem' : 'inherit',
+    textAlign: isDesktop ? 'center' : 'left',
+    color: isHighlighted ? 'white' : 'white',
+    textDecoration: isHighlighted ? 'underline' : 'none', // Agregar subrayado
+    textDecorationColor: 'white', // Color del subrayado
+    textDecorationThickness: '3px', // Grosor del subrayado
   };
+};
 
   // Function to handle contributor click and highlight the related book
-  const handleContributorClick = (bookId) => {
-    // Create an ID for the book element based on the book's id
-    const bookElementId = `book-${bookId}`;
+ // Línea 370-398 aproximadamente
+const handleContributorClick = (bookId) => {
+  // Desactiva todas las animaciones de aparición cuando se hace clic
+  document.querySelectorAll('.fade-in-element').forEach(el => {
+    el.classList.add('fade-in-visible');
+  });
+  
+  // Create an ID for the book element based on the book's id
+  const bookElementId = `book-${bookId}`;
+  
+  // Find the book element by ID
+  const bookElement = document.getElementById(bookElementId);
+  
+  if (bookElement) {
+    // Scroll to the element with smooth animation
+    bookElement.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'center'
+    });
     
-    // Find the book element by ID
-    const bookElement = document.getElementById(bookElementId);
+    // Set highlighted author ID - sólo establecemos esto para el resaltado
+    setHighlightedAuthorId(bookId);
     
-    if (bookElement) {
-      // Scroll to the element with smooth animation
-      bookElement.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'center'
-      });
-      
-      // Set animating book ID to trigger SVG animation
-      setAnimatingBookId(bookId);
-      
-      // Set highlighted author ID
-      setHighlightedAuthorId(bookId);
-      
-      // Reset animation after it completes
-      setTimeout(() => {
-        setAnimatingBookId(null);
-        // Keep the highlight for 3 more seconds after animation ends
-        setTimeout(() => {
-          setHighlightedAuthorId(null);
-        }, 3000);
-      }, 1500); // Animation duration
-    }
-  };
+    // Reset highlight after 5 seconds
+    setTimeout(() => {
+      setHighlightedAuthorId(null);
+    }, 5000);
+    
+    // No establecemos animatingBookId para evitar la animación de pulso que puede causar los parpadeos
+  }
+};
   
   const isDesktop = windowWidth > 840; // Define el umbral para desktop igual que en getTitleStyles
   
@@ -383,8 +405,36 @@ const ContentComponent = ({ contentType }) => {
       
       {/* Article preview section */}
       <div className="article-preview">
-        <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', fontSize: isDesktop ? '4rem' : '50px', marginTop: '3rem' }}>
-          {displayTitle.toUpperCase()}
+        <h2 
+          className="edition-title" 
+          style={{ 
+            fontWeight: 'bold', 
+            marginBottom: '30px', 
+            fontSize: isDesktop ? '4rem' : '40px', 
+            marginTop: '3rem' 
+          }}
+        >
+          {displayTitle.toLowerCase() === 'creaciones' 
+            ? (
+                <>
+                  EL HORMIGUERO
+                  <p className="subtitle" style={{ fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic'
+                   }}>
+                    POEMAS EN VERSO Y PROSA
+                  </p>
+                </>
+              ) 
+            : displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica'
+              ? (
+                  <>
+                    OTROS BICHOS
+                    <p className="subtitle" style={{  fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic' }}>
+                      Ensayos, cuentos y críticas
+                    </p>
+                  </>
+                )
+              : displayTitle.toUpperCase()
+          }
         </h2>
         
         {/* Contributors list - Made clickable with scroll functionality */}
@@ -570,7 +620,7 @@ const ContentComponent = ({ contentType }) => {
       
       {/* Add CSS for the highlight animation */}
       <style jsx>{`
-        @keyframes highlight-pulse {
+         @keyframes highlight-pulse {
           0% { 
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             transform: scale(1);
@@ -586,13 +636,32 @@ const ContentComponent = ({ contentType }) => {
         }
         
         .highlight-animation {
-          animation: highlight-pulse 2s ease;
+          animation: highlight-pulse 3s ease;
         }
         
-        /* Optional: Add a smooth hover effect for the book items as well */
-        #book-container > div:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        .fade-in-element {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+          will-change: opacity, transform;
+        }
+        
+        .fade-in-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        
+        .fade-out {
+          opacity: 0;
+          transform: translateY(-30px); /* Movimiento hacia arriba al desaparecer */
+          transition: opacity 0.6s ease-in, transform 0.6s ease-in;
+        }
+        
+        /* Desactivar transiciones cuando se hace clic */
+        .clicking-mode .fade-in-element {
+          transition: none !important;
+          opacity: 1 !important;
+          transform: translateY(0) !important;
         }
       `}</style>
     </div>

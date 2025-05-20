@@ -358,9 +358,10 @@ return (
         fontWeight: 'bold', 
         textAlign: 'center',
         margin: '30px 0',
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
+        fontSize: isDesktop ?'auto' :'40px'
       }}>
-        VISUALES
+        A OJO DE HORMIGA
       </h2>
       
       {/* Author selection - REPLACED DROPDOWN WITH CLICKABLE BUTTONS */}

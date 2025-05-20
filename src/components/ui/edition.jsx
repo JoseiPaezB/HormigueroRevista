@@ -5,6 +5,10 @@ import portada from '../../assets/images/edicion1.png'; // Fallback image
 import HormigueadosSection from './hormigueados';
 import EventosSection from './eventos';
 import Footer from './footer';
+// Importa los nuevos componentes
+import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
+import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según tu estructura
+import '../ui/ScrollReveal.css';
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -53,6 +57,7 @@ const Edicion = () => {
   const [visibleAuthorIndex, setVisibleAuthorIndex] = useState(0);
   const [authorPosition, setAuthorPosition] = useState({ top: '40%', left: '50%' });
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [activeHash, setActiveHash] = useState('');
   const coverImageRef = useRef(null);
 
   // Track window resize
@@ -63,6 +68,12 @@ const Edicion = () => {
     
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Configurar navegación por hash
+  useEffect(() => {
+    const cleanup = setupHashNavigation(setActiveHash);
+    return cleanup;
   }, []);
 
   // Fetch revista data on component mount
@@ -216,8 +227,50 @@ const Edicion = () => {
     zIndex: 10
   };
 
+  // Función para renderizar el título con palabras individualmente animadas
+  const renderTitle = () => {
+    const title = revista?.nombre?.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO';
+    const words = title.split(' ');
+    
+    return (
+      <h2 className="edition-title" style={{ 
+        fontWeight: 'bold', 
+        display: 'flex', 
+        flexWrap: 'wrap', 
+        justifyContent: 'center' 
+      }}>
+        {words.map((word, index) => {
+          // Determinar estilo para palabras específicas (segunda y última)
+          const isSecondWord = index === 1;
+          const isLastWord = index === words.length - 1;
+          const fontWeight = (isSecondWord || isLastWord) ? '300' : 'bold';
+          
+          // Alternar dirección de animación
+          const direction = index % 2 === 0 ? 'left' : 'right';
+          
+          return (
+            <ScrollReveal 
+              key={index} 
+              delay={index * 100} 
+              direction={direction}
+              className="mx-1"
+            >
+              <span style={{ 
+                fontWeight, 
+                display: 'inline-block', 
+                margin: '0 5px'
+              }}>
+                {word}
+              </span>
+            </ScrollReveal>
+          );
+        })}
+      </h2>
+    );
+  };
+
   return (
-    <div className="edition-container">
+    <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
       <CustomStyles />
       
@@ -235,7 +288,7 @@ const Edicion = () => {
         <div className="texture-overlay"></div>
         
         {/* Random positioned author */}
-        <div style={authorStyle}>
+        <div style={authorStyle} className="float">
           {getCurrentAuthor()?.toUpperCase()}
         </div>
         
@@ -249,33 +302,43 @@ const Edicion = () => {
       </div>
       
       {/* Article preview section */}
-      <div className="article-preview">
-        <h2 className="edition-title" style={{ fontWeight: 'bold' }}>
-          {revista?.nombre?.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO'}
-        </h2>
-        
-        <div className="article-content">
-          <p>
-            {revista?.sintesis || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra egestas euismod gravida, ut fringilla neque interdum. Vivamus non interdum nisi. Aenean quis egestas justo, vitae tristique ut fermentum risus fermentum. Cras pharetra nec leo sed vel. Sed et sodales tellus, sed feugiat. Proin venenatis dolor non lectus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra egestas enim eu gravida, ut fringilla neque interdum. Vivamus non interdum nisi. Aenean quis.Fusce posuere fermentum. Cras pharetra nec leo sed vel. Sed et sodales tellus, sed feugiat.'}
-          </p>
+      <ScrollReveal direction="up">
+        <div className="article-preview">
+          {renderTitle()}
           
-          <a href="/contenidos#sintesis" className="read-more">
-            Leer más...
-          </a>
+          <ScrollReveal delay={300} direction="up">
+            <div className="article-content">
+              <p>
+                {revista?.sintesis || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra egestas euismod gravida, ut fringilla neque interdum. Vivamus non interdum nisi. Aenean quis egestas justo, vitae tristique ut fermentum risus fermentum. Cras pharetra nec leo sed vel. Sed et sodales tellus, sed feugiat. Proin venenatis dolor non lectus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra egestas enim eu gravida, ut fringilla neque interdum. Vivamus non interdum nisi. Aenean quis.Fusce posuere fermentum. Cras pharetra nec leo sed vel. Sed et sodales tellus, sed feugiat.'}
+              </p>
+              
+              <ScrollReveal delay={500} direction="left">
+                <a href="/contenidos#sintesis" className="read-more">
+                  Leer más...
+                </a>
+              </ScrollReveal>
+            </div>
+          </ScrollReveal>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Additional articles section */}
       <br />
-      <HormigueadosSection />
+      <ScrollReveal direction="right">
+        <HormigueadosSection />
+      </ScrollReveal>
       <br />
-      <div id="eventos">
-        <EventosSection />
-      </div>
+      <ScrollReveal direction="up">
+        <div id="eventos">
+          <EventosSection />
+        </div>
+      </ScrollReveal>
       <br />
-      <div>
-        <Footer />
-      </div>
+      <ScrollReveal direction="scale">
+        <div>
+          <Footer />
+        </div>
+      </ScrollReveal>
       <div id="contacto"></div>
     </div>
   );

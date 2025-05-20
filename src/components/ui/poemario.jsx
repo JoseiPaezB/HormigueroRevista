@@ -8,6 +8,45 @@ import bookCover4 from '../../assets/images/4res.png';
 import bookCover5 from '../../assets/images/5res.png';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
+import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
+import mosquito from '../../assets/images/mosquito.svg';
+// import ant from '../../assets/images/ant.svg';
+import bee from '../../assets/images/bee.svg';
+import fly from '../../assets/images/roach.svg';
+import ant from '../../assets/images/libelula.svg';
+
+// Initialize Supabase client
+const insects = [
+    {
+      src: mosquito,
+      type: 'mosquito',
+      size: 30,
+      // Optional: customize further
+      // speed: 2.5,
+      // initialPosition: { x: 100, y: 100 }
+    },
+    {
+      src: ant,
+      type: 'ant',
+      size: 25
+    },
+    {
+      src: bee,
+      type: 'bee',
+      size: 35
+    },
+    {
+      src: fly,
+      type: 'fly',
+      size: 28
+    },
+    {
+      src: mosquito, // You can reuse the same SVG with different behavior
+      type: 'default',
+      size: 32
+    }
+  ];
+
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -358,9 +397,11 @@ return (
                 {/* Author name and first part of semblanza */}
                 <div style={{ 
                   fontSize: isDesktop ? '2rem' : '14px',
-                  lineHeight: '1.5'
+                  display:'flex',
+                  justifyContent:'center'
+                  
                 }}>
-                  <p style={{ marginBottom: '15px' }}>
+                  <p style={{ marginBottom: '15px', width: isDesktop ? 'auto' : '90%' }}>
                     <span style={{ 
                       fontSize: isDesktop ? '4rem' : '28px', 
                       fontWeight: 'bold',
@@ -398,9 +439,10 @@ return (
                 {/* Second part of semblanza */}
                 <div style={{ 
                   fontSize: isDesktop ? '2rem' : '14px',
-                  lineHeight: '1.5'
+                  display:'flex',
+                  justifyContent:'center'
                 }}>
-                  <p style={{ marginBottom: '15px' }}>{secondPart}</p>
+                  <p style={{ marginBottom: '15px',width: isDesktop ? 'auto' : '90%'}}>{secondPart}</p>
                 </div>
               </>
             );
@@ -492,6 +534,27 @@ return (
     {/* Only show poemario title and works if not a visual artist */}
     {!isVisualArtist && (
       <>
+        <div style={{ 
+        position: 'relative', 
+        marginBottom: '40px',
+        paddingTop: '30px' // Espacio para el título
+      }}>
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%', 
+          zIndex: 0, // Para estar detrás de los elementos
+          pointerEvents: 'none' // Para que no interfiera con clics
+        }}>
+          <InsectColony 
+            insects={insects}
+            count={35}
+          />
+        </div>
+
+      
         {poemario && (
           <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>
            SUS POEMAS
@@ -505,7 +568,7 @@ return (
           marginBottom: '40px',
           padding: '0 20px', // Add horizontal padding
           maxWidth: '800px', // Set a maximum width
-          margin: '20px auto' // Center the grid with automatic horizontal margins
+          margin: '20px auto', // Center the grid with automatic horizontal margins
         }}>
           {arrangedBooks.map((book, index) => {
             const sizeStyles = getBookSize(book.wordCount, book.sizeCategory);
@@ -585,7 +648,11 @@ return (
               </Link>
             );
           })}
+          
         </div>
+        </div>
+        
+        
       </>
     )}
   </div>
