@@ -16,6 +16,7 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Add custom styles for the article content
+
 const CustomStyles = () => (
   <style>{`
     /* Apply text justification on all screen sizes */
@@ -44,6 +45,101 @@ const CustomStyles = () => (
         max-width: 50%;
       }
     }
+  
+    /* Animación para el título EDICION 1 */
+    .edicion-title-animation {
+      display: inline-block;
+      position: relative;
+      opacity: 0;
+      animation: slideInFromBelow 0.8s forwards 0.3s;
+    }
+    
+    @keyframes slideInFromBelow {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+        filter: blur(5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+    
+    /* Línea pulsante debajo */
+    .edition-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 2px;
+      background-color: white;
+      transition: width 0.3s ease;
+      width: 0;
+    }
+    
+    /* Texto de "Ver más" */
+    .click-hint {
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      margin-top: 5px;
+      text-align: center;
+    }
+    
+    /* Animación al entrar en viewport */
+    .animate-link::after {
+      animation: pulseLine 3.5s infinite ease-in-out;
+      width: 100%;
+    }
+    
+    .animate-link .click-hint {
+      opacity: 1;
+    }
+    
+    @keyframes pulseLine {
+      0% { opacity: 0.5; width: 30%; }
+      50% { opacity: 1; width: 100%; }
+      100% { opacity: 0.5; width: 30%; }
+    }
+    
+    /* Desktop hover effects */
+    @media (min-width: 769px) {
+      .edition-link:hover::after {
+        width: 100%;
+        animation: none;
+        opacity: 1;
+      }
+      
+      .edition-link:hover .click-hint {
+        opacity: 1;
+      }
+      
+      .edition-link:hover .portada {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+    }
+    
+    /* Mobile enhancements */
+    @media (max-width: 768px) {
+      .click-hint {
+        font-size: 10px;
+        padding: 2px 5px;
+        border-radius: 3px;
+      }
+      
+      .animate-link::after {
+        /* Línea más visible en móvil */
+        height: 3px;
+      }
+      
+      .animate-link .portada {
+        text-shadow: 0 0 8px rgba(255,255,255,0.4), 2px 2px 4px rgba(0,0,0,0.8);
+      }
+    }
   `}</style>
 );
 
@@ -60,7 +156,78 @@ const Edicion = () => {
   const [activeHash, setActiveHash] = useState('');
   const coverImageRef = useRef(null);
 
+useEffect(() => {
+  if (!editionLinkRef.current) return;
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !isEditionLinkVisible.current) {
+        // El elemento ha entrado en el viewport
+        isEditionLinkVisible.current = true;
+        
+        // Activar la animación de línea pulsante después de un momento
+        setTimeout(() => {
+          if (editionLinkRef.current) {
+            editionLinkRef.current.classList.add('animate-link');
+          }
+        }, 1000);
+      }
+    });
+  }, {
+    threshold: 0.7, // Se activa cuando el 70% del elemento es visible
+    rootMargin: '0px'
+  });
+  
+  observer.observe(editionLinkRef.current);
+  
+  return () => {
+    if (editionLinkRef.current) {
+      observer.unobserve(editionLinkRef.current);
+    }
+  };
+}, [windowWidth]);
   // Track window resize
+// Referencia para el elemento de edición
+const editionLinkRef = useRef(null);
+const isEditionLinkVisible = useRef(false);
+
+// Función para observar el enlace de edición y activar la animación
+useEffect(() => {
+  if (!editionLinkRef.current) return;
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !isEditionLinkVisible.current) {
+        // El elemento ha entrado en el viewport por primera vez
+        isEditionLinkVisible.current = true;
+        
+        // Activar la animación después de un pequeño retraso
+        setTimeout(() => {
+          if (editionLinkRef.current) {
+            editionLinkRef.current.classList.add('animate-underline');
+            
+            // En móviles, mostrar el texto de "haz clic" automáticamente
+            if (windowWidth < 768) {
+              editionLinkRef.current.classList.add('show-click-hint');
+            }
+          }
+        }, 1000);
+      }
+    });
+  }, {
+    threshold: 0.7, // Se activa cuando el 70% del elemento es visible
+    rootMargin: '0px'
+  });
+  
+  observer.observe(editionLinkRef.current);
+  
+  return () => {
+    if (editionLinkRef.current) {
+      observer.unobserve(editionLinkRef.current);
+    }
+  };
+}, [windowWidth]);
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -127,26 +294,63 @@ const Edicion = () => {
   }, []);
 
   // Generate safe position for the author name
-  const generateSafePosition = () => {
-    // Define safe zones based on device size
-    const isMobile = windowWidth < 768;
+  // Generate safe position for the author name
+const generateSafePosition = () => {
+  // Define safe zones based on device size
+  const isMobile = windowWidth < 768;
+  
+  // Márgenes más seguros para móvil
+  const mobileMargins = {
+    top: 25,      // 25% desde arriba
+    bottom: 35,   // 35% desde abajo (evitar área de "EDICION 1")
+    left: 25,     // 25% desde la izquierda
+    right: 25     // 25% desde la derecha
+  };
+  
+  // Márgenes normales para desktop
+  const desktopMargins = {
+    top: 15,
+    bottom: 30,
+    left: 20,
+    right: 20
+  };
+  
+  const margins = isMobile ? mobileMargins : desktopMargins;
+  
+  // Para móviles, creamos una única zona segura centrada con márgenes amplios
+  if (isMobile) {
+    // Calculamos los límites respetando los márgenes
+    const topMin = margins.top;
+    const topMax = 100 - margins.bottom;
+    const leftMin = margins.left;
+    const leftMax = 100 - margins.right;
     
+    // Generamos posición dentro de esta zona segura
+    const topPosition = Math.floor(Math.random() * (topMax - topMin)) + topMin;
+    const leftPosition = Math.floor(Math.random() * (leftMax - leftMin)) + leftMin;
+    
+    return {
+      top: `${topPosition}%`,
+      left: `${leftPosition}%`
+    };
+  } 
+  // Para desktop mantenemos el comportamiento original con zonas
+  else {
     // Safe zone boundaries (percentage of container)
-    // Avoid the bottom area where "EDICION 1" text appears (typically bottom 30%)
     const safeZones = [
       // Top area
       {
-        topMin: 15,
-        topMax: isMobile ? 40 : 50,
-        leftMin: 20,
-        leftMax: 80
+        topMin: margins.top,
+        topMax: 50,
+        leftMin: margins.left,
+        leftMax: 100 - margins.right
       },
-      // Left side (avoiding the right where text might overflow on mobile)
+      // Left side
       {
-        topMin: 15, 
+        topMin: margins.top, 
         topMax: 45,
-        leftMin: 20,
-        leftMax: isMobile ? 50 : 70 
+        leftMin: margins.left,
+        leftMax: 70 
       }
     ];
     
@@ -161,7 +365,8 @@ const Edicion = () => {
       top: `${topPosition}%`,
       left: `${leftPosition}%`
     };
-  };
+  }
+};
 
   // Effect for rotating through author names and positions
   useEffect(() => {
@@ -196,16 +401,23 @@ const Edicion = () => {
   };
 
   // Determine author font size based on screen width and name length
-  const getAuthorFontSize = () => {
-    const author = getCurrentAuthor() || '';
-    const isMobile = windowWidth < 768;
-    const baseSize = isMobile ? 10 : 15;
-    
-    // Reduce font size for longer names
-    if (author.length > 20) return `${isMobile ? 12 : 18}px`;
-    if (author.length > 15) return `${isMobile ? 12 : 18}px`;
-    return `${baseSize}px`;
-  };
+  // Determine author font size based on screen width and name length
+const getAuthorFontSize = () => {
+  const author = getCurrentAuthor() || '';
+  const isMobile = windowWidth < 768;
+  
+  // Tamaños base ajustados para móvil
+  const mobileBaseSize = 9; // Reducido de 10px
+  const desktopBaseSize = 15;
+  
+  // Usar tamaños base según dispositivo
+  const baseSize = isMobile ? mobileBaseSize : desktopBaseSize;
+  
+  // Ajustar según longitud del nombre
+  if (author.length > 20) return `${isMobile ? 8 : 14}px`; // Nombres muy largos
+  if (author.length > 15) return `${isMobile ? 9 : 16}px`; // Nombres largos
+  return `${baseSize}px`; // Nombres normales
+};
 
   // Author name style - dynamic based on screen size
   const authorStyle = {
@@ -221,7 +433,7 @@ const Edicion = () => {
     textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
     transition: 'all 0.5s ease-in-out',
     whiteSpace: 'nowrap',
-    maxWidth: windowWidth < 768 ? '70%' : '90%',
+    maxWidth: windowWidth < 768 ? '60%' : '90%',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     zIndex: 10
@@ -294,10 +506,23 @@ const Edicion = () => {
         
         {/* Issue info overlay */}
         <div className="issue-info">
-          <Link to="/contenidos" className="edition-link" style={{color: 'white'}}>
-            <h2 className="portada">EDICION {revista?.numero || 1}</h2>
-          </Link>          
-          <p className="edition-date">{formatDate(revista?.fecha) || '04/08/25'}</p>
+            <ScrollReveal direction="up" delay={800}>
+
+           <Link ref={editionLinkRef}  to="/contenidos" className="edition-link hover-underline-animation" style={{
+              color: 'white',
+              position: 'relative',
+              display: 'inline-block',
+              cursor: 'pointer'
+            }}>
+              <h2 className="portada edicion-title-animation">EDICION {revista?.numero || 1}</h2>
+              <ScrollReveal direction="up" delay={1000}>
+              <p className="edition-date" style={{marginTop:'-2rem'}}>{formatDate(revista?.fecha) || '04/08/25'}</p>
+              </ScrollReveal>
+              <div className="click-hint">Haz clic para ver más</div>
+          </Link>  
+          </ScrollReveal>
+          
+
         </div>
       </div>
       
