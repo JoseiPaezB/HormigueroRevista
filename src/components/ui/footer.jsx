@@ -123,7 +123,9 @@ const Footer = () => {
       <PulseStyle />
       
       <div className="footer-container">
+
         <div className="footer-grid">
+          
           {/* Contact */}
           <div className="footer-section">
             <h3 className="footer-heading" id="contacto">
