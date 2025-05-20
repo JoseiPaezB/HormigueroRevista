@@ -10,6 +10,7 @@ import bookCover2 from '../../assets/images/2res.png';
 import bookCover3 from '../../assets/images/3res.png';
 import bookCover4 from '../../assets/images/4res.png';
 import bookCover5 from '../../assets/images/5res.png';
+import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -400,118 +401,140 @@ const handleContributorClick = (bookId) => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="edition-container">
+    <div className="edition-container scroll-reveal-container">
       {/* Cover image */}
       
       {/* Article preview section */}
       <div className="article-preview">
-        <h2 
-          className="edition-title" 
-          style={{ 
-            fontWeight: 'bold', 
-            marginBottom: '30px', 
-            fontSize: isDesktop ? '4rem' : '40px', 
-            marginTop: '3rem' 
-          }}
-        >
-          {displayTitle.toLowerCase() === 'creaciones' 
-            ? (
-                <>
-                  EL HORMIGUERO
-                  <p className="subtitle" style={{ fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic'
-                   }}>
-                    POEMAS EN VERSO Y PROSA
-                  </p>
-                </>
-              ) 
-            : displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica'
+        {/* Título principal con ScrollReveal */}
+        <ScrollReveal direction="up">
+          <h2 
+            className="edition-title" 
+            style={{ 
+              fontWeight: 'bold', 
+              marginBottom: '30px', 
+              fontSize: isDesktop ? '4rem' : '40px', 
+              marginTop: '3rem' 
+            }}
+          >
+            {displayTitle.toLowerCase() === 'creaciones' 
               ? (
                   <>
-                    OTROS BICHOS
-                    <p className="subtitle" style={{  fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic' }}>
-                      Ensayos, cuentos y críticas
+                    EL HORMIGUERO
+                    <p className="subtitle" style={{ fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic'
+                    }}>
+                      POEMAS EN VERSO Y PROSA
                     </p>
                   </>
-                )
-              : displayTitle.toUpperCase()
-          }
-        </h2>
+                ) 
+              : displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica'
+                ? (
+                    <>
+                      OTROS BICHOS
+                      <p className="subtitle" style={{  fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic' }}>
+                        Ensayos, cuentos y críticas
+                      </p>
+                    </>
+                  )
+                : displayTitle.toUpperCase()
+            }
+          </h2>
+        </ScrollReveal>
         
-        {/* Contributors list - Made clickable with scroll functionality */}
-        <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem',display:'grid'}}>
-          {contributors.length > 0 ? (
-            contributors.map((contributor, index) => {
-              // Find the matching book for this contributor
-              const matchingBook = arrangedBooks.find(book => 
-                book.author.toLowerCase() === contributor.toLowerCase() ||
-                contributor.toLowerCase().includes(book.author.toLowerCase()) ||
-                book.author.toLowerCase().includes(contributor.toLowerCase())
-              );
-              
-              return (
-                <p 
-                  key={index} 
-                  onClick={() => matchingBook && handleContributorClick(matchingBook.id)}
-                  style={{
-                    marginBottom: '10px',
-                    cursor: matchingBook ? 'pointer' : 'default',
-                    position: 'relative',
-                    display: 'inline-block',
-                    transition: 'transform 0.2s ease, color 0.3s ease',
-                  }}
-                  // Add hover effects
-                  onMouseEnter={(e) => {
-                    if (matchingBook) {
-                      e.currentTarget.style.transform = 'translateX(10px)';
-                      e.currentTarget.style.color = 'black'; // Highlight color on hover
-                      // Highlight the corresponding author name
-                      setHighlightedAuthorId(matchingBook.id);
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (matchingBook) {
-                      e.currentTarget.style.transform = 'translateX(0)';
-                      e.currentTarget.style.color = 'inherit';
-                      // Remove highlight when not hovering or clicking
-                      if (animatingBookId !== matchingBook.id) {
-                        setHighlightedAuthorId(null);
-                      }
-                    }
-                  }}
-                >
-                  {contributor.toUpperCase()}
-                </p>
-              );
-            })
-          ) : (
-            /* Fallback contributors if none are found */
-            <>
-              <p style={{marginBottom: '10px'}}>JOSÉ NERUDA – "Veinte poemas de amor y una canción desesperada"</p>
-              <p style={{marginBottom: '10px'}}>FEDERICO GARCÍA LORCA – "Romancero gitano"</p>
-              <p style={{marginBottom: '10px'}}>EMILY DICKINSON – "Poems by Emily Dickinson"</p>
-              <p style={{marginBottom: '10px'}}>GABRIEL GARCÍA MÁRQUEZ – "Obra poética completa"</p>
-              <p style={{marginBottom: '10px'}}>OCTAVIO PAZ – "Piedra de sol"</p>
-            </>
-          )}
-        </div>
+        {/* Contributors list con ScrollReveal */}
+        <ScrollReveal direction="up" delay={200}>
+          <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem',display:'grid'}}>
+            {contributors.length > 0 ? (
+              contributors.map((contributor, index) => {
+                // Find the matching book for this contributor
+                const matchingBook = arrangedBooks.find(book => 
+                  book.author.toLowerCase() === contributor.toLowerCase() ||
+                  contributor.toLowerCase().includes(book.author.toLowerCase()) ||
+                  book.author.toLowerCase().includes(contributor.toLowerCase())
+                );
+                
+                // ScrollReveal para cada contribuidor con diferentes direcciones
+                const direction = index % 2 === 0 ? 'left' : 'right';
+                
+                return (
+                  <ScrollReveal key={index} delay={100 + index * 80} direction={direction} threshold={0.3}>
+                    <p 
+                      onClick={() => matchingBook && handleContributorClick(matchingBook.id)}
+                      style={{
+                        marginBottom: '10px',
+                        cursor: matchingBook ? 'pointer' : 'default',
+                        position: 'relative',
+                        display: 'inline-block',
+                        transition: 'transform 0.2s ease, color 0.3s ease',
+                      }}
+                      // Add hover effects
+                      onMouseEnter={(e) => {
+                        if (matchingBook) {
+                          e.currentTarget.style.transform = 'translateX(10px)';
+                          e.currentTarget.style.color = 'black'; // Highlight color on hover
+                          // Highlight the corresponding author name
+                          setHighlightedAuthorId(matchingBook.id);
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (matchingBook) {
+                          e.currentTarget.style.transform = 'translateX(0)';
+                          e.currentTarget.style.color = 'inherit';
+                          // Remove highlight when not hovering or clicking
+                          if (animatingBookId !== matchingBook.id) {
+                            setHighlightedAuthorId(null);
+                          }
+                        }
+                      }}
+                    >
+                      {contributor.toUpperCase()}
+                    </p>
+                  </ScrollReveal>
+                );
+              })
+            ) : (
+              /* Fallback contributors con ScrollReveal */
+              <>
+                <ScrollReveal delay={100} direction="left">
+                  <p style={{marginBottom: '10px'}}>JOSÉ NERUDA – "Veinte poemas de amor y una canción desesperada"</p>
+                </ScrollReveal>
+                <ScrollReveal delay={180} direction="right">
+                  <p style={{marginBottom: '10px'}}>FEDERICO GARCÍA LORCA – "Romancero gitano"</p>
+                </ScrollReveal>
+                <ScrollReveal delay={260} direction="left">
+                  <p style={{marginBottom: '10px'}}>EMILY DICKINSON – "Poems by Emily Dickinson"</p>
+                </ScrollReveal>
+                <ScrollReveal delay={340} direction="right">
+                  <p style={{marginBottom: '10px'}}>GABRIEL GARCÍA MÁRQUEZ – "Obra poética completa"</p>
+                </ScrollReveal>
+                <ScrollReveal delay={420} direction="left">
+                  <p style={{marginBottom: '10px'}}>OCTAVIO PAZ – "Piedra de sol"</p>
+                </ScrollReveal>
+              </>
+            )}
+          </div>
+        </ScrollReveal>
         
-        <div className="article-content" style={{marginBottom: '3rem', display: 'flex', justifyContent: 'center'}}>
-          <p style={{ 
-            textIndent: '1em',
-            lineHeight: '1.5',
-            hyphens: 'auto',
-            color: 'white',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo negro semitransparente 
-            padding: '14px',                        // Espacio interior
-            borderRadius: '4px',                    // Esquinas redondeadas
-            backdropFilter: 'blur(2px)',            // Efecto de desenfoque (opcional)
-            maxWidth: isDesktop ? '900px' : '100%', 
-          }}>
-            {content?.sintesis || 'Default synthesis text if none is available.'}
-          </p>
-        </div>
+        {/* Texto del artículo con ScrollReveal */}
+        <ScrollReveal direction="up" delay={400}>
+          <div className="article-content" style={{marginBottom: '3rem', display: 'flex', justifyContent: 'center'}}>
+            <p style={{ 
+              textIndent: '1em',
+              lineHeight: '1.5',
+              hyphens: 'auto',
+              color: 'white',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo negro semitransparente 
+              padding: '14px',                        // Espacio interior
+              borderRadius: '4px',                    // Esquinas redondeadas
+              backdropFilter: 'blur(2px)',            // Efecto de desenfoque (opcional)
+              maxWidth: isDesktop ? '900px' : '100%', 
+            }}>
+              {content?.sintesis || 'Default synthesis text if none is available.'}
+            </p>
+          </div>
+        </ScrollReveal>
 
-        {/* Book covers grid */}
+        {/* Book covers grid - No modificado según instrucciones */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
@@ -612,7 +635,6 @@ const handleContributorClick = (bookId) => {
                 </div>
               </Link>
             </FadeInElement>
-
             );
           })}
         </div>
@@ -662,6 +684,11 @@ const handleContributorClick = (bookId) => {
           transition: none !important;
           opacity: 1 !important;
           transform: translateY(0) !important;
+        }
+        
+        /* Clase para contenedor principal */
+        .scroll-reveal-container {
+          overflow-x: hidden; /* Evitar desbordamiento horizontal durante animaciones */
         }
       `}</style>
     </div>

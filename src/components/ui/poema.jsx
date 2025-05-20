@@ -5,6 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import hormigueroLogo from '../../assets/anticon.svg';
 import FloatingHormiguearButton from './hormiguearButton'; // Import our new component
 import hormigueroLogo2 from '../../assets/anticon2.svg'; // Make sure path is correct
+import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 
 
 // Initialize Supabase client
@@ -352,27 +353,34 @@ const Poema = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="edition-container" ref={articleContainerRef}>
-      {/* Green gradient cover image */}
+  <div className="edition-container scroll-reveal-container" ref={articleContainerRef}>
+    {/* Green gradient cover image */}
+    <ScrollReveal direction="up">
       <div className="cover-image image_2" style={{
         backgroundImage: `url(${poema?.portada || portada})`,
         height: '30vh'
       }}>
       </div>
-      
-      {/* Article preview section */}
-      <div className="article-preview" style={{
-        paddingLeft: '20px',
-        paddingRight: '20px'
-      }}>
+    </ScrollReveal>
+    
+    {/* Article preview section */}
+    <div className="article-preview" style={{
+      paddingLeft: '20px',
+      paddingRight: '20px'
+    }}>
+      <ScrollReveal direction="left" delay={300}>
         <div style={{ textAlign: 'left', color: '#888', fontSize: '14px', marginTop: '20px' }}>
           {formatDate(poema?.fecha) || fallbackPoem.date}
         </div>
-        
+      </ScrollReveal>
+      
+      <ScrollReveal direction="left" delay={400}>
         <div style={{ textAlign: 'left', marginTop: '10px', marginBottom: '5px' }}>
           {autor?.nombre || fallbackPoem.author}
         </div>
-        
+      </ScrollReveal>
+      
+      <ScrollReveal direction="up" delay={500}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -388,23 +396,28 @@ const Poema = () => {
             {poema?.titulo?.toUpperCase() || fallbackPoem.title}
           </h2>
         </div>
-       
+      </ScrollReveal>
+     
+      <div style={{
+        marginBottom: '3rem',
+        textAlign: 'left',
+        padding: 0
+      }}>
+        {/* Poem section - cada sección con su propia animación */}
         <div style={{
-          marginBottom: '3rem',
+          fontSize: isDesktop ? '1.3rem':'12px',
+          lineHeight: '1.8',
           textAlign: 'left',
-          padding: 0
+          padding: 0,
+          marginLeft: 0
         }}>
-          {/* Poem section */}
-          <div style={{
-            
-            fontSize: isDesktop ? '1.3rem':'12px',
-            lineHeight: '1.8',
-            textAlign: 'left',
-            padding: 0,
-            marginLeft: 0
-          }}>
-            {poemSections.map((section, index) => (
-              <div key={index} style={{ 
+          {poemSections.map((section, index) => (
+            <ScrollReveal 
+              key={index} 
+              direction={index % 2 === 0 ? "right" : "left"} 
+              delay={600 + (index * 200)}
+            >
+              <div style={{ 
                 marginBottom: '40px',
                 textAlign: 'left'
               }}>
@@ -419,13 +432,15 @@ const Poema = () => {
                   whiteSpace: 'pre-line'
                 }}>{section.content}</div>
               </div>
-            ))}
-          </div>
+            </ScrollReveal>
+          ))}
         </div>
-        
-        {/* Section for other poems by the author */}
-        {hasOtherPoems && (
-          <div ref={masPoemasSectionRef} style={{ marginTop: '60px', marginBottom: '40px' }}>
+      </div>
+      
+      {/* Section for other poems by the author */}
+      {hasOtherPoems && (
+        <div ref={masPoemasSectionRef} style={{ marginTop: '60px', marginBottom: '40px' }}>
+          <ScrollReveal direction="up">
             <h3 style={{ 
               textAlign: 'center', 
               fontWeight: 'bold',
@@ -435,16 +450,21 @@ const Poema = () => {
             }}>
               MAS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}
             </h3>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              flexWrap: 'wrap',
-              gap: '20px'
-            }}>
-              {otrosPoemas.map((otroPoema) => (
+          </ScrollReveal>
+          
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            flexWrap: 'wrap',
+            gap: '20px'
+          }}>
+            {otrosPoemas.map((otroPoema, index) => (
+              <ScrollReveal 
+                key={otroPoema.id} 
+                direction="up" 
+                delay={300 + (index * 150)}
+              >
                 <div 
-                  key={otroPoema.id} 
                   onClick={() => handleGoToPoem(otroPoema.id)}
                   style={{
                     width: isDesktop ? '300px': '150px',
@@ -470,18 +490,6 @@ const Poema = () => {
                         objectFit: 'cover'
                       }}
                     />
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '5px',
-                      right: '5px',
-                      fontSize: isDesktop ? '12px' :'8px',
-                      color: 'white',
-                      background: 'rgba(0,0,0,0.6)',
-                      padding: '2px 5px',
-                      borderRadius: '2px'
-                    }}>
-                      {getPoemaExcerpt(otroPoema.texto).split(' ').length} PALABRAS
-                    </div>
                   </div>
                   <h4 style={{
                     fontSize: isDesktop ? '1.2rem': '11px',
@@ -493,12 +501,14 @@ const Poema = () => {
                     {otroPoema.titulo}
                   </h4>
                 </div>
-              ))}
-            </div>
+              </ScrollReveal>
+            ))}
           </div>
-        )}
-        
-        {/* Back button */}
+        </div>
+      )}
+      
+      {/* Back button */}
+      <ScrollReveal direction="up" delay={200}>
         <div 
           onClick={() => navigate(-1)}
           style={{
@@ -510,12 +520,11 @@ const Poema = () => {
             cursor: 'pointer'
           }}
         >
-         <img 
+          <img 
             src={hormigueroLogo} 
             alt="Siguiente" 
             style={{
               width: '40px',
-              
               transform: 'rotate(270deg)', // Start at 270 degrees
               transition: 'transform 0.3s ease',
               background: 'none'
@@ -531,148 +540,162 @@ const Poema = () => {
             Regresar
           </span>
         </div>
-      </div>
-      
-      {/* Add the floating Hormiguear button */}
-      <FloatingHormiguearButton 
-        handleHormiguear={handleHormiguear}
-        stopAtElement={masPoemasSectionRef}
-        offsetBeforeStop={150} // You can adjust this value to control how far before the section it stops
-      />
-
-      {/* Keep your existing modal code with modified styling for the success message */}
-      {showHormiguearModal && (
-        <div onClick={closeModal} style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div onClick={(e) => e.stopPropagation()} style={{
-            backgroundColor: 'white',
-            padding: '20px',
-            borderRadius: '8px',
-            width: '300px',
-            maxWidth: '90%',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            position: 'relative'
-          }}>
-            {/* Close button */}
-            <button
-              onClick={closeModal}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                background: 'none',
-                border: 'none',
-                fontSize: '18px',
-                cursor: 'pointer',
-                color: 'black',
-              }}
-            >
-              ✕
-            </button>
-            
-            {!hormiguearSuccess ? (
-              <form onSubmit={submitHormiguear}>
-                <h3 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  marginBottom: '20px',
-                  fontSize: '16px'
-                  }}>
-                  <img 
-                      src={hormigueroLogo2} 
-                      alt="Hormiga" 
-                      style={{ width:'30px', height: 'auto' }} 
-                  />
-                  HORMIGUEAR POEMA
-                  </h3>
-                <p style={{
-                  marginBottom: '15px',
-                  textAlign: 'center',
-                  fontSize: '14px'
-                }}>
-                  Por favor, ingresa tu nombre para hormiguear este poema
-                </p>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  placeholder="Tu nombre"
-                  style={{
-                      width: '95%',
-                      padding: '8px',
-                      borderRadius: '4px',
-                      border: isFocused ? '1px solid black' : '1px solid #aaa',
-                      marginBottom: '15px',
-                      fontSize: '14px',
-                      outline: 'none',
-                      boxShadow: isFocused ? '0 0 0 2px black' : 'none',
-                      transition: 'border 0.2s, box-shadow 0.2s'
-                  }}
-                  
-                  />
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#000',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                      fontSize: '14px',
-                      opacity: isSubmitting ? 0.7 : 1
-                    }}
-                  >
-                    {isSubmitting ? 'ENVIANDO...' : 'ENVIAR'}
-                  </button>
-                </div>
-              </form>
-            ) : (
-              // Modified success screen
-              <div style={{
-                textAlign: 'center',
-                padding: '20px 0'
-              }}>
-                <h3 style={{
-                  marginBottom: '15px',
-                  fontSize: '20px',
-                  fontWeight: 'bold'
-                }}>
-                  GRACIAS
-                </h3>
-                <p style={{
-                  fontSize: '14px',
-                  marginBottom: '10px'
-                }}>
-                  POR HABER HORMIGUEADO<br />
-                  ESTE POEMA
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      </ScrollReveal>
     </div>
-  );
+    
+    {/* Add the floating Hormiguear button */}
+    <FloatingHormiguearButton 
+      handleHormiguear={handleHormiguear}
+      stopAtElement={masPoemasSectionRef}
+      offsetBeforeStop={150} // You can adjust this value to control how far before the section it stops
+    />
+
+    {/* Modal code - sin ScrollReveal ya que es una superposición */}
+    {showHormiguearModal && (
+      <div onClick={closeModal} style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000
+      }}>
+        <div onClick={(e) => e.stopPropagation()} style={{
+          backgroundColor: 'white',
+          padding: '20px',
+          borderRadius: '8px',
+          width: '300px',
+          maxWidth: '90%',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          position: 'relative'
+        }}>
+          {/* Close button */}
+          <button
+            onClick={closeModal}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: 'none',
+              border: 'none',
+              fontSize: '18px',
+              cursor: 'pointer',
+              color: 'black',
+            }}
+          >
+            ✕
+          </button>
+          
+          {!hormiguearSuccess ? (
+            <form onSubmit={submitHormiguear}>
+              <h3 style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                marginBottom: '20px',
+                fontSize: '16px'
+                }}>
+                <img 
+                    src={hormigueroLogo2} 
+                    alt="Hormiga" 
+                    style={{ width:'30px', height: 'auto' }} 
+                />
+                HORMIGUEAR POEMA
+                </h3>
+              <p style={{
+                marginBottom: '15px',
+                textAlign: 'center',
+                fontSize: '14px'
+              }}>
+                Por favor, ingresa tu nombre para hormiguear este poema
+              </p>
+              <input
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                placeholder="Tu nombre"
+                style={{
+                    width: '95%',
+                    padding: '8px',
+                    borderRadius: '4px',
+                    border: isFocused ? '1px solid black' : '1px solid #aaa',
+                    marginBottom: '15px',
+                    fontSize: '14px',
+                    outline: 'none',
+                    boxShadow: isFocused ? '0 0 0 2px black' : 'none',
+                    transition: 'border 0.2s, box-shadow 0.2s'
+                }}
+                
+                />
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center'
+              }}>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#000',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    opacity: isSubmitting ? 0.7 : 1
+                  }}
+                >
+                  {isSubmitting ? 'ENVIANDO...' : 'ENVIAR'}
+                </button>
+              </div>
+            </form>
+          ) : (
+            // Modified success screen
+            <div style={{
+              textAlign: 'center',
+              padding: '20px 0'
+            }}>
+              <h3 style={{
+                marginBottom: '15px',
+                fontSize: '20px',
+                fontWeight: 'bold'
+              }}>
+                GRACIAS
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                marginBottom: '10px'
+              }}>
+                POR HABER HORMIGUEADO<br />
+                ESTE POEMA
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+    
+    {/* CSS para manejo de overflow */}
+    <style jsx>{`
+      .scroll-reveal-container {
+        overflow-x: hidden; /* Prevenir desbordamiento horizontal durante animaciones */
+      }
+      
+      @media (max-width: 768px) {
+        .scroll-reveal-item {
+          transition-duration: 0.5s !important; /* Animaciones más rápidas en móvil */
+        }
+      }
+    `}</style>
+  </div>
+);
 };
 
 export default Poema;

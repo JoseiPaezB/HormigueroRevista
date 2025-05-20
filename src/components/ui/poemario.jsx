@@ -14,6 +14,7 @@ import mosquito from '../../assets/images/mosquito.svg';
 import bee from '../../assets/images/bee.svg';
 import fly from '../../assets/images/roach.svg';
 import ant from '../../assets/images/libelula.svg';
+import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 
 // Initialize Supabase client
 const insects = [
@@ -188,12 +189,12 @@ const AuthorBio = () => {
       for (let i = 0; i < maxSets; i++) {
         // Add first small book if available
         if (i * 2 < small.length) {
-          result.push({...small[i * 2], sizeCategory: 'small'});
+          result.push({...small[i * 2], sizeCategory: 'medium'});
         }
         
         // Add second small book if available
         if (i * 2 + 1 < small.length) {
-          result.push({...small[i * 2 + 1], sizeCategory: 'small'});
+          result.push({...small[i * 2 + 1], sizeCategory: 'medium'});
         }
         
         // Add large book if available
@@ -289,372 +290,413 @@ const AuthorBio = () => {
 
 
 return (
-  <div className="bio-container">
-    <div className="cover-image image_2" style={{
-      backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
-      height: '30vh'
-    }}>
-    </div>
-    
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      maxWidth: isDesktop ? 'none' : '400px',
-      width: isDesktop ? '75%' : 'auto',
-      overflow: 'hidden',
-      margin: '20px auto'
-    }}>
-      
-      {/* Content section */}
-      <div style={{
-        padding: isDesktop ? '20px' : '8px',
-        backgroundColor: 'white',
-        position: 'relative'
+  <div className="bio-container scroll-reveal-container">
+    {/* Cover image con ScrollReveal */}
+    <ScrollReveal direction="up">
+      <div className="cover-image image_2" style={{
+        backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
+        height: '30vh'
       }}>
-        {(() => {
-          // Get the semblanza text
-          const fullSemblanza = autor?.semblanza || '';
-          
-          // Check if we need to split the text (if longer than 100 chars)
-          if (fullSemblanza.length > 100) {
-            // Find all the periods in the text
-            const periods = [];
-            let dotIndex = fullSemblanza.indexOf('. ');
+      </div>
+    </ScrollReveal>
+    
+    <ScrollReveal direction="up" delay={300}>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        maxWidth: isDesktop ? 'none' : '400px',
+        width: isDesktop ? '75%' : 'auto',
+        overflow: 'hidden',
+        margin: '20px auto'
+      }}>
+        
+        {/* Content section */}
+        <div style={{
+          padding: isDesktop ? '20px' : '8px',
+          backgroundColor: 'white',
+          position: 'relative'
+        }}>
+          {(() => {
+            // Get the semblanza text
+            const fullSemblanza = autor?.semblanza || '';
             
-            while (dotIndex !== -1) {
-              periods.push(dotIndex + 1); // Include the period
-              dotIndex = fullSemblanza.indexOf('. ', dotIndex + 1);
-            }
-            
-            // If no periods found, don't split the text
-            if (periods.length === 0) {
-              return (
-                <div style={{ 
-                  fontSize: isDesktop ? '2rem' : '14px',
-                  lineHeight: '1.5'
-                }}>
-                  {/* Author image floating right since no good breaking point */}
-                  <img 
-                    src={autor?.imagen || eventImage} 
-                    alt={autor?.nombre || "Author"} 
-                    style={{
-                      float: 'right',
-                      height: isDesktop ? '400px' : '140px',
-                      objectFit: 'cover',
-                      margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
-                      border: '1px solid #eee'
-                    }}
-                  />
-                  
-                  {/* Author name and full semblanza */}
-                  <p style={{ marginBottom: '15px' }}>
-                    <span style={{ 
-                      fontSize: isDesktop ? '4rem' : '28px', 
-                      fontWeight: 'bold',
-                      float: 'left',
-                      marginRight: '2px',
-                      lineHeight: '1'
+            // Check if we need to split the text (if longer than 100 chars)
+            if (fullSemblanza.length > 100) {
+              // Find all the periods in the text
+              const periods = [];
+              let dotIndex = fullSemblanza.indexOf('. ');
+              
+              while (dotIndex !== -1) {
+                periods.push(dotIndex + 1); // Include the period
+                dotIndex = fullSemblanza.indexOf('. ', dotIndex + 1);
+              }
+              
+              // If no periods found, don't split the text
+              if (periods.length === 0) {
+                return (
+                  <ScrollReveal direction="up" delay={400}>
+                    <div style={{ 
+                      fontSize: isDesktop ? '2rem' : '14px',
+                      lineHeight: '1.5'
                     }}>
-                      {firstLetter}
-                    </span>
-                    {restOfName}, {/* Author name with comma */}
-                    {fullSemblanza}
-                  </p>
-                </div>
+                      {/* Author image floating right since no good breaking point */}
+                      <img 
+                        src={autor?.imagen || eventImage} 
+                        alt={autor?.nombre || "Author"} 
+                        style={{
+                          float: 'right',
+                          height: isDesktop ? '400px' : '140px',
+                          objectFit: 'cover',
+                          margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
+                          border: '1px solid #eee'
+                        }}
+                      />
+                      
+                      {/* Author name and full semblanza */}
+                      <p style={{ marginBottom: '15px' }}>
+                        <span style={{ 
+                          fontSize: isDesktop ? '4rem' : '28px', 
+                          fontWeight: 'bold',
+                          float: 'left',
+                          marginRight: '2px',
+                          lineHeight: '1'
+                        }}>
+                          {firstLetter}
+                        </span>
+                        {restOfName}, {/* Author name with comma */}
+                        {fullSemblanza}
+                      </p>
+                    </div>
+                  </ScrollReveal>
+                );
+              }
+              
+              // Find the period closest to the middle of the text
+              const middle = fullSemblanza.length / 2;
+              let breakIndex = periods[0]; // Default to first period
+              let closestDistance = Math.abs(periods[0] - middle);
+              
+              // Find the period closest to the middle
+              for (let i = 1; i < periods.length; i++) {
+                const distance = Math.abs(periods[i] - middle);
+                // If this period is closer to the middle than our current best
+                if (distance < closestDistance) {
+                  breakIndex = periods[i];
+                  closestDistance = distance;
+                }
+                // If we've passed the middle, we can stop looking
+                if (periods[i] > middle) {
+                  break;
+                }
+              }
+              
+              // Make sure we have a minimum first part length (at least 50 chars)
+              if (breakIndex < 50 && periods.length > 1) {
+                breakIndex = periods[1]; // Use the second period instead
+              }
+              
+              // Split the semblanza at the chosen period
+              const firstPart = fullSemblanza.substring(0, breakIndex);
+              const secondPart = fullSemblanza.substring(breakIndex).trim();
+              
+              return (
+                <>
+                  {/* Author name and first part of semblanza */}
+                  <ScrollReveal direction="left" delay={400}>
+                    <div style={{ 
+                      fontSize: isDesktop ? '2rem' : '14px',
+                      display:'flex',
+                      justifyContent:'center'
+                    }}>
+                      <p style={{ marginBottom: '15px', width: isDesktop ? 'auto' : '90%' }}>
+                        <span style={{ 
+                          fontSize: isDesktop ? '4rem' : '28px', 
+                          fontWeight: 'bold',
+                          float: 'left',
+                          marginRight: '2px',
+                          lineHeight: '1'
+                        }}>
+                          {firstLetter}
+                        </span>
+                        {restOfName}, {/* Author name with comma */}
+                        {firstPart}
+                      </p>
+                    </div>
+                  </ScrollReveal>
+                  
+                  {/* Author image between text parts - LARGER SIZE */}
+                  <ScrollReveal direction="scale" delay={600}>
+                    <div style={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      margin: isDesktop ? '40px 0' : '30px 0' // Increased margins
+                    }}>
+                      <img 
+                        src={autor?.imagen || eventImage} 
+                        alt={autor?.nombre || "Author"} 
+                        style={{
+                          height: isDesktop ? '500px' : '200px', // Increased height
+                          width: isDesktop ? '50%':'75%',
+                          objectFit: 'cover',
+                          border: '1px solid #eee',
+                          boxShadow: '0 4px 10px rgba(0,0,0,0.1)' // Added shadow for emphasis
+                        }}
+                      />
+                    </div>
+                  </ScrollReveal>
+                  
+                  {/* Second part of semblanza */}
+                  <ScrollReveal direction="right" delay={800}>
+                    <div style={{ 
+                      fontSize: isDesktop ? '2rem' : '14px',
+                      display:'flex',
+                      justifyContent:'center'
+                    }}>
+                      <p style={{ marginBottom: '15px',width: isDesktop ? 'auto' : '90%'}}>{secondPart}</p>
+                    </div>
+                  </ScrollReveal>
+                </>
+              );
+            } 
+            // For short semblanzas, keep image on the right (smaller size)
+            else {
+              return (
+                <ScrollReveal direction="up" delay={400}>
+                  <div style={{ 
+                    fontSize: isDesktop ? '2rem' : '14px',
+                    lineHeight: '1.5'
+                  }}>
+                    {/* Author image floating right */}
+                    <img 
+                      src={autor?.imagen || eventImage} 
+                      alt={autor?.nombre || "Author"} 
+                      style={{
+                        float: 'right',
+                        height: isDesktop ? '400px' : '140px',
+                        objectFit: 'cover',
+                        margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
+                        border: '1px solid #eee'
+                      }}
+                    />
+                    
+                    {/* First paragraph with author name and semblanza */}
+                    <p style={{ marginBottom: '15px' }}>
+                      <span style={{ 
+                        fontSize: isDesktop ? '4rem' : '28px', 
+                        fontWeight: 'bold',
+                        float: 'left',
+                        marginRight: '2px',
+                        lineHeight: '1'
+                      }}>
+                        {firstLetter}
+                      </span>
+                      {restOfName}, {/* Author name with comma */}
+                      {fullSemblanza}
+                    </p>
+                  </div>
+                </ScrollReveal>
               );
             }
-            
-            // Find the period closest to the middle of the text
-            const middle = fullSemblanza.length / 2;
-            let breakIndex = periods[0]; // Default to first period
-            let closestDistance = Math.abs(periods[0] - middle);
-            
-            // Find the period closest to the middle
-            for (let i = 1; i < periods.length; i++) {
-              const distance = Math.abs(periods[i] - middle);
-              // If this period is closer to the middle than our current best
-              if (distance < closestDistance) {
-                breakIndex = periods[i];
-                closestDistance = distance;
-              }
-              // If we've passed the middle, we can stop looking
-              if (periods[i] > middle) {
-                break;
-              }
-            }
-            
-            // Make sure we have a minimum first part length (at least 50 chars)
-            if (breakIndex < 50 && periods.length > 1) {
-              breakIndex = periods[1]; // Use the second period instead
-            }
-            
-            // Split the semblanza at the chosen period
-            const firstPart = fullSemblanza.substring(0, breakIndex);
-            const secondPart = fullSemblanza.substring(breakIndex).trim();
-            
-            return (
-              <>
-                {/* Author name and first part of semblanza */}
-                <div style={{ 
-                  fontSize: isDesktop ? '2rem' : '14px',
-                  display:'flex',
-                  justifyContent:'center'
-                  
-                }}>
-                  <p style={{ marginBottom: '15px', width: isDesktop ? 'auto' : '90%' }}>
-                    <span style={{ 
-                      fontSize: isDesktop ? '4rem' : '28px', 
-                      fontWeight: 'bold',
-                      float: 'left',
-                      marginRight: '2px',
-                      lineHeight: '1'
-                    }}>
-                      {firstLetter}
-                    </span>
-                    {restOfName}, {/* Author name with comma */}
-                    {firstPart}
-                  </p>
-                </div>
-                
-                {/* Author image between text parts - LARGER SIZE */}
-                <div style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  margin: isDesktop ? '40px 0' : '30px 0' // Increased margins
-                }}>
-                  <img 
-                    src={autor?.imagen || eventImage} 
-                    alt={autor?.nombre || "Author"} 
-                    style={{
-                      height: isDesktop ? '500px' : '200px', // Increased height
-                      width: isDesktop ? '50%':'75%',
-                      objectFit: 'cover',
-                      border: '1px solid #eee',
-                      boxShadow: '0 4px 10px rgba(0,0,0,0.1)' // Added shadow for emphasis
-                    }}
-                  />
-                </div>
-                
-                {/* Second part of semblanza */}
-                <div style={{ 
-                  fontSize: isDesktop ? '2rem' : '14px',
-                  display:'flex',
-                  justifyContent:'center'
-                }}>
-                  <p style={{ marginBottom: '15px',width: isDesktop ? 'auto' : '90%'}}>{secondPart}</p>
-                </div>
-              </>
-            );
-          } 
-          // For short semblanzas, keep image on the right (smaller size)
-          else {
-            return (
-              <div style={{ 
+          })()}
+          
+          {/* Bio corta section */}
+          <ScrollReveal direction="up" delay={1000}>
+            <div style={{ 
+              clear: 'both',
+              marginBottom: '20px',
+              marginTop: '30px'
+            }}>
+              <p style={{
                 fontSize: isDesktop ? '2rem' : '14px',
-                lineHeight: '1.5'
+                lineHeight: '1.5',
+                margin: 0
               }}>
-                {/* Author image floating right */}
-                <img 
-                  src={autor?.imagen || eventImage} 
-                  alt={autor?.nombre || "Author"} 
-                  style={{
-                    float: 'right',
-                    height: isDesktop ? '400px' : '140px',
-                    objectFit: 'cover',
-                    margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
-                    border: '1px solid #eee'
-                  }}
-                />
-                
-                {/* First paragraph with author name and semblanza */}
-                <p style={{ marginBottom: '15px' }}>
-                  <span style={{ 
-                    fontSize: isDesktop ? '4rem' : '28px', 
-                    fontWeight: 'bold',
-                    float: 'left',
-                    marginRight: '2px',
-                    lineHeight: '1'
-                  }}>
-                    {firstLetter}
-                  </span>
-                  {restOfName}, {/* Author name with comma */}
-                  {fullSemblanza}
-                </p>
-              </div>
-            );
-          }
-        })()}
-        
-        {/* Bio corta section */}
-        <div style={{ 
-          clear: 'both',
-          marginBottom: '20px',
-          marginTop: '30px'
-        }}>
-          <p style={{
-            fontSize: isDesktop ? '2rem' : '14px',
-            lineHeight: '1.5',
-            margin: 0
-          }}>
-            {autor?.bio_corta || ''}
-          </p>
-        </div>
-        
-        {/* Visual artist specific section */}
-        {isVisualArtist && (
-          <div style={{
-            marginTop: '30px',
-            textAlign: 'center'
-          }}>
-            <div 
-              onClick={() => navigate(-1)}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                marginTop: '30px',
-                marginBottom: '30px',
-                cursor: 'pointer'
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
-                Regresar
-              </span>
+                {autor?.bio_corta || ''}
+              </p>
             </div>
-          </div>
-        )}
+          </ScrollReveal>
+          
+          {/* Visual artist specific section */}
+          {isVisualArtist && (
+            <ScrollReveal direction="up" delay={1200}>
+              <div style={{
+                marginTop: '30px',
+                textAlign: 'center'
+              }}>
+                <div 
+                  onClick={() => navigate(-1)}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    marginTop: '30px',
+                    marginBottom: '30px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 19L5 12L12 5" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
+                    Regresar
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+          )}
+        </div>
       </div>
-    </div>
+    </ScrollReveal>
     
     {/* Only show poemario title and works if not a visual artist */}
     {!isVisualArtist && (
       <>
         <div style={{ 
-        position: 'relative', 
-        marginBottom: '40px',
-        paddingTop: '30px' // Espacio para el título
-      }}>
-        <div style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          width: '100%', 
-          height: '100%', 
-          zIndex: 0, // Para estar detrás de los elementos
-          pointerEvents: 'none' // Para que no interfiera con clics
-        }}>
-          <InsectColony 
-            insects={insects}
-            count={35}
-          />
-        </div>
-
-      
-        {poemario && (
-          <h2 className="edition-title" style={{ fontWeight: 'bold', marginBottom: '30px', textAlign: 'center' }}>
-           SUS POEMAS
-          </h2>
-        )}
-        
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
-          gap: '20px',
+          position: 'relative', 
           marginBottom: '40px',
-          padding: '0 20px', // Add horizontal padding
-          maxWidth: '800px', // Set a maximum width
-          margin: '20px auto', // Center the grid with automatic horizontal margins
+          paddingTop: '30px' // Espacio para el título
         }}>
-          {arrangedBooks.map((book, index) => {
-            const sizeStyles = getBookSize(book.wordCount, book.sizeCategory);
-            const titleStyles = getTitleStyles(sizeStyles);
-            const isLargeBook = sizeStyles.isLarge;
-            
-            // For large books, ensure they start at the beginning of a row
-            // by placing them in positions that align with the grid
-            const gridPosition = {};
-            if (isLargeBook) {
-              gridPosition.gridColumn = '1 / span 2'; // Always span full width
-            }
-            
-            return (
-              <Link 
-                key={book.id} 
-                to={book.link} 
-                style={{
-                  textDecoration: 'none', 
-                  color: 'inherit',
-                  ...gridPosition
-                }}
-              >
-                <div style={{
-                  position: 'relative',
-                  overflow: 'hidden',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                  transition: 'transform 0.3s ease',
-                  height: sizeStyles.height,
-                  width: '100%', // Always use full width of grid cell
-                }}>
-                  <img 
-                    src={book.cover} 
-                    alt={book.title} 
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                  
-                  {isLargeBook ? (
-                    // Centered title for large books
-                    <div style={titleStyles}>
-                      <h3>{book.title}</h3>
-                    </div>
-                  ) : (
-                    // Standard top-aligned title for small/medium books
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      padding: '10px',
-                      color: 'white',
-                      textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
-                      width: '100%',
-                      background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
-                    }}>
-                      <h4 style={titleStyles}>{book.title}</h4>
-                    </div>
-                  )}
-                  
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '5px',
-                    right: '5px',
-                    fontSize: isDesktop ? '14px' : '8px',
-                    color: 'white',
-                    background: 'rgba(0,0,0,0.6)',
-                    padding: '2px 5px',
-                    borderRadius: '2px'
-                  }}>
-                    {book.wordCount} PALABRAS
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          <div style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            width: '100%', 
+            height: '100%', 
+            zIndex: 0, // Para estar detrás de los elementos
+            pointerEvents: 'none' // Para que no interfiera con clics
+          }}>
+            <InsectColony 
+              insects={insects}
+              count={35}
+            />
+          </div>
+
+          {poemario && (
+            <ScrollReveal direction="up">
+              <h2 className="edition-title" style={{ 
+                fontWeight: 'bold', 
+                marginBottom: '30px', 
+                textAlign: 'center',
+                position: 'relative', // Para estar por encima de los insectos
+                zIndex: 1 // Mayor que los insectos
+              }}>
+                SUS POEMAS
+              </h2>
+            </ScrollReveal>
+          )}
           
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
+            gap: '20px',
+            marginBottom: '40px',
+            padding: '0 20px', // Add horizontal padding
+            maxWidth: '800px', // Set a maximum width
+            margin: '20px auto', // Center the grid with automatic horizontal margins
+            position: 'relative', // Para estar encima de los insectos
+            zIndex: 1
+          }}>
+            {arrangedBooks.map((book, index) => {
+              const sizeStyles = getBookSize(book.wordCount, book.sizeCategory);
+              const titleStyles = getTitleStyles(sizeStyles);
+              const isLargeBook = sizeStyles.isLarge;
+              
+              // For large books, ensure they start at the beginning of a row
+              // by placing them in positions that align with the grid
+              const gridPosition = {};
+              if (isLargeBook) {
+                gridPosition.gridColumn = '1 / span 2'; // Always span full width
+              }
+              
+              return (
+                <div 
+        key={book.id}
+        style={{
+          ...gridPosition,
+          // Esta es la clave: aplicar la posición del grid al contenedor externo
+          gridColumn: isLargeBook ? '1 / span 2' : 'auto'
+        }}
+      >
+        <ScrollReveal delay={200 + index * 100} direction="up">
+          <Link 
+            to={book.link} 
+            style={{
+              textDecoration: 'none', 
+              color: 'inherit',
+              display: 'block', // Asegura que el Link ocupe todo el espacio disponible
+              height: '100%'
+            }}
+          >
+            <div style={{
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+              transition: 'transform 0.3s ease',
+              height: sizeStyles.height,
+              width: '100%', // Always use full width of grid cell
+            }}>
+              <img 
+                src={book.cover} 
+                alt={book.title} 
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+              />
+                      
+                      {isLargeBook ? (
+                        // Centered title for large books
+                        <div style={titleStyles}>
+                          <h3>{book.title}</h3>
+                        </div>
+                      ) : (
+                        // Standard top-aligned title for small/medium books
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          padding: '10px',
+                          color: 'white',
+                          textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+                          width: '100%',
+                          background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)'
+                        }}>
+                          <h4 style={titleStyles}>{book.title}</h4>
+                        </div>
+                      )}
+                      
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '5px',
+                        right: '5px',
+                        fontSize: isDesktop ? '14px' : '8px',
+                        color: 'white',
+                        background: 'rgba(0,0,0,0.6)',
+                        padding: '2px 5px',
+                        borderRadius: '2px'
+                      }}>
+                        {book.wordCount} PALABRAS
+                      </div>
+                     </div>
+                    </Link>
+                  </ScrollReveal>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        </div>
-        
-        
       </>
     )}
+    
+    {/* CSS necesario para las animaciones */}
+    <style jsx>{`
+      .scroll-reveal-container {
+        overflow-x: hidden; /* Evitar desbordamiento horizontal durante animaciones */
+      }
+    `}</style>
   </div>
 );
 };

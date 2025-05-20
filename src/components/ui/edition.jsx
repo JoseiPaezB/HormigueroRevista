@@ -441,7 +441,7 @@ const getAuthorFontSize = () => {
 
   // Función para renderizar el título con palabras individualmente animadas
   const renderTitle = () => {
-    const title = revista?.nombre?.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO';
+    const title = revista?.nombre?.toUpperCase() || '';
     const words = title.split(' ');
     
     return (
@@ -455,7 +455,7 @@ const getAuthorFontSize = () => {
           // Determinar estilo para palabras específicas (segunda y última)
           const isSecondWord = index === 1;
           const isLastWord = index === words.length - 1;
-          const fontWeight = (isSecondWord || isLastWord) ? '300' : 'bold';
+          const fontWeight = (isSecondWord || isLastWord) ? '1000' : '300';
           
           // Alternar dirección de animación
           const direction = index % 2 === 0 ? 'left' : 'right';
