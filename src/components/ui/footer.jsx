@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Github, Twitter, Linkedin, Mail, Heart, Instagram, CheckCircle, AlertCircle } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, Heart, Instagram, CheckCircle, AlertCircle, Users } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
+import ScrollReveal from './ScrollReveal'; // Importa el componente ScrollReveal (ajusta la ruta según sea necesario)
 
 // Definimos el componente de estilo para los keyframes
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -26,6 +27,37 @@ const Footer = () => {
   const [email, setEmail] = useState('');
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [colaboradores, setColaboradores] = useState([]);
+  
+  // Fetch colaboradores from the revista table
+  useEffect(() => {
+    const fetchColaboradores = async () => {
+      try {
+        // Obtener colaboradores de la última revista (ID 1)
+        const { data, error } = await supabase
+          .from('revista')
+          .select('contribuyentes')
+          .eq('id', 1)
+          .single();
+        
+        if (error) throw error;
+        
+        if (data && data.contribuyentes) {
+          // Dividir la cadena por comas y eliminar espacios en blanco
+          const colaboradoresList = data.contribuyentes
+            .split(',')
+            .map(nombre => nombre.trim())
+            .filter(nombre => nombre.length > 0); // Filtrar nombres vacíos
+          
+          setColaboradores(colaboradoresList);
+        }
+      } catch (error) {
+        console.error('Error fetching colaboradores:', error);
+      }
+    };
+    
+    fetchColaboradores();
+  }, []);
   
   const handleContactEmphasis = () => {
     const footerElement = document.getElementById('contacto');
@@ -118,96 +150,168 @@ const Footer = () => {
   };
 
   return (
-    <footer className="footer">
+    <footer className="footer scroll-reveal-container">
       {/* Incluimos los keyframes de la animación */}
       <PulseStyle />
       
       <div className="footer-container">
-
         <div className="footer-grid">
+          {/* Sección de Colaboradores - Nueva sección */}
+          <ScrollReveal direction="up" delay={300}>
+           <div className="footer-section">
+            <h3 className="footer-heading" id="colaboradores">
+              
+               COLABORADORES
+              
+            </h3>
+            <div className="colaboradores-list" style={{ 
+              display: 'flex', 
+              flexDirection: 'column',  // Cambio clave para mostrar en columna
+              gap: '8px', 
+              marginTop: '12px',
+              maxWidth: '100%'
+            }}>
+              {colaboradores.length > 0 ? (
+                colaboradores.map((colaborador, index) => (
+                  <span 
+                    key={index}
+                    style={{ 
+                      display: 'block',  // Cambiado a block para ocupar todo el ancho
+                      padding: '4px 8px',
+                      fontSize: '14px',
+                      transition: 'all 0.2s ease',
+                      cursor: 'default',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateX(5px)';  // Modificado para un efecto horizontal
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateX(0)';
+                    }}
+                  >
+                   <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Users size={16} /> {colaborador.toUpperCase()}
+                    </span>
+                  </span>
+                ))
+              ) : (
+                <p style={{ fontSize: '14px', fontStyle: 'italic', margin: '0' }}>
+                  Cargando colaboradores...
+                </p>
+              )}
+            </div>
+          </div>
+          </ScrollReveal>
           
           {/* Contact */}
-          <div className="footer-section">
-            <h3 className="footer-heading" id="contacto">
-              CONTACTO
-            </h3>
-            <ul className="footer-list" style={{ textAlign: 'left', padding: 0 }}>
-              <li style={{ textAlign: 'left', listStyleType: 'none', marginBottom: '8px' }}>
-                <a href="mailto:hormiguero.bj@gmail.com" style={{ textDecoration: 'none', color: 'inherit' }} >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Mail size={16} /> HORMIGUERO.BJ@GMAIL.COM
-                  </span>
-                </a>
-              </li>
-              <li style={{ textAlign: 'left', listStyleType: 'none' }}>
-                <a href="https://www.instagram.com/hormiguerodepoemas?igsh=Y2owbnVvOGkxcmhs" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Instagram size={16} /> HORMIGUERODEPOEMAS
-                  </span>
-                </a>
-              </li>
-            </ul>
-          </div>
+          <ScrollReveal direction="up" delay={500}>
+            <div className="footer-section">
+              <h3 className="footer-heading" id="contacto">
+                CONTACTO
+              </h3>
+              <ul className="footer-list" style={{ textAlign: 'left', padding: 0 }}>
+                <li style={{ textAlign: 'left', listStyleType: 'none', marginBottom: '8px' }}>
+                  <a href="mailto:hormiguero.bj@gmail.com" style={{ textDecoration: 'none', color: 'inherit' }} >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Mail size={16} /> HORMIGUERO.BJ@GMAIL.COM
+                    </span>
+                  </a>
+                </li>
+                <li style={{ textAlign: 'left', listStyleType: 'none' }}>
+                  <a href="https://www.instagram.com/hormiguerodepoemas?igsh=Y2owbnVvOGkxcmhs" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Instagram size={16} /> HORMIGUERODEPOEMAS
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </ScrollReveal>
 
           {/* Newsletter */}
-          <div className="footer-section" >
-            <h3 className="footer-heading">QUEDATE AL PENDIENTE</h3>
-            <p className="newsletter-text">SUSCRIBETE PARA RECIBIR LAS ULTIMAS NOTICIAS</p>
-            <form className="newsletter-form" onSubmit={handleSubscribe}>
-              <input
-                type="email"
-                placeholder="Ingresa tu correo"
-                className="newsletter-input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isSubmitting}
-              />
-              <button 
-                className="newsletter-button" 
-                type="submit"
-                disabled={isSubmitting}
-                style={{
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  opacity: isSubmitting ? 0.7 : 1,
-                }}
-              >
-                {isSubmitting ? 'Enviando...' : 'Suscríbete'}
-              </button>
-            </form>
-            
-            {/* Subscription status message */}
-            {subscriptionStatus && (
-              <div 
-                style={{
-                  marginTop: '10px',
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  backgroundColor: subscriptionStatus.success ? 'rgba(76, 175, 80, 0.1)' : 'rgba(9, 9, 9, 0.1)',
-                  color: subscriptionStatus.success ? '#4caf50' : '#f44336',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '14px',
-                }}
-              >
-                {subscriptionStatus.success ? (
-                  <CheckCircle size={16} />
-                ) : (
-                  <AlertCircle size={16} />
-                )}
-                {subscriptionStatus.message}
-              </div>
-            )}
-          </div>
+          <ScrollReveal direction="up" delay={700}>
+            <div className="footer-section" id="suscribir">
+              <h3 className="footer-heading">QUEDATE AL PENDIENTE</h3>
+              <p className="newsletter-text">SUSCRIBETE PARA RECIBIR LAS ULTIMAS NOTICIAS</p>
+              <form className="newsletter-form" onSubmit={handleSubscribe}>
+                <input
+                  type="email"
+                  placeholder="Ingresa tu correo"
+                  className="newsletter-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isSubmitting}
+                />
+                <button 
+                  className="newsletter-button" 
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    opacity: isSubmitting ? 0.7 : 1,
+                  }}
+                >
+                  {isSubmitting ? 'Enviando...' : 'Suscríbete'}
+                </button>
+              </form>
+              
+              {/* Subscription status message */}
+              {subscriptionStatus && (
+                <div 
+                  style={{
+                    marginTop: '10px',
+                    padding: '8px 12px',
+                    borderRadius: '4px',
+                    backgroundColor: subscriptionStatus.success ? 'rgba(76, 175, 80, 0.1)' : 'rgba(9, 9, 9, 0.1)',
+                    color: subscriptionStatus.success ? '#4caf50' : '#f44336',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '14px',
+                  }}
+                >
+                  {subscriptionStatus.success ? (
+                    <CheckCircle size={16} />
+                  ) : (
+                    <AlertCircle size={16} />
+                  )}
+                  {subscriptionStatus.message}
+                </div>
+              )}
+            </div>
+          </ScrollReveal>
         </div>
 
         {/* Social Links & Copyright */}
-        <div className="footer-bottom">
-          <div className="copyright">
-            <span id="suscribete">&copy; {new Date().getFullYear()} HORMIGUERO. TODOS LOS DERECHOS RESERVADOS.</span>
+        <ScrollReveal direction="up" delay={900}>
+          <div className="footer-bottom">
+            <div className="copyright">
+              <span id="suscribete">&copy; {new Date().getFullYear()} HORMIGUERO. TODOS LOS DERECHOS RESERVADOS.</span>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
+      
+      {/* CSS para el contenedor scroll-reveal */}
+      <style>{`
+        .scroll-reveal-container {
+          overflow-x: hidden;
+        }
+        
+        /* Estilo para el grid del footer para incluir 3 columnas */
+        .footer-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+        }
+        
+        /* Ajuste para móviles */
+        @media (max-width: 768px) {
+          .footer-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </footer>
   );
 };

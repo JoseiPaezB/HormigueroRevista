@@ -191,7 +191,7 @@ const Navbar = () => {
                   textDecoration: 'none', 
                   color: '#000',
                   textTransform: 'uppercase',
-                  fontSize: window.innerWidth < 1200 ? '12px' : '18px',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
                   fontWeight: '500',
                   whiteSpace: 'nowrap'
                 }}
@@ -205,21 +205,33 @@ const Navbar = () => {
                   textDecoration: 'none', 
                   color: '#000',
                   textTransform: 'uppercase',
-                  fontSize: window.innerWidth < 1200 ? '12px' : '18px',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
                   fontWeight: '500',
                   whiteSpace: 'nowrap'
                 }}
               >
                 EVENTOS
               </a>
-              
+              <a 
+                href="/#colaboradores" 
+                style={{ 
+                  textDecoration: 'none', 
+                  color: '#000',
+                  textTransform: 'uppercase',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
+                  fontWeight: '500',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                COLABORADORES
+              </a>
               <a 
                 href="/#contacto" 
                 style={{ 
                   textDecoration: 'none', 
                   color: '#000',
                   textTransform: 'uppercase',
-                  fontSize: window.innerWidth < 1200 ? '12px' : '18px',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
                   fontWeight: '500',
                   whiteSpace: 'nowrap'
                 }}
@@ -233,7 +245,7 @@ const Navbar = () => {
                   textDecoration: 'none', 
                   color: '#000',
                   textTransform: 'uppercase',
-                  fontSize: window.innerWidth < 1200 ? '12px' : '18px',
+                  fontSize: window.innerWidth < 1200 ? '12px' : '14px',
                   fontWeight: '500',
                   whiteSpace: 'nowrap'  
                 }}
@@ -242,7 +254,7 @@ const Navbar = () => {
               </a>
             </div>
           )}
-          
+
           {/* Menu toggle - only visible on mobile */}
           {isMobile && (
             <button 
@@ -308,6 +320,15 @@ const Navbar = () => {
                 EVENTOS
               </a>
             </li>
+            <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+              <a 
+                href="/#colaboradores" 
+                style={{ textDecoration: 'none', color: '#000' }}
+                onClick={() => setMenuOpen(false)}
+              >
+                COLABORADORES
+              </a>
+            </li>
             
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <a 
@@ -321,7 +342,7 @@ const Navbar = () => {
 
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <a 
-                href="/#contacto" 
+                href="/#suscribir" 
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
               >
