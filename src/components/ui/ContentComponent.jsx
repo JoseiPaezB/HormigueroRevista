@@ -272,11 +272,11 @@ const ContentComponent = ({ contentType }) => {
 
   // Function to categorize books by size
   const categorizeBooks = (books) => {
-    const small = books.filter(book => book.poemCount < 5);
-    const medium = books.filter(book => book.poemCount >= 5 && book.poemCount <= 7);
-    const large = books.filter(book => book.poemCount > 7);
+    const small = books.filter(book => book.poemCount == -2);
+    const medium = books.filter(book => book.poemCount == -1);
+    const large = books.filter(book => book.poemCount >= 0);
     
-    return { small, medium, large };
+    return {small,medium, large };
   };
 
   // Function to arrange books in the pattern: small, large, medium, small, large, medium...
@@ -337,14 +337,14 @@ const ContentComponent = ({ contentType }) => {
       transform: 'translate(-50%, -50%)',
       textAlign: 'center',
       color: isHighlighted ? 'white' : 'white',
-      fontSize: isDesktop ? '3rem' : '24px',
+      fontSize: isDesktop ? '3rem' : '20px',
       fontWeight: 'bold',
       letterSpacing: '1px',
       textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
       width: '80%',
       textTransform: 'uppercase',
       textDecoration: isHighlighted ? 'underline' : 'none', // Agregar subrayado
-      textDecorationColor: '#ffeb3b', // Color del subrayado
+      textDecorationColor: 'white', // Color del subrayado
       textDecorationThickness: '3px', // Grosor del subrayado
     };
   }
@@ -516,23 +516,7 @@ const handleContributorClick = (bookId) => {
         </ScrollReveal>
         
         {/* Texto del artículo con ScrollReveal */}
-        <ScrollReveal direction="up" delay={400}>
-          <div className="article-content" style={{marginBottom: '3rem', display: 'flex', justifyContent: 'center'}}>
-            <p style={{ 
-              textIndent: '1em',
-              lineHeight: '1.5',
-              hyphens: 'auto',
-              color: 'white',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo negro semitransparente 
-              padding: '14px',                        // Espacio interior
-              borderRadius: '4px',                    // Esquinas redondeadas
-              backdropFilter: 'blur(2px)',            // Efecto de desenfoque (opcional)
-              maxWidth: isDesktop ? '900px' : '100%', 
-            }}>
-              {content?.sintesis || 'Default synthesis text if none is available.'}
-            </p>
-          </div>
-        </ScrollReveal>
+        
 
         {/* Book covers grid - No modificado según instrucciones */}
         <div style={{
@@ -606,7 +590,6 @@ const handleContributorClick = (bookId) => {
                     // Centered title for large books
                     <div style={titleStyles}>
                       <h3>{book.author.toUpperCase()}</h3>
-                      <p className='responsive-text' style={{ textTransform: 'uppercase'}}>{book.poemCount} POEMAS</p>
                     </div>
                   ) : (
                     // Standard top-aligned title for small/medium books con centrado en desktop
@@ -623,13 +606,7 @@ const handleContributorClick = (bookId) => {
                       alignItems: isDesktop ? 'center' : 'flex-start',
                     }}>
                       <h4 style={titleStyles}>{book.author.toUpperCase()}</h4>
-                      <p className="responsive-text" style={{ 
-                        textAlign: isDesktop ? 'center' : 'left',
-                        width: '100%',
-                        color: 'white'
-                      }}>
-                        {book.poemCount} {book.poemCount === 1 ? 'POEMA' : 'POEMAS'}
-                      </p>
+                      
                     </div>
                   )}
                 </div>

@@ -274,7 +274,7 @@ const Navbar = () => {
           id="navbar-menu"
           style={{
             position: 'fixed',
-            top: '60px', // Adjust based on your navbar height
+            top: '20px', // Adjust based on your navbar height
             left: 0,
             right: 0,
             backgroundColor: 'white',

@@ -16,6 +16,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 const Poema = () => {
+  
     const [isFocused, setIsFocused] = useState(false);
 
   const { id } = useParams(); // Get poem ID from URL
@@ -510,7 +511,7 @@ const Poema = () => {
       {/* Back button */}
       <ScrollReveal direction="up" delay={200}>
         <div 
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(`/poemario/${poema.id_autor}`)}
           style={{
             display: 'flex',
             flexDirection: 'column',

@@ -4,7 +4,7 @@ import FloatingHormiguearButton from './hormiguearButton';
 import { Link} from 'react-router-dom';
 import hormigueroLogo2 from '../../assets/anticon2.svg'; // Adjust the path as necessary
 import ScrollRevealItem from './scrollRevealItem';
-import InsectColony from './MovingSvgBackground';
+import InsectColony from './InsectColony2';
 import authorSvg from '../../assets/cinco2.svg'; // Adjust the path as necessary
 import ant from '../../assets/uno.svg'; // Adjust the path as necessary
 
@@ -421,7 +421,7 @@ return (
            {/* Regular sized ants */}
           <InsectColony 
             insects={insects}
-            count={40} // Total number of insects (will cycle through your array)
+            count={80} // Total number of insects (will cycle through your array)
           />
   
 
