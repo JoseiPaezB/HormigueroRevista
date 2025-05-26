@@ -7,6 +7,7 @@ import ScrollRevealItem from './scrollRevealItem';
 import InsectColony from './InsectColony2';
 import authorSvg from '../../assets/cinco2.svg'; // Adjust the path as necessary
 import ant from '../../assets/uno.svg'; // Adjust the path as necessary
+import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 
 
 // Initialize Supabase client
@@ -350,150 +351,118 @@ const Visuales = () => {
   
 return (
   <div className="visuales-container">
-    {/* Cover image */}
-    
     <div className="visuales-content" style={{ padding: '0 20px', marginTop: '6rem' }}>
       
-      <h2 className="visuales-title" style={{ 
-        fontWeight: 'bold', 
-        textAlign: 'center',
-        margin: '30px 0',
-        textTransform: 'uppercase',
-        fontSize: isDesktop ?'auto' :'40px'
-      }}>
-        A OJO DE HORMIGA
-      </h2>
-      
-      {/* Author selection - REPLACED DROPDOWN WITH CLICKABLE BUTTONS */}
-      <div style={{
-        maxWidth: '700px',
-        margin: '0 auto 30px',
-        textAlign: 'center'
-      }}>
-        
-        
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: '10px',
-          marginBottom: '20px'
+      <ScrollReveal diretion="right">
+        <h2 className="visuales-title" style={{
+          fontWeight: 'bold',
+          textAlign: 'center',
+          margin: '30px 0',
+          textTransform: 'uppercase',
+          fontSize: isDesktop ? 'auto' : '40px'
         }}>
-          <span 
-          onClick={() => setSelectedAuthor(null)}
-          style={{
-            cursor: 'pointer',
-            fontWeight: !selectedAuthor ? 'bold' : 'normal',
-            color: !selectedAuthor ? '#000' : '#666',
-            transition: 'all 0.2s ease',
-            textTransform: 'uppercase'
-          }}
-        >
-          Artista
-        </span>
-          
-        {authors.map(author => (
-          <span
-            key={author.id}
-            onClick={() => handleAuthorChange({ target: { value: author.id } })}
-            style={{
-              cursor: 'pointer',
-              fontWeight: selectedAuthor && selectedAuthor.id === author.id ? 'bold' : 'normal',
-              color: selectedAuthor && selectedAuthor.id === author.id ? '#000' : '#666',
-              transition: 'all 0.2s ease'
-            }}
-          >
-          OBRAS
+          A OJO DE HORMIGA
+        </h2>
+      </ScrollReveal>
+      
+      {/* Regular sized ants */}
+      <InsectColony 
+        insects={insects}
+        count={80}
+      />
 
-          </span>
-        ))}
-        </div>
-      </div>
+      {/* Show all authors with their works */}
+      {authors.map(author => {
+        // Filter visual pieces for this specific author
+        const authorPieces = allVisualPieces.filter(
+          piece => piece.id_autor === author.id
+        );
+        
+        // Process the pieces for this author
+        const processedPieces = authorPieces.map((piece, index) => {
+          const gridProps = getRandomGridProperties(index, authorPieces.length);
+          return {
+            ...piece,
+            ...gridProps,
+            margin: `${Math.floor(Math.random() * 15)}px`,
+            order: index
+          };
+        });
 
-      {/* Conditional rendering based on whether an author is selected */}
-      {selectedAuthor ? (
-        <>
-          {/* Show selected author info if available */}
-          
-          
-          {/* Author name background */}
-          {/* These will be stacked one after another vertically */}
-           {/* Regular sized ants */}
-          <InsectColony 
-            insects={insects}
-            count={80} // Total number of insects (will cycle through your array)
-          />
-  
-
-          
-          {/* Angled Grid Layout - only show when author is selected */}
-          <div className="angled-grid-container" style={{
-            maxWidth: '1000px',
-            margin: '0 auto',
-            padding: '20px',
-            position: 'relative'
-          }}>
-            {visuales.length > 0 ? (
-              visuales.map((piece, index) => (
-                <ScrollRevealItem 
-                  key={piece.id || index}
-                  index={index}
-                  piece={piece}
-                  handlePieceClick={handlePieceClick}
-                  totalPieces={visuales.length}
-                />
-              ))
-            ) : (
-              <p style={{ textAlign: 'center', padding: '40px 0' }}>
-                No hay obras visuales disponibles para este artista.
-              </p>
-            )}
-          </div>
-        </>
-      ) : (
-        // Show general section info when no author is selected
-        <>
-          {/* Contributors section */}
-          
-          {authors.map(author => (
-          <div
-            key={author.id}
-            onClick={() => handleAuthorChange({ target: { value: author.id } })}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '20px 0',
-              padding: '20px',
-
-            }}
-          >
-            <h3>{author.nombre.toUpperCase()}</h3>
+        return (
+          <div key={author.id} style={{ marginBottom: '80px' }}>
+            {/* Author info section */}
             <div style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'center',}}>
-              <p style={{width: isDesktop ? '70%' :'100%',
-                textAlign: 'justify',
-                fontSize: '14px',
-                color: '#000',
-                margin: '10px 0'
-              }}>{author.semblanza}</p>
+              justifyContent: 'center',
+              margin: '40px 0',
+              padding: '20px',
+            }}>
+            <ScrollReveal direction="up">
+              <h3 style={{ 
+                fontSize: isDesktop ? '2rem' : '1.5rem',
+                marginBottom: '20px',
+                textAlign: 'center'
+              }}>
+                {author.nombre.toUpperCase()}
+              </h3>
+               </ScrollReveal>
+              
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <ScrollReveal direction="down">
+                  <p style={{
+                    width: isDesktop ? '70%' : '100%',
+                    textAlign: 'justify',
+                    fontSize: '14px',
+                    color: '#000',
+                    margin: '10px 0',
+                    lineHeight: '1.6'
+                  }}>
+                    {author.semblanza}
+                  </p>
+                </ScrollReveal>
+              </div>
             </div>
 
+            {/* Author's visual works */}
+            <div className="angled-grid-container" style={{
+              maxWidth: '1000px',
+              margin: '0 auto',
+              padding: '20px',
+              position: 'relative'
+            }}>
+              {processedPieces.length > 0 ? (
+                processedPieces.map((piece, index) => (
+                  <ScrollRevealItem 
+                    key={piece.id || index}
+                    index={index}
+                    piece={piece}
+                    handlePieceClick={handlePieceClick}
+                    totalPieces={processedPieces.length}
+                  />
+                ))
+              ) : (
+                <p style={{ 
+                  textAlign: 'center', 
+                  padding: '20px 0',
+                  fontStyle: 'italic',
+                  color: '#666'
+                }}>
+                  No hay obras visuales disponibles para este artista.
+                </p>
+              )}
+            </div>
           </div>
-        ))}
-          {/* Synthesis/Description */}
-          
-          
-          {/* Message to select an author */}
-          
-        </>
-      )}
+        );
+      })}
     </div>
-
     {/* Popup for detailed view */}
     {showPopup && selectedPiece && (
       <div className="popup-overlay" 

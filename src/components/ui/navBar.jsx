@@ -156,15 +156,7 @@ const Navbar = () => {
               alt="Hormiga"
               style={getLogoSize()}
             />
-            <span style={{ 
-              fontSize: getBrandTextSize(),
-              marginTop: '2px',
-              color: '#000',
-              textTransform: 'uppercase',
-              fontFamily: 'JetBrains Mono, monospace',
-            }}>
-              Hormiguero de poemas
-            </span>
+           
           </a>
         </div>
         

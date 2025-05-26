@@ -6,7 +6,8 @@ import hormigueroLogo from '../../assets/anticon.svg';
 import FloatingHormiguearButton from './hormiguearButton'; // Import our new component
 import hormigueroLogo2 from '../../assets/anticon2.svg'; // Make sure path is correct
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
-
+import {insects} from '../../data/insects'
+import InsectColony from './MovingSvgBackground';
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -122,7 +123,7 @@ const Poema = () => {
     
     if (!userName.trim()) {
       // Show an error message if the name is empty
-      alert('Por favor, ingresa tu nombre para continuar.');
+      alert('Debes dejar un mensaje.');
       return;
     }
     
@@ -406,35 +407,101 @@ const Poema = () => {
       }}>
         {/* Poem section - cada sección con su propia animación */}
         <div style={{
-          fontSize: isDesktop ? '1.3rem':'12px',
+          fontSize: isDesktop ? '1.3rem':'11px',
           lineHeight: '1.8',
           textAlign: 'left',
           padding: 0,
-          marginLeft: 0
+          marginLeft: 0,
+          width:'96%'
         }}>
           {poemSections.map((section, index) => (
-            <ScrollReveal 
-              key={index} 
-              direction={index % 2 === 0 ? "right" : "left"} 
-              delay={600 + (index * 200)}
-            >
-              <div style={{ 
-                marginBottom: '40px',
-                textAlign: 'left'
-              }}>
-                {section.title && (
-                  <p style={{ 
-                    marginBottom: '15px',
-                    textAlign: 'left' 
-                  }}>{section.title}</p>
-                )}
-                <div style={{ 
-                  textAlign: 'left',
-                  whiteSpace: 'pre-line'
-                }}>{section.content}</div>
-              </div>
-            </ScrollReveal>
-          ))}
+          <div 
+            key={index}
+            style={{ 
+              marginBottom: '40px',
+              textAlign: 'left'
+            }}
+          >
+            {section.title && (
+              <p style={{ 
+                marginBottom: '15px',
+                textAlign: 'left' 
+              }}>{section.title}</p>
+            )}
+            <div style={{ 
+              textAlign: 'left'
+            }}>
+              {poema.id === 50 ? (
+            (() => {
+              const lines = section.content.split('\n');
+              let currentQuestion = null;
+              let currentAnswer = [];
+              const questionAnswerPairs = [];
+              let qaIndex = 0;
+
+              lines.forEach((line, lineIndex) => {
+                const startsWithNumber = /^\d+\./.test(line.trim());
+                
+                if (startsWithNumber) {
+                  // If we have a previous question and answer, save it
+                  if (currentQuestion !== null) {
+                    questionAnswerPairs.push({
+                      question: currentQuestion,
+                      answer: currentAnswer.join('\n'),
+                      index: qaIndex++
+                    });
+                  }
+                  // Start new question
+                  currentQuestion = line;
+                  currentAnswer = [];
+                } else if (line.trim() !== '') {
+                  // Add to current answer
+                  currentAnswer.push(line);
+                }
+              });
+
+              // Don't forget the last question-answer pair
+              if (currentQuestion !== null) {
+                questionAnswerPairs.push({
+                  question: currentQuestion,
+                  answer: currentAnswer.join('\n'),
+                  index: qaIndex++
+                });
+              }
+
+              return questionAnswerPairs.map((qa, qaIndex) => (
+                <div key={qaIndex} style={{ marginBottom: '30px' }}>
+                  <ScrollReveal 
+                    direction="up" 
+                    delay={200 + (qaIndex * 300)}
+                  >
+                    <div style={{ marginBottom: '10px' }}>
+                      <strong>{qa.question}</strong>
+                    </div>
+                  </ScrollReveal>
+                  
+                  <ScrollReveal 
+                    direction="up" 
+                    delay={400 + (qaIndex * 300)}
+                  >
+                    <div style={{ 
+                      whiteSpace: 'pre-line',
+                      marginBottom: '20px'
+                    }}>
+                      {qa.answer}
+                    </div>
+                  </ScrollReveal>
+                </div>
+              ));
+            })()
+          ) : (
+            <div style={{ whiteSpace: 'pre-line' }}>
+              {section.content}
+            </div>
+          )}
+        </div>
+      </div>
+    ))}
         </div>
       </div>
       
@@ -565,15 +632,16 @@ const Poema = () => {
         alignItems: 'center',
         zIndex: 1000
       }}>
+        
         <div onClick={(e) => e.stopPropagation()} style={{
           backgroundColor: 'white',
           padding: '20px',
-          borderRadius: '8px',
           width: '300px',
           maxWidth: '90%',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           position: 'relative'
         }}>
+          
           {/* Close button */}
           <button
             onClick={closeModal}
@@ -590,9 +658,23 @@ const Poema = () => {
           >
             ✕
           </button>
-          
+          <div style={{ 
+                      position: 'absolute', 
+                      left: 0, 
+                      width: '100%', 
+                      height: '100%', 
+                      zIndex: 0, // Para estar detrás de l  os elementos
+                      pointerEvents: 'none', // Para que no interfiera con clics
+                      marginTop: '-1.2rem'
+                    }}>
+                     <InsectColony 
+                      insects={insects.filter(insect => insect.type === 'mosquito')}
+                      count={30}
+                    />
+                    </div>
           {!hormiguearSuccess ? (
             <form onSubmit={submitHormiguear}>
+              
               <h3 style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -613,7 +695,7 @@ const Poema = () => {
                 textAlign: 'center',
                 fontSize: '14px'
               }}>
-                Por favor, ingresa tu nombre para hormiguear este poema
+                Deja un mensaje para hormiguear este poema
               </p>
               <input
                 type="text"
@@ -621,9 +703,9 @@ const Poema = () => {
                 onChange={(e) => setUserName(e.target.value)}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                placeholder="Tu nombre"
+                placeholder="Mensaje"
                 style={{
-                    width: '95%',
+                    width: '100%',
                     padding: '8px',
                     borderRadius: '4px',
                     border: isFocused ? '1px solid black' : '1px solid #aaa',
@@ -659,10 +741,25 @@ const Poema = () => {
             </form>
           ) : (
             // Modified success screen
+            
             <div style={{
               textAlign: 'center',
               padding: '20px 0'
             }}>
+              <div style={{ 
+                      position: 'absolute', 
+                      top: '80px', 
+                      left: 0, 
+                      width: '100%', 
+                      height: '60%', 
+                      zIndex: 0, // Para estar detrás de los elementos
+                      pointerEvents: 'none' // Para que no interfiera con clics
+                    }}>
+                     <InsectColony 
+                      insects={insects.filter(insect => insect.type === 'mosquito')}
+                      count={30}
+                    />
+                    </div>
               <h3 style={{
                 marginBottom: '15px',
                 fontSize: '20px',

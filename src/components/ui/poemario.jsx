@@ -494,6 +494,8 @@ return (
                       {restOfName}, {/* Author name with comma */}
                       {fullSemblanza}
                     </p>
+                    {/* Author link section - NEW */}
+                    
                   </div>
                 </ScrollReveal>
               );
@@ -514,6 +516,38 @@ return (
               }}>
                 {autor?.bio_corta || ''}
               </p>
+              {autor?.URL && (
+              <div style={{ 
+                textAlign: 'center'
+              }}>
+                <a 
+                  href={autor.URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: isDesktop ? '1.5rem' : '12px',
+                    textDecoration: 'underline',
+                    fontWeight: '500',
+                    transition: 'all 0.3s ease',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    display: 'inline-block'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.textDecoration = 'none';
+                    e.target.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent';
+                    e.target.style.textDecoration = 'underline';
+                    e.target.style.transform = 'translateY(0px)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  {autor.URL}
+                </a>
+              </div>
+            )}
             </div>
           </ScrollReveal>
           
@@ -573,19 +607,7 @@ return (
             />
           </div>
 
-          {poemario && (
-            <ScrollReveal direction="up">
-              <h2 className="edition-title" style={{ 
-                fontWeight: 'bold', 
-                marginBottom: '30px', 
-                textAlign: 'center',
-                position: 'relative', // Para estar por encima de los insectos
-                zIndex: 1 // Mayor que los insectos
-              }}>
-                SUS POEMAS
-              </h2>
-            </ScrollReveal>
-          )}
+          
           
           <div style={{
             display: 'grid',

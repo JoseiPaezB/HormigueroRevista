@@ -337,7 +337,7 @@ const ContentComponent = ({ contentType }) => {
       transform: 'translate(-50%, -50%)',
       textAlign: 'center',
       color: isHighlighted ? 'white' : 'white',
-      fontSize: isDesktop ? '3rem' : '20px',
+      fontSize: isDesktop ? '3rem' : '16px',
       fontWeight: 'bold',
       letterSpacing: '1px',
       textShadow: '2px 2px 4px rgba(0,0,0,0.8)',

@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import hormigueroLogo from '../../assets/anticon2.svg'; // Make sure path is correct
 
+
 const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBeforeStop = 150 }) => {
     const [buttonStyle, setButtonStyle] = useState({
         position: 'fixed',
-        right: '20px',
+        right: '5px',
         top: '40%',
         zIndex: 999,
         transition: 'all 0.3s ease',
@@ -15,7 +16,8 @@ const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBefor
   
   const buttonRef = useRef(null);
   const stopElementRef = useRef(null);
-
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const isDesktop = windowWidth > 840;
   useEffect(() => {
     // Set reference to the stop element if provided
     if (stopAtElement && stopAtElement.current) {
@@ -76,7 +78,7 @@ const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBefor
           background: 'white',
           border: '1px solid #ddd',
           borderRadius: '50%',
-          padding: '10px',
+          padding: isDesktop ? '10px':'6px',
           cursor: 'pointer',
           boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
           transition: 'transform 0.2s, box-shadow 0.2s'
@@ -93,7 +95,7 @@ const FloatingHormiguearButton = ({ handleHormiguear, stopAtElement, offsetBefor
         <img 
           src={hormigueroLogo} 
           alt="Hormiguear" 
-          style={{ width: '30px', height: 'auto' }} 
+          style={{  width: isDesktop ? '30px':'20px', height: 'auto' }} 
         />
         
       </button>

@@ -9,6 +9,8 @@ import Footer from './footer';
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según tu estructura
 import '../ui/ScrollReveal.css';
+import {insects} from '../../data/insects'
+import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -440,91 +442,245 @@ const getAuthorFontSize = () => {
   };
 
   // Función para renderizar el título con palabras individualmente animadas
-  const renderTitle = () => {
-    const title = revista?.nombre?.toUpperCase() || '';
-    const words = title.split(' ');
-    
-    return (
-      <h2 className="edition-title" style={{ 
-        fontWeight: 'bold', 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        justifyContent: 'center' 
-      }}>
-        {words.map((word, index) => {
-          // Determinar estilo para palabras específicas (segunda y última)
-          const isSecondWord = index === 1;
-          const isLastWord = index === words.length - 1;
-          const fontWeight = (isSecondWord || isLastWord) ? '1000' : '300';
-          
-          // Alternar dirección de animación
-          const direction = index % 2 === 0 ? 'left' : 'right';
-          
-          return (
-            <ScrollReveal 
-              key={index} 
-              delay={index * 100} 
-              direction={direction}
-              className="mx-1"
-            >
-              <span style={{ 
-                fontWeight, 
-                display: 'inline-block', 
-                margin: '0 5px'
-              }}>
-                {word}
-              </span>
-            </ScrollReveal>
-          );
-        })}
-      </h2>
-    );
-  };
+ const renderTitle = () => {
+  const title = 'SOBRE EL HORMIGUERO';
+  const words = title.split(' ');
+  
+  return (
+    <h2 className="edition-title" style={{ 
+      fontWeight: 'bold', 
+      display: 'flex', 
+      flexWrap: 'wrap', 
+      justifyContent: 'center',
+      gap: '12px'
+    }}>
+      {words.map((word, index) => {
+        // Pesos específicos para cada palabra
+        const fontWeights = ['900', '300', '900']; // SOBRE(bold), EL(light), HORMIGUERO(bold)
+        const fontWeight = fontWeights[index] || '400';
+        
+        // Direcciones específicas para mejor flujo visual
+        const directions = ['left', 'up', 'right']; // Más variedad
+        const direction = directions[index] || 'up';
+        
+        return (
+          <ScrollReveal 
+            key={index} 
+            delay={index * 200} // Más tiempo entre palabras
+            direction={direction}
+            className="mx-1"
+          >
+            <span style={{ 
+              fontWeight, 
+              display: 'inline-block',
+              letterSpacing: word === 'HORMIGUERO' ? '1px' : '0.5px', // Más spacing en la palabra larga
+              transition: 'all 0.7s ease'
+            }}>
+              {word}
+            </span>
+          </ScrollReveal>
+        );
+      })}
+    </h2>
+  );
+};
+  const isDesktop = windowWidth > 840;
 
   return (
     <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
       <CustomStyles />
       
-      {/* Green gradient cover image */}
-      <div 
-        ref={coverImageRef}
-        className="cover-image" 
-        id="main-content" 
-        style={{
-          backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        <div className="texture-overlay"></div>
-        
-        {/* Random positioned author */}
-        <div style={authorStyle} className="float">
-          {getCurrentAuthor()?.toUpperCase()}
-        </div>
-        
-        {/* Issue info overlay */}
-        <div className="issue-info">
-            <ScrollReveal direction="up" delay={800}>
-
-           <Link ref={editionLinkRef}  to="/contenidos" className="edition-link hover-underline-animation" style={{
-              color: 'white',
-              position: 'relative',
-              display: 'inline-block',
-              cursor: 'pointer'
-            }}>
-              <h2 className="portada edicion-title-animation">EDICION {revista?.numero || 1}</h2>
-              <ScrollReveal direction="up" delay={1000}>
-              <p className="edition-date" style={{marginTop:'-2rem'}}>{formatDate(revista?.fecha) || '04/08/25'}</p>
-              </ScrollReveal>
-              <div className="click-hint">Haz clic para ver más</div>
-          </Link>  
-          </ScrollReveal>
-          
-
-        </div>
+        {/* Green gradient cover image */}
+       <div 
+  ref={coverImageRef}
+  className="cover-image" 
+  id="main-content" 
+  style={{
+    backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
+    position: 'relative',
+    overflow: 'hidden',
+    minHeight: isDesktop ? '190vh':'100vh',
+    display: 'flex',
+    flexDirection: 'column'
+  }}
+>
+   <div style={{ 
+        position: 'absolute', 
+        top: '80px', 
+        left: 0, 
+        width: '100%', 
+        height: '100%', 
+        zIndex: 0, // Para estar detrás de los elementos
+        pointerEvents: 'none' // Para que no interfiera con clics
+      }}>
+       <InsectColony 
+        insects={insects.filter(insect => insect.type === 'mosquito')}
+        count={50}
+      />
       </div>
+  <div className="texture-overlay"></div>
+  
+{/* Top Section - Magazine Identity */}
+<div style={{
+  position: 'absolute',
+  top: '80px',
+  left: '10px',
+  zIndex: 10,
+  textAlign: 'left'
+}}>
+  {/* Magazine Title */}
+  <ScrollReveal direction="left" delay={200}>
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      <h1 style={{
+        fontSize: isDesktop ? '9rem': '2.5rem',
+        fontWeight: 'bold',
+        margin: 0,
+        lineHeight: '0.9',
+        letterSpacing: '2px',
+        color: 'white'
+      }}>
+        HORMIGUERO
+      </h1>
+      
+      {/* InsectColony positioned over the title */}
+      
+    </div>
+  </ScrollReveal>
+  
+  {/* "DE POEMAS" - Directly below HORMIGUERO */}
+  <div style={{ 
+  }}>
+    <ScrollReveal direction="left" delay={600}>
+      <div style={{
+      fontSize: isDesktop ? '6.5rem': '1.5rem',
+        fontWeight: '300',
+        lineHeight: '1.2',
+        color: 'white',
+      }}>
+        <div style={{ fontSize: isDesktop ? '4.5rem' : 'inherit'
+        }}>DE POEMAS</div>
+      </div>
+    </ScrollReveal>
+  </div>
+
+  {/* Subtitle - Below DE POEMAS */}
+  <div style={{
+    marginTop: '20px'
+  }}>
+    <ScrollReveal direction="left" delay={400}>
+      <div style={{
+      fontSize: isDesktop ? '1.5rem': '0.6rem',
+        fontWeight: '300',
+        color: 'white',
+        lineHeight: '1.3',
+        letterSpacing: '1px',
+        opacity: '0.8'
+      }}>
+        REVISTA DE LITERATURA<br/>
+        ESPECIALIZADA EN POESÍA
+      </div>
+    </ScrollReveal>
+  </div>
+</div>
+
+{/* Center Section - Main Theme */}
+<div style={{
+  position: 'absolute',
+  top: '60%',
+  left: '10px', // Back to left alignment
+  transform: 'translateY(-50%)', // Only center vertically
+  color: 'white',
+  zIndex: 10,
+  maxWidth: window.innerWidth <= 768 ? '90%' : '60%',
+  textAlign: 'left'
+}}>
+  
+  <ScrollReveal direction="up" delay={800}>
+    <h2 style={{
+      fontSize: 'clamp(1.8rem, 5vw, 4.5rem)',
+      fontWeight: 'bold',
+      margin: '0 0 15px 0',
+      lineHeight: '1.1'
+    }}>
+      LOS ESPÍRITUS DE LO MÍNIMO
+    </h2>
+  </ScrollReveal>
+  
+  <ScrollReveal direction="up" delay={1000}>
+    <div style={{
+      fontSize: 'clamp(0.8rem, 2vw, 1.4rem)',
+      fontWeight: '300',
+      letterSpacing: '1px',
+      width:'95%'
+    }}>
+      30.05.25 PRIMER NÚMERO
+    </div>
+  </ScrollReveal>
+  {/* Authors */}
+  <div style={{ 
+    maxWidth: window.innerWidth <= 768 ? '100%' : '65%',
+    order: window.innerWidth <= 768 ? 2 : 1
+  }}>
+    <ScrollReveal direction="up" delay={1200}>
+      <div style={{
+        fontSize: 'clamp(0.6rem, 1.2vw, 0.9rem)',
+        lineHeight: '1.4',
+        fontWeight: '300',
+        letterSpacing: '0.5px', 
+        width:'95%'
+      }}>
+        Alberto Avendaño, Carmen Avendaño, Luis Armenta, Marjuca Javier Bañuelos, Alessio Brandolini, Mikhail Carbajal, Fernando Carrera, Alfredo Castro Muñoz, Alexandro Castro, Jeannette L. Clariond, Eduardo Islas Coronel, Javier de Jesús, Eguía Zapata, Ricardo González Castillo, Bruno Javier, José Iglesias Páez, Mariana Pérez Villoro, Paulino Ordóñez, Julia Melissa Rivas Hernández, Edgar Trevizo, Elena Urueta
+      </div>
+    </ScrollReveal>
+  </div>
+</div>
+
+{/* Bottom Section - Stack on mobile */}
+<div style={{
+  position: 'absolute',
+  top:'70%',
+  bottom: '60px',
+  left: '10px', // Back to left alignment
+  right: '60px',
+  display: 'flex',
+  flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+  justifyContent: 'space-between',
+  alignItems: window.innerWidth <= 768 ? 'flex-start' : 'flex-end',
+  gap: window.innerWidth <= 768 ? '20px' : '0',
+  color: 'white',
+  zIndex: 10
+}}>
+  
+</div>
+
+{/* Center Bottom - CTA */}
+<div style={{
+  position: 'absolute',
+  bottom: '20px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  zIndex: 10
+}}>
+  <ScrollReveal direction="up" delay={1600}>
+    <Link 
+      ref={editionLinkRef}  
+      to="/contenidos" 
+      className="edition-link hover-underline-animation" 
+      style={{
+        color: 'white',
+        fontSize: 'clamp(0.7rem, 1.5vw, 1rem)',
+        fontWeight: '300',
+        letterSpacing: '1px',
+        textDecoration: 'none',
+        paddingBottom: '2px'
+      }}
+    >
+      HAZ CLIC PARA VER MÁS
+    </Link>  
+  </ScrollReveal>
+</div>
+</div>
       
       {/* Article preview section */}
       <ScrollReveal direction="up">

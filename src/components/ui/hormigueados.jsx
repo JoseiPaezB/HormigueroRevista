@@ -2,15 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import hormigueroLogo from '../../assets/anticon.svg';
 import { createClient } from '@supabase/supabase-js';
+import {insects} from '../../data/insects'
+import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const HormigueadosSection = () => {
-  const antTopRight = 'https://i.makeagif.com/media/3-07-2018/sWmlMp.gif';
-  const antBottomLeft = 'https://i.makeagif.com/media/3-07-2018/sWmlMp.gif';
-
   const [carouselItems, setCarouselItems] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -95,10 +94,29 @@ const HormigueadosSection = () => {
   const isDesktop = windowWidth > 840;
 
   return (
-    <div className="hormigueados-section" style={{ marginTop: '4rem' }}>
-      <div className="hormigueados-header">
+    <div className="hormigueados-section" style={{ 
+      marginTop: '4rem',
+      position: 'relative' // Added to contain the absolute positioned InsectColony
+    }}>
+      {/* InsectColony Background */}
+      
+
+      <div className="hormigueados-header" style={{ position: 'relative', zIndex: 1 }}>
         <h2 className="edition-title" style={{ fontWeight: 'bold',fontSize:'clamp(18px, 4vw, 3rem)',marginBottom:'-1rem' }}>LOS MAS HORMIGUEADOS</h2>
-        <img src={antTopRight} alt="Ant animation" className="ant-top-right" />
+      </div>
+      <div style={{ 
+        position: 'absolute', 
+        top: '80px', 
+        left: 0, 
+        width: '100%', 
+        height: '100%', 
+        zIndex: 0, // Para estar detrás de los elementos
+        pointerEvents: 'none' // Para que no interfiera con clics
+      }}>
+       <InsectColony 
+        insects={insects.filter(insect => insect.type === 'mosquito')}
+        count={100}
+      />
       </div>
 
       {isDesktop ? (
@@ -111,7 +129,9 @@ const HormigueadosSection = () => {
             gap: '20px',
             margin: '0 auto',
             maxWidth: '1200px',
-            padding: '0 15px'
+            padding: '0 15px',
+            position: 'relative',
+            zIndex: 1
           }}
         >
           {carouselItems.map((item, index) => (
@@ -172,7 +192,7 @@ const HormigueadosSection = () => {
           className="hormigueados-carousel"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
-          style={{ position: 'relative' }}
+          style={{ position: 'relative', zIndex: 1 }}
         >
           <div
             className="carousel-container"
@@ -222,8 +242,6 @@ const HormigueadosSection = () => {
           </div>
         </div>
       )}
-
-      <img src={antBottomLeft} alt="Ant animation" className="ant-bottom-left" />
     </div>
   );
 };
