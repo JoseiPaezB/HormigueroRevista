@@ -662,7 +662,6 @@ const getAuthorFontSize = () => {
   transform: 'translateX(-50%)',
   zIndex: 10
 }}>
-  <ScrollReveal direction="up" delay={1600}>
     <Link 
       ref={editionLinkRef}  
       to="/contenidos" 
@@ -678,7 +677,6 @@ const getAuthorFontSize = () => {
     >
       HAZ CLIC PARA VER MÁS
     </Link>  
-  </ScrollReveal>
 </div>
 </div>
       
