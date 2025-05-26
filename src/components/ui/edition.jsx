@@ -516,7 +516,7 @@ const getAuthorFontSize = () => {
       }}>
        <InsectColony 
         insects={insects.filter(insect => insect.type === 'mosquito')}
-        count={50}
+        count={25}
       />
       </div>
   <div className="texture-overlay"></div>
