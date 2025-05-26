@@ -516,7 +516,7 @@ const getAuthorFontSize = () => {
       }}>
        <InsectColony 
         insects={insects.filter(insect => insect.type === 'mosquito')}
-        count={25}
+        count={10}
       />
       </div>
   <div className="texture-overlay"></div>
@@ -596,7 +596,7 @@ const getAuthorFontSize = () => {
   textAlign: 'left'
 }}>
   
-  <ScrollReveal direction="up" delay={800}>
+  <ScrollReveal direction="up" delay={2000}>
     <h2 style={{
       fontSize: 'clamp(1.8rem, 5vw, 4.5rem)',
       fontWeight: 'bold',
@@ -657,26 +657,28 @@ const getAuthorFontSize = () => {
 {/* Center Bottom - CTA */}
 <div style={{
   position: 'absolute',
-  bottom: '20px',
-  left: '50%',
+  bottom:isDesktop ?'4rem' : '6rem',
+  left: isDesktop ?'10%' : '25%',
   transform: 'translateX(-50%)',
   zIndex: 10
 }}>
-    <Link 
-      ref={editionLinkRef}  
-      to="/contenidos" 
-      className="edition-link hover-underline-animation" 
-      style={{
-        color: 'white',
-        fontSize: 'clamp(0.7rem, 1.5vw, 1rem)',
-        fontWeight: '300',
-        letterSpacing: '1px',
-        textDecoration: 'none',
-        paddingBottom: '2px'
-      }}
-    >
-      HAZ CLIC PARA VER MÁS
-    </Link>  
+  <ScrollReveal direction="left" delay={200}>
+      <Link
+        ref={editionLinkRef}
+        to="/contenidos"
+        className="edition-link hover-underline-animation"
+        style={{
+          color: 'white',
+          fontSize: 'clamp(0.7rem, 1.5vw, 1rem)',
+          fontWeight: '300',
+          letterSpacing: '1px',
+          textDecoration: 'none',
+          paddingBottom: '2px'
+        }}
+      >
+        HAZ CLIC PARA VER MÁS
+      </Link>
+    </ScrollReveal>
 </div>
 </div>
       

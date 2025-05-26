@@ -658,20 +658,7 @@ const Poema = () => {
           >
             ✕
           </button>
-          <div style={{ 
-                      position: 'absolute', 
-                      left: 0, 
-                      width: '100%', 
-                      height: '100%', 
-                      zIndex: 0, // Para estar detrás de l  os elementos
-                      pointerEvents: 'none', // Para que no interfiera con clics
-                      marginTop: '-1.2rem'
-                    }}>
-                     <InsectColony 
-                      insects={insects.filter(insect => insect.type === 'mosquito')}
-                      count={30}
-                    />
-                    </div>
+                      
           {!hormiguearSuccess ? (
             <form onSubmit={submitHormiguear}>
               
