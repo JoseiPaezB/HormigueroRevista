@@ -339,7 +339,7 @@ const ContentComponent = ({ contentType }) => {
       transform: 'translate(-50%, -50%)',
       textAlign: 'center',
       color: isHighlighted ? 'white' : 'white',
-      fontSize: isDesktop ? '3rem' : '16px',
+      fontSize: isDesktop ? '1.5rem' : '16px',
       fontWeight: 'bold',
       letterSpacing: '1px',
       textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
@@ -415,7 +415,7 @@ const handleContributorClick = (bookId) => {
             style={{ 
               fontWeight: 'bold', 
               marginBottom: '30px', 
-              fontSize: isDesktop ? '4rem' : '40px', 
+              fontSize: isDesktop ? '3rem' : '40px', 
               marginTop: '3rem' 
             }}
           >
@@ -557,7 +557,6 @@ const handleContributorClick = (bookId) => {
                     position: 'relative',
                     overflow: 'hidden',
                     borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
                     transition: 'all 0.3s ease', // Modified transition to include all properties
                     height: sizeStyles.height,
                     width: '100%', // Always use full width of grid cell
@@ -622,18 +621,7 @@ const handleContributorClick = (bookId) => {
       {/* Add CSS for the highlight animation */}
       <style jsx>{`
          @keyframes highlight-pulse {
-          0% { 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transform: scale(1);
-          }
-          50% { 
-            box-shadow: 0 0 20px 5px rgba(227, 226, 220, 0.4);
-            transform: scale(1.05);
-          }
-          100% { 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transform: scale(1);
-          }
+         
         }
         
         .highlight-animation {
