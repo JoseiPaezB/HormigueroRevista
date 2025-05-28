@@ -57,7 +57,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 const AuthorBio = () => {
-    const { id } = useParams(); // Get author ID from URL if available
+    const { nombre } = useParams(); // Get author ID from URL if available
     const navigate = useNavigate(); // Initialize navigate function
     const [autor, setAutor] = useState(null);
     const [poemas, setPoemas] = useState([]);
@@ -85,84 +85,89 @@ const AuthorBio = () => {
     };
 
     // Fetch data on component mount
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          // Default author ID if not provided in URL
-          const authorId = id // Using ID from URL params
-          
-          // 1. Fetch autor (author) data
-          const { data: autorData, error: autorError } = await supabase
-            .from('autor')
-            .select('*')
-            .eq('id', authorId)
-            .single();
+    // Fetch data on component mount
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      console.log('URL param:', nombre);
+      console.log('Decoded:', decodeURIComponent(nombre));
+      const decodedNombre = decodeURIComponent(nombre);
 
-          if (autorError) throw autorError;
-          setAutor(autorData);
-          
-          // Check if author is visual artist
-          setIsVisualArtist(autorData.tipo_creacion === 'visuales' || autorData.tipo_creacion === 'entrevista');
+      // 1. Fetch autor (author) data by name
+      const { data: autorData, error: autorError } = await supabase
+        .from('autor')
+        .select('*')
+         .ilike('nombre', decodedNombre.trim()) 
+        .single();
 
-          // 2. Fetch revista for the header background
-          const { data: revistaData, error: revistaError } = await supabase
-            .from('revista')
-            .select('*')
-            .eq('id', 1)
-            .single();
+      if (autorError) throw autorError;
+      setAutor(autorData);
+      
+      // Get the actual author ID from the database
+      const authorId = autorData.id; // This is the actual ID we need
+      
+      // Check if author is visual artist
+      setIsVisualArtist(autorData.tipo_creacion === 'visuales' || autorData.tipo_creacion === 'entrevista');
 
-          if (revistaError) throw revistaError;
-          setRevista(revistaData);
+      // 2. Fetch revista for the header background
+      const { data: revistaData, error: revistaError } = await supabase
+        .from('revista')
+        .select('*')
+        .eq('id', 1)
+        .single();
 
-          // Only fetch poems if the author is not a visual artist
-          if (autorData.tipo_creacion !== 'visuales') {
-            // 3. Fetch poems by this author
-            const { data: poemasData, error: poemasError } = await supabase
-              .from('poema')
-              .select('*')
-              .eq('id_autor', authorId);
+      if (revistaError) throw revistaError;
+      setRevista(revistaData);
 
-            if (poemasError) throw poemasError;
-            
-            // 4. Fetch poemario info
-            const { data: poemarioData, error: poemarioError } = await supabase
-              .from('poemario')
-              .select('*')
-              .eq('id_autor', authorId)
-              .single();
-            
-            if (!poemarioError) {
-              setPoemario(poemarioData);
-            }
-            
-            // Transform poemas to match the books format and count words
-            const transformedPoemas = poemasData.map((poema, index) => {
-              // Count words in the poem text
-              const wordCount = countWords(poema.texto);
-              
-              return {
-                id: poema.id,
-                title: poema.titulo,
-                author: autorData.nombre,
-                cover: poema.portada || defaultCovers[(index % 5) + 1], // Cycle through available covers
-                link: `/poema/${poema.id}`,
-                wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
-              };
-            });
+      // Only fetch poems if the author is not a visual artist
+      if (autorData.tipo_creacion !== 'visuales') {
+        // 3. Fetch poems by this author using the actual ID
+        const { data: poemasData, error: poemasError } = await supabase
+          .from('poema')
+          .select('*')
+          .eq('id_autor', authorId); // Use the actual ID, not the name
 
-            setPoemas(transformedPoemas);
-          }
-          
-          setLoading(false);
-        } catch (err) {
-          console.error('Error fetching author data:', err);
-          setError('Failed to load author data');
-          setLoading(false);
+        if (poemasError) throw poemasError;
+        
+        // 4. Fetch poemario info using the actual ID
+        const { data: poemarioData, error: poemarioError } = await supabase
+          .from('poemario')
+          .select('*')
+          .eq('id_autor', authorId) // Use the actual ID, not the name
+          .single();
+        
+        if (!poemarioError) {
+          setPoemario(poemarioData);
         }
-      };
+        
+        // Transform poemas to match the books format and count words
+        const transformedPoemas = poemasData.map((poema, index) => {
+          // Count words in the poem text
+          const wordCount = countWords(poema.texto);
+          
+          return {
+            id: poema.id,
+            title: poema.titulo,
+            author: autorData.nombre,
+            cover: poema.portada || defaultCovers[(index % 5) + 1], // Cycle through available covers
+            link: `/poema/${encodeURIComponent(poema.titulo.toLowerCase())}`, // Convert to lowercase
+            wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
+          };
+        });
 
-      fetchData();
-    }, [id]);
+        setPoemas(transformedPoemas);
+      }
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching author data:', err);
+      setError('Failed to load author data');
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [nombre]);
 
     // Function to categorize books by size based on word count
     const categorizeBooks = (books) => {

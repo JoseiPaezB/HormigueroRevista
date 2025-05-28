@@ -33,74 +33,75 @@ const Poema = () => {
   const [hormiguearSuccess, setHormiguearSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  
+  const { titulo } = useParams(); // Get only the poem title
+
   
   const masPoemasSectionRef = useRef(null);
   const articleContainerRef = useRef(null);
 
   // Fetch data on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Default poem ID if not provided in URL
-        const poemId = id || 1;
-        
-        // 1. Fetch poem data
-        const { data: poemaData, error: poemaError } = await supabase
-          .from('poema')
-          .select('*, id_autor, id_poemario')
-          .eq('id', poemId)
-          .single();
-
-        if (poemaError) throw poemaError;
-        setPoema(poemaData);
-        
-        // 2. Fetch author data based on the poem's author ID
-        if (poemaData.id_autor) {
-          const { data: autorData, error: autorError } = await supabase
-            .from('autor')
-            .select('*')
-            .eq('id', poemaData.id_autor)
+      const fetchData = async () => {
+        try {
+          // Decode and convert URL parameter back to original case
+          const decodedTitulo = decodeURIComponent(titulo);
+          
+          // 1. Fetch poem by title (case-insensitive search)
+          const { data: poemaData, error: poemaError } = await supabase
+            .from('poema')
+            .select('*, id_autor, id_poemario')
+            .ilike('titulo', decodedTitulo) // Case-insensitive search
             .single();
 
-          if (autorError) throw autorError;
-          setAutor(autorData);
+          if (poemaError) throw poemaError;
+          setPoema(poemaData);
           
-          // 3. Fetch other poems by the same author from the same poemario
-          if (poemaData.id_poemario) {
-            const { data: otrosPoemaData, error: otrosPoemaError } = await supabase
-              .from('poema')
+          // 2. Fetch author data based on the poem's author ID
+          if (poemaData.id_autor) {
+            const { data: autorData, error: autorError } = await supabase
+              .from('autor')
               .select('*')
-              .eq('id_autor', poemaData.id_autor)
-              .eq('id_poemario', poemaData.id_poemario)
-              .neq('id', poemId) // Exclude current poem
-              .limit(2); // Get only 2 poems for display
-  
-            if (otrosPoemaError) throw otrosPoemaError;
-            setOtrosPoemas(otrosPoemaData);
+              .eq('id', poemaData.id_autor)
+              .single();
+
+            if (autorError) throw autorError;
+            setAutor(autorData);
+            
+            // 3. Fetch other poems by the same author from the same poemario
+            if (poemaData.id_poemario) {
+              const { data: otrosPoemaData, error: otrosPoemaError } = await supabase
+                .from('poema')
+                .select('*')
+                .eq('id_autor', poemaData.id_autor)
+                .eq('id_poemario', poemaData.id_poemario)
+                .neq('id', poemaData.id) // Exclude current poem
+                .limit(2);
+
+              if (otrosPoemaError) throw otrosPoemaError;
+              setOtrosPoemas(otrosPoemaData);
+            }
           }
+
+          // 4. Fetch revista for header background
+          const { data: revistaData, error: revistaError } = await supabase
+            .from('revista')
+            .select('*')
+            .eq('id', 1)
+            .single();
+
+          if (revistaError) throw revistaError;
+          setRevista(revistaData);
+          
+          setLoading(false);
+        } catch (err) {
+          console.error('Error fetching poem data:', err);
+          setError('Failed to load poem');
+          setLoading(false);
         }
+      };
 
-        // 4. Fetch revista for header background
-        const { data: revistaData, error: revistaError } = await supabase
-          .from('revista')
-          .select('*')
-          .eq('id', 1)
-          .single();
-
-        if (revistaError) throw revistaError;
-        setRevista(revistaData);
-        
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching poem data:', err);
-        setError('Failed to load poem');
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id]);
+      fetchData();
+    }, [titulo]);
 
   // Format date for display (YYYY-MM-DD to DD/MM/YY)
   const formatDate = (dateString) => {
@@ -229,10 +230,10 @@ const Poema = () => {
   };
   
   // Handle navigation to another poem
-  const handleGoToPoem = (poemId) => {
-    navigate(`/poema/${poemId}`);
-    window.scrollTo(0, 0); // Scroll to top when navigating
-  };
+const handleGoToPoem = (poemTitle) => {
+  navigate(`/poema/${encodeURIComponent(poemTitle.toLowerCase())}`);
+  window.scrollTo(0, 0); // Scroll to top when navigating
+};
 
   // Process poem text to handle indentation and stanzas
   const processPoemaText = (text) => {
@@ -533,7 +534,7 @@ const Poema = () => {
                 delay={300 + (index * 150)}
               >
                 <div 
-                  onClick={() => handleGoToPoem(otroPoema.id)}
+                  onClick={() => handleGoToPoem(otroPoema.titulo)} // Pass titulo instead of id
                   style={{
                     width: isDesktop ? '300px': '150px',
                     cursor: 'pointer',
@@ -577,7 +578,7 @@ const Poema = () => {
       {/* Back button */}
       <ScrollReveal direction="up" delay={200}>
         <div 
-          onClick={() => navigate(`/poemario/${poema.id_autor}`)}
+          onClick={() => navigate(`/autor/${encodeURIComponent(autor.nombre)}`)}
           style={{
             display: 'flex',
             flexDirection: 'column',
