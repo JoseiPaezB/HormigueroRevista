@@ -157,6 +157,7 @@ const Edicion = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [activeHash, setActiveHash] = useState('');
   const coverImageRef = useRef(null);
+  const [autores, setAutores] = useState([]);
 
 useEffect(() => {
   if (!editionLinkRef.current) return;
@@ -275,8 +276,11 @@ useEffect(() => {
         
         // 4. If we have authors from the database, use them
         if (authorsData && authorsData.length > 0) {
-          const authorNames = authorsData.map(author => author.nombre);
-          setAllAuthors(authorNames);
+          const authorNames = authorsData
+    .map(author => author.nombre)
+    .sort(); // Additional alphabetical sort in JavaScript
+    setAllAuthors(authorNames);
+    setAutores(authorNames);
           
           // If no contributors in revista, use authors
           if (!revistaData.contribuyentes || revistaData.contribuyentes.trim() === '') {
@@ -482,8 +486,9 @@ const renderHormigueroTitle = () => {
 };
 
 const renderEspiritusTitle = () => {
-  const words = ['LOS', 'ESPÍRITUS', 'DE', 'LO', 'MÍNIMO'];
-  
+  const titleText = revista?.nombre.toUpperCase() || '';
+  const words = titleText.split(' ');
+
   return (
     <h2 style={{
       fontWeight: 'bold', 
@@ -685,7 +690,7 @@ const renderEspiritusTitle = () => {
         letterSpacing: '0.5px', 
         width:'95%'
       }}>
-        Alberto Avendaño, Carmen Avendaño, Luis Armenta, Marjuca Javier Bañuelos, Alessio Brandolini, Mikhail Carbajal, Fernando Carrera, Alfredo Castro Muñoz, Alexandro Castro, Jeannette L. Clariond, Eduardo Islas Coronel, Javier de Jesús, Eguía Zapata, Ricardo González Castillo, Bruno Javier, José Iglesias Páez, Mariana Pérez Villoro, Paulino Ordóñez, Julia Melissa Rivas Hernández, Edgar Trevizo, Elena Urueta
+      {autores.length > 0 ? autores.join(' · ') : 'Cargando autores...'}
       </div>
     </ScrollReveal>
   </div>
@@ -764,12 +769,7 @@ const renderEspiritusTitle = () => {
         <HormigueadosSection />
       </ScrollReveal>
       <br />
-      <ScrollReveal direction="up">
-        <div id="eventos">
-          <EventosSection />
-        </div>
-      </ScrollReveal>
-      <br />
+      
       <ScrollReveal direction="scale">
         <div>
           <Footer />

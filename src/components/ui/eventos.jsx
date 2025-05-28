@@ -1,3 +1,11 @@
+/* <ScrollReveal direction="up">
+        <div id="eventos">
+          <EventosSection />
+        </div>
+      </ScrollReveal>
+      <br /> */
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';

@@ -51,7 +51,7 @@ const HormigueadosSection = () => {
           autor: poema.autor?.nombre || 'Autor desconocido',
           portada: poema.portada,
           hormigueos: poema.hormigueos,
-          link: `/poema/${poema.id}`,
+          link: `/poema/${encodeURIComponent(poema.titulo.toLowerCase())}`, // Updated to use lowercase title
         }));
 
         setCarouselItems(processedData);

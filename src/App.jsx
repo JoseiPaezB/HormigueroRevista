@@ -30,8 +30,8 @@ function App() {
         <Route path="/rescates" element={<Rescates />} />
         <Route path="/visuales" element={<VisualesWrapper />} />
         <Route path="/entrevista" element={<EntrevistaWrapper />} />
-        <Route path="/poemario/:id" element={<AuthorBio />} />
-        <Route path="/poema/:id" element={<Poema />} />
+        <Route path="/autor/:nombre" element={<AuthorBio />} />
+        <Route path="/poema/:titulo" element={<Poema />} />
         <Route path="/evento/:id" element={<EventosContent />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

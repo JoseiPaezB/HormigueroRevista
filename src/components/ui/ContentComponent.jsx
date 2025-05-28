@@ -58,6 +58,7 @@ const ContentComponent = ({ contentType }) => {
     
     const fetchData = async () => {
       try {
+        
         // 1. Fetch revista with ID 1
         const { data: revistaData, error: revistaError } = await supabase
           .from('revista')
@@ -123,7 +124,7 @@ const ContentComponent = ({ contentType }) => {
                 author: poemario.autor ? poemario.autor.nombre : 'Unknown',
                 cover: poemario.portada,
                 isSVG: isSVG(poemario.portada),
-                link: `/poemario/${poemario.id_autor}`,
+                link: `/autor/${poemario.autor ? poemario.autor.nombre : 'unknown'}`,                
                 poemCount: countError ? Math.floor(Math.random() * 10) + 1 : count
               };
             })
@@ -138,6 +139,7 @@ const ContentComponent = ({ contentType }) => {
         setError(`Failed to load ${contentType} data`);
         setLoading(false);
       }
+      
     };
   
     fetchData();
@@ -618,7 +620,9 @@ const handleContributorClick = (bookId) => {
       
       {/* Add CSS for the highlight animation */}
       <style jsx>{`
+         @keyframes highlight-pulse {
          
+        }
         
         .highlight-animation {
           animation: highlight-pulse 3s ease;
