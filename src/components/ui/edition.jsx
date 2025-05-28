@@ -441,6 +441,86 @@ const getAuthorFontSize = () => {
     zIndex: 10
   };
 
+  // Add these two new functions after your existing renderTitle function:
+
+const renderHormigueroTitle = () => {
+  const words = ['HORMIGUERO', 'DE POEMAS'];
+  
+  return (
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column',
+      alignItems: 'flex-start'
+    }}>
+      {words.map((word, index) => {
+        const fontWeights = ['900', '300', '300']; // HORMIGUERO(bold), DE(light), POEMAS(light)
+        const fontWeight = fontWeights[index] || '400';
+        const directions = ['left', 'up', 'right'];
+        const direction = directions[index] || 'left';
+        
+        return (
+          <ScrollReveal 
+            key={index} 
+            delay={200 + (index * 200)} 
+            direction={direction}
+          >
+            <span style={{ 
+              fontWeight, 
+              display: 'inline-block',
+              letterSpacing: word === 'HORMIGUERO' ? '2px' : '1px',
+              fontSize: index === 0 ? (isDesktop ? '6rem' : '2.5rem') : (isDesktop ? '4.5rem' : '1.5rem'),
+              lineHeight: '0.9',
+              color: 'white'
+            }}>
+              {word}
+            </span>
+          </ScrollReveal>
+        );
+      })}
+    </div>
+  );
+};
+
+const renderEspiritusTitle = () => {
+  const words = ['LOS', 'ESPÍRITUS', 'DE', 'LO', 'MÍNIMO'];
+  
+  return (
+    <h2 style={{
+      fontWeight: 'bold', 
+      display: 'flex', 
+      flexWrap: 'wrap', 
+      justifyContent: 'flex-start',
+      gap: '12px',
+      margin: '0 0 15px 0',
+      lineHeight: '1.1'
+    }}>
+      {words.map((word, index) => {
+        const fontWeights = ['300', '900', '300', '300', '900']; // LOS(light), ESPÍRITUS(bold), DE(light), LO(light), MÍNIMO(bold)
+        const fontWeight = fontWeights[index] || '400';
+        const directions = ['left', 'up', 'right', 'left', 'up'];
+        const direction = directions[index] || 'up';
+        
+        return (
+          <ScrollReveal 
+            key={index} 
+            delay={2000 + (index * 150)} 
+            direction={direction}
+          >
+            <span style={{ 
+              fontWeight, 
+              display: 'inline-block',
+              letterSpacing: '0.5px',
+              fontSize: 'clamp(1.8rem, 5vw, 4.5rem)'
+            }}>
+              {word}
+            </span>
+          </ScrollReveal>
+        );
+      })}
+    </h2>
+  );
+};
+
   // Función para renderizar el título con palabras individualmente animadas
  const renderTitle = () => {
   const title = 'SOBRE EL HORMIGUERO';
@@ -532,16 +612,9 @@ const getAuthorFontSize = () => {
   {/* Magazine Title */}
   <ScrollReveal direction="left" delay={200}>
     <div style={{ position: 'relative', display: 'inline-block' }}>
-      <h1 style={{
-        fontSize: isDesktop ? '9rem': '2.5rem',
-        fontWeight: 'bold',
-        margin: 0,
-        lineHeight: '0.9',
-        letterSpacing: '2px',
-        color: 'white'
-      }}>
-        HORMIGUERO
-      </h1>
+      {renderHormigueroTitle()}
+
+
       
       {/* InsectColony positioned over the title */}
       
@@ -549,20 +622,7 @@ const getAuthorFontSize = () => {
   </ScrollReveal>
   
   {/* "DE POEMAS" - Directly below HORMIGUERO */}
-  <div style={{ 
-  }}>
-    <ScrollReveal direction="left" delay={600}>
-      <div style={{
-      fontSize: isDesktop ? '6.5rem': '1.5rem',
-        fontWeight: '300',
-        lineHeight: '1.2',
-        color: 'white',
-      }}>
-        <div style={{ fontSize: isDesktop ? '4.5rem' : 'inherit'
-        }}>DE POEMAS</div>
-      </div>
-    </ScrollReveal>
-  </div>
+  
 
   {/* Subtitle - Below DE POEMAS */}
   <div style={{
@@ -570,12 +630,13 @@ const getAuthorFontSize = () => {
   }}>
     <ScrollReveal direction="left" delay={400}>
       <div style={{
-      fontSize: isDesktop ? '1.5rem': '0.6rem',
+      fontSize: isDesktop ? '1.0rem': '0.6rem',
         fontWeight: '300',
         color: 'white',
         lineHeight: '1.3',
         letterSpacing: '1px',
-        opacity: '0.8'
+        opacity: '0.8',
+        margin: isDesktop ? '0 auto' : 'none'
       }}>
         REVISTA DE LITERATURA<br/>
         ESPECIALIZADA EN POESÍA
@@ -597,14 +658,8 @@ const getAuthorFontSize = () => {
 }}>
   
   <ScrollReveal direction="up" delay={2000}>
-    <h2 style={{
-      fontSize: 'clamp(1.8rem, 5vw, 4.5rem)',
-      fontWeight: 'bold',
-      margin: '0 0 15px 0',
-      lineHeight: '1.1'
-    }}>
-      LOS ESPÍRITUS DE LO MÍNIMO
-    </h2>
+    {renderEspiritusTitle()}
+
   </ScrollReveal>
   
   <ScrollReveal direction="up" delay={1000}>

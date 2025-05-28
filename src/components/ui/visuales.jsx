@@ -353,13 +353,13 @@ return (
   <div className="visuales-container">
     <div className="visuales-content" style={{ padding: '0 20px', marginTop: '6rem' }}>
       
-      <ScrollReveal diretion="right">
+      <ScrollReveal diretion="right" delay={200}>
         <h2 className="visuales-title" style={{
           fontWeight: 'bold',
           textAlign: 'center',
           margin: '30px 0',
           textTransform: 'uppercase',
-          fontSize: isDesktop ? 'auto' : '40px'
+          fontSize: isDesktop ? '3rem' : '40px'
         }}>
           A OJO DE HORMIGA
         </h2>
@@ -416,13 +416,13 @@ return (
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-                <ScrollReveal direction="down">
+                <ScrollReveal direction="down" delay={500}>
                   <p style={{
                     width: isDesktop ? '70%' : '100%',
                     textAlign: 'justify',
                     fontSize: '14px',
                     color: '#000',
-                    margin: '10px 0',
+                    margin: isDesktop ? '0 auto ' :'10px 0',
                     lineHeight: '1.6'
                   }}>
                     {author.semblanza}

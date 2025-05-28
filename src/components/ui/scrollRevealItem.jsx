@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 const ScrollRevealItem = ({ piece, index, handlePieceClick, totalPieces }) => {
   const [isVisible, setIsVisible] = useState(false);
   const itemRef = useRef(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,15 +38,17 @@ const ScrollRevealItem = ({ piece, index, handlePieceClick, totalPieces }) => {
     };
   }, [index]); // Added index to dependencies
 
+    const isDesktop = windowWidth > 840;
+
   // Generate a dynamic position and rotation for the image
   const getPositionStyle = (index, total) => {
     // Different positions based on index
     const positions = [
-      { left: '3%', maxWidth: '88%' },
-      { left: '25%', maxWidth: '80%' },
-      { left: '10%', maxWidth: '85%' },
-      { left: '20%', maxWidth: '70%' },
-      { left: '5%', maxWidth: '78%' }
+      { left: '3%', maxWidth: isDesktop ?  '30%':'88%' },
+      { left: '25%', maxWidth:isDesktop ?  '46%': '80%' },
+      { left: '10%', maxWidth:isDesktop ?  '52%': '85%' },
+      { left: '20%', maxWidth:isDesktop ?  '39%': '70%' },
+      { left: '5%', maxWidth: isDesktop ?  '40%':'78%' }
     ];
     
     // Use modulo to cycle through positions for more than 5 images
