@@ -131,11 +131,13 @@ const Poema = () => {
     setIsSubmitting(true);
     
     try {
+      const poemId = poema.id;
+
       // First, get the current hormiguear count
       const { data: currentPoem, error: fetchError } = await supabase
         .from('poema')
         .select('hormigueos, titulo, id_poemario, id_autor')
-        .eq('id', id || 1)
+        .eq('id', poemId || 1)
         .single();
       
       if (fetchError) throw fetchError;
@@ -165,7 +167,7 @@ const Poema = () => {
       const { error: updateError } = await supabase
         .from('poema')
         .update({ hormigueos: newCount })
-        .eq('id', id || 1);
+        .eq('id', poemId || 1);
       
       if (updateError) throw updateError;
       
