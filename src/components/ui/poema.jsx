@@ -407,7 +407,7 @@ const Poema = () => {
       }}>
         {/* Poem section - cada sección con su propia animación */}
         <div style={{
-          fontSize: isDesktop ? '1.3rem':'11px',
+          fontSize: isDesktop ? '0.9rem':'11px',
           lineHeight: '1.8',
           textAlign: 'left',
           padding: 0,
@@ -546,7 +546,6 @@ const Poema = () => {
                     width: '100%',
                     marginBottom: '10px',
                     boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                    borderRadius: '4px',
                     overflow: 'hidden'
                   }}>
                     <img 

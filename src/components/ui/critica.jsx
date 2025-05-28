@@ -7,42 +7,73 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-
 const Critica = () => {
-  const [videoUrl, setVideoUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    // Function to fetch the video URL from Supabase
-    const fetchVideoUrl = async () => {
+    // Function to fetch the image URL from Supabase
+    const fetchImageUrl = async () => {
       try {
         setLoading(true);
+        setImageError(false);
         
-        // Adjust this query based on your actual table and column names
+        // Method 1: Get data from table
         const { data, error } = await supabase
           .from('creaciones')
-          .select('video')
-          .eq('tipo', 'critica') // Use appropriate filter
-          .single(); // If you expect only one result
+          .select('imagen')
+          .eq('tipo', 'critica')
+          .single();
         
         if (error) {
-          console.error('Error fetching video URL:', error);
-        } else if (data) {
-          setVideoUrl(data.video); // Assuming 'video' is the column name
+          console.error('Error fetching image URL:', error);
+          setImageError(true);
+          return;
+        }
+        
+        if (data && data.imagen) {
+          // Method 2: Get public URL if it's a storage path
+          if (data.imagen.startsWith('portadas/')) {
+            // If it's a storage path, get the public URL
+            const { data: urlData } = supabase.storage
+              .from('portadas')
+              .getPublicUrl(data.imagen.replace('portadas/', ''));
+            
+            setImageUrl(urlData.publicUrl);
+          } else {
+            // If it's already a full URL, use it directly
+            setImageUrl(data.imagen);
+          }
         }
       } catch (error) {
         console.error('Unexpected error:', error);
+        setImageError(true);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVideoUrl();
+    fetchImageUrl();
   }, []);
 
+  // Handle image load event
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
+  // Handle image error event
+  const handleImageError = (e) => {
+    console.error('Image failed to load:', e);
+    setImageError(true);
+    setImageLoaded(false);
+  };
+
   return (
-    <div className="relative w-full">
-      {/* Video background wrapper with opacity control */}
+    <div className="relative w-full min-h-screen">
+      {/* Image background wrapper */}
       <div 
         className="fixed top-0 left-0 w-full h-full"
         style={{ 
@@ -50,27 +81,49 @@ const Critica = () => {
           zIndex: '-1',
         }}
       >
-        {!loading && videoUrl && (
-          <video 
-            className="w-full h-full object-cover"
-            style={{ 
-              minWidth: '100vw',
-              minHeight: '100vh',
-              pointerEvents: 'none'
-            }}
-            autoPlay 
-            loop 
-            muted
-            playsInline
-            disablePictureInPicture 
-            controlsList="nodownload nofullscreen noremoteplayback"
-            onContextMenu={(e) => e.preventDefault()}
-          >
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+        {/* Loading state */}
+        {loading && (
+          <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          </div>
         )}
+
+        {/* Error state */}
+       
+
+        {/* Success state - Image loaded */}
+        {!loading && !imageError && imageUrl && (
+          <>
+            {/* Loading placeholder while image loads */}
+           
+            
+            {/* Background Image */}
+            <img 
+              src={imageUrl}
+              alt="Critica background"
+              className={`w-full h-full object-cover transition-opacity duration-500 ${
+                imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{ 
+                minWidth: '100vw',
+                minHeight: '100vh',
+                pointerEvents: 'none'
+              }}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+              onContextMenu={(e) => e.preventDefault()}
+              draggable={false}
+              crossOrigin="anonymous" // Try to handle CORS issues
+            />
+          </>
+        )}
+        
+        {/* Fallback background if no image URL */}
+        
       </div>
+      
+      {/* Debug info (remove in production) */}
+      
       
       {/* Content overlay with higher z-index */}
       <div className="relative" style={{ zIndex: '1', color: 'white' }}>

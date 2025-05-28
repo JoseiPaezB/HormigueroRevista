@@ -270,7 +270,7 @@ const AuthorBio = () => {
       
       return {
         margin: '0 0 5px 0', 
-        fontSize: isDesktop ? '2.5rem':'14px',
+        fontSize: isDesktop ? '1.5rem':'14px',
         fontWeight: 'bold',
         letterSpacing: '0.5px',
 
@@ -293,10 +293,13 @@ return (
   <div className="bio-container scroll-reveal-container">
     {/* Cover image con ScrollReveal */}
     <ScrollReveal direction="up">
-      <div className="cover-image image_2" style={{
-        backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
-        height: '30vh'
-      }}>
+      <div style={{margin:isDesktop ? '0 auto':'normal',width:isDesktop ? '30%':'normal',display: isDesktop? 'flex':'normal', justifyContent: isDesktop ?  'center' : 'normal'}}>
+        <div className="cover-image image_2" style={{
+          backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
+          height: '30vh',
+        
+        }}>
+        </div>
       </div>
     </ScrollReveal>
     
@@ -336,7 +339,7 @@ return (
                 return (
                   <ScrollReveal direction="up" delay={400}>
                     <div style={{ 
-                      fontSize: isDesktop ? '2rem' : '14px',
+                      fontSize: isDesktop ? '1rem' : '14px',
                       lineHeight: '1.5'
                     }}>
                       {/* Author image floating right since no good breaking point */}
@@ -355,7 +358,7 @@ return (
                       {/* Author name and full semblanza */}
                       <p style={{ marginBottom: '15px' }}>
                         <span style={{ 
-                          fontSize: isDesktop ? '4rem' : '28px', 
+                          fontSize: isDesktop ? '2rem' : '28px', 
                           fontWeight: 'bold',
                           float: 'left',
                           marginRight: '2px',
@@ -404,13 +407,13 @@ return (
                   {/* Author name and first part of semblanza */}
                   <ScrollReveal direction="left" delay={400}>
                     <div style={{ 
-                      fontSize: isDesktop ? '2rem' : '14px',
+                      fontSize: isDesktop ? '1rem' : '14px',
                       display:'flex',
                       justifyContent:'center'
                     }}>
                       <p style={{ marginBottom: '15px', width: isDesktop ? 'auto' : '90%' }}>
                         <span style={{ 
-                          fontSize: isDesktop ? '4rem' : '28px', 
+                          fontSize: isDesktop ? '2rem' : '28px', 
                           fontWeight: 'bold',
                           float: 'left',
                           marginRight: '2px',
@@ -436,7 +439,7 @@ return (
                         src={autor?.imagen || eventImage} 
                         alt={autor?.nombre || "Author"} 
                         style={{
-                          height: isDesktop ? '500px' : '200px', // Increased height
+                          height: isDesktop ? '300px' : '200px', // Increased height
                           width: isDesktop ? '50%':'75%',
                           objectFit: 'cover',
                           border: '1px solid #eee',
@@ -449,7 +452,7 @@ return (
                   {/* Second part of semblanza */}
                   <ScrollReveal direction="right" delay={800}>
                     <div style={{ 
-                      fontSize: isDesktop ? '2rem' : '14px',
+                      fontSize: isDesktop ? '1rem' : '14px',
                       display:'flex',
                       justifyContent:'center'
                     }}>
@@ -464,7 +467,7 @@ return (
               return (
                 <ScrollReveal direction="up" delay={400}>
                   <div style={{ 
-                    fontSize: isDesktop ? '2rem' : '14px',
+                    fontSize: isDesktop ? '1rem' : '14px',
                     lineHeight: '1.5'
                   }}>
                     {/* Author image floating right */}
@@ -483,7 +486,7 @@ return (
                     {/* First paragraph with author name and semblanza */}
                     <p style={{ marginBottom: '15px' }}>
                       <span style={{ 
-                        fontSize: isDesktop ? '4rem' : '28px', 
+                        fontSize: isDesktop ? '2rem' : '28px', 
                         fontWeight: 'bold',
                         float: 'left',
                         marginRight: '2px',
@@ -510,7 +513,7 @@ return (
               marginTop: '30px'
             }}>
               <p style={{
-                fontSize: isDesktop ? '2rem' : '14px',
+                fontSize: isDesktop ? '1rem' : '14px',
                 lineHeight: '1.5',
                 margin: 0
               }}>
@@ -525,7 +528,7 @@ return (
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    fontSize: isDesktop ? '1.5rem' : '12px',
+                    fontSize: isDesktop ? '1rem' : '12px',
                     textDecoration: 'underline',
                     fontWeight: '500',
                     transition: 'all 0.3s ease',

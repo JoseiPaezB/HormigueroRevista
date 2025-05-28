@@ -84,7 +84,7 @@ body, html {
 /* Contributors list */
 .contributors-list {
   margin-top: 20px;
-  font-size: clamp(10px, 2.5vw, 1.7rem);
+  font-size: clamp(10px, 2.5vw, 1rem);
   line-height: 1.6;
   max-width: 100%;
 }
@@ -96,7 +96,6 @@ body, html {
 /* Article preview section */
 .article-preview {
   padding: 20px;
-  margin-top:3rem; 
   text-align: center;
 }
 
@@ -120,12 +119,13 @@ body, html {
 }
 
 .article-content {
-  font-size: 1.5rem;
+  font-size: 1.0rem;
   line-height: 1.5;
   color: #333;
-  width: 100%; /* Adjust this value as needed */
+  width: 70%; /* Adjust this value as needed */
   word-break: break-word;
   overflow-wrap: break-word;
+  margin:0 auto
 
 }
 
@@ -151,6 +151,7 @@ body, html {
   }
   .article-content{
     font-size: clamp(11px, 3vw, 14px);
+    width:100%;
 
 
   }.hormigueados-header{
@@ -203,6 +204,7 @@ body, html {
 
   }.image_2{
     height: 20rem !important;
+
   }
 }
 
