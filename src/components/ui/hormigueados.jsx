@@ -39,6 +39,7 @@ const HormigueadosSection = () => {
             nombre
           )
         `)
+        .not('hormigueos', 'is', null)
         .order('hormigueos', { ascending: false })
         .limit(3);
 
@@ -213,7 +214,7 @@ const HormigueadosSection = () => {
                       background: `url(${item.portada || hormigueroLogo}) center/cover no-repeat`,
                     }}
                   >
-                    <div className="carousel-text" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+                    <div className="carousel-text" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                       <p>{item.titulo}</p>
                       <small>{item.autor}</small>
                     </div>

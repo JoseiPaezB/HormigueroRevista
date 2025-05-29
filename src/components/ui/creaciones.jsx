@@ -7,42 +7,73 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-
 const Creaciones = () => {
-  const [videoUrl, setVideoUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    // Function to fetch the video URL from Supabase
-    const fetchVideoUrl = async () => {
+    // Function to fetch the image URL from Supabase
+    const fetchImageUrl = async () => {
       try {
         setLoading(true);
+        setImageError(false);
         
-        // Adjust this query based on your actual table and column names
+        // Method 1: Get data from table
         const { data, error } = await supabase
           .from('creaciones')
-          .select('video')
-          .eq('tipo', 'creaciones') // Use appropriate filter
-          .single(); // If you expect only one result
+          .select('imagen')
+          .eq('tipo', 'creaciones')
+          .single();
         
         if (error) {
-          console.error('Error fetching video URL:', error);
-        } else if (data) {
-          setVideoUrl(data.video); // Assuming 'video' is the column name
+          console.error('Error fetching image URL:', error);
+          setImageError(true);
+          return;
+        }
+        
+        if (data && data.imagen) {
+          // Method 2: Get public URL if it's a storage path
+          if (data.imagen.startsWith('portadas/')) {
+            // If it's a storage path, get the public URL
+            const { data: urlData } = supabase.storage
+              .from('portadas')
+              .getPublicUrl(data.imagen.replace('portadas/', ''));
+            
+            setImageUrl(urlData.publicUrl);
+          } else {
+            // If it's already a full URL, use it directly
+            setImageUrl(data.imagen);
+          }
         }
       } catch (error) {
         console.error('Unexpected error:', error);
+        setImageError(true);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVideoUrl();
+    fetchImageUrl();
   }, []);
 
+  // Handle image load event
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
+  // Handle image error event
+  const handleImageError = (e) => {
+    console.error('Image failed to load:', e);
+    setImageError(true);
+    setImageLoaded(false);
+  };
+
   return (
-    <div className="relative w-full">
-      {/* Video background wrapper with opacity control */}
+    <div className="relative w-full min-h-screen">
+      {/* Image background wrapper */}
       <div 
         className="fixed top-0 left-0 w-full h-full"
         style={{ 
@@ -50,25 +81,35 @@ const Creaciones = () => {
           zIndex: '-1',
         }}
       >
-        {!loading && videoUrl && (
-          <video 
-            className="w-full h-full object-cover"
-            style={{ 
+        {/* Loading state */}
+        {loading && (
+          <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          </div>
+        )}
+
+        {/* Success state - Image loaded */}
+        {!loading && !imageError && imageUrl && (
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: 'cover', // Change this to 'contain' to see full image, or keep 'cover' to fill container
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
               minWidth: '100vw',
               minHeight: '100vh',
-              pointerEvents: 'none'
+              opacity:0.8,
             }}
-            autoPlay 
-            loop 
-            muted
-            playsInline
-            disablePictureInPicture 
-            controlsList="nodownload nofullscreen noremoteplayback"
-            onContextMenu={(e) => e.preventDefault()}
-          >
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          />
+        )}
+        
+        {/* Error state fallback */}
+        {imageError && (
+          <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+            <p className="text-white">Failed to load background image</p>
+          </div>
         )}
       </div>
       

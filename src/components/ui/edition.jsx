@@ -158,6 +158,8 @@ const Edicion = () => {
   const [activeHash, setActiveHash] = useState('');
   const coverImageRef = useRef(null);
   const [autores, setAutores] = useState([]);
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+
 
 useEffect(() => {
   if (!editionLinkRef.current) return;
@@ -569,6 +571,16 @@ const renderEspiritusTitle = () => {
     </h2>
   );
 };
+
+useEffect(() => {
+  const handleResize = () => {
+    setViewportHeight(window.innerHeight);
+  };
+  
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
+
   const isDesktop = windowWidth > 840;
 
   return (
@@ -585,7 +597,7 @@ const renderEspiritusTitle = () => {
     backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
     position: 'relative',
     overflow: 'hidden',
-    minHeight: isDesktop ? '190vh':'100vh',
+    minHeight: isDesktop ? '190vh':`${viewportHeight}px`,
     display: 'flex',
     flexDirection: 'column'
   }}
@@ -615,7 +627,7 @@ const renderEspiritusTitle = () => {
   textAlign: 'left'
 }}>
   {/* Magazine Title */}
-  <ScrollReveal direction="left" delay={200}>
+  <ScrollReveal direction="left" delay={2000}>
     <div style={{ position: 'relative', display: 'inline-block' }}>
       {renderHormigueroTitle()}
 
@@ -766,7 +778,9 @@ const renderEspiritusTitle = () => {
       {/* Additional articles section */}
       <br />
       <ScrollReveal direction="right">
-        <HormigueadosSection />
+        <div id="hormigueados">
+          <HormigueadosSection />
+        </div>
       </ScrollReveal>
       <br />
       

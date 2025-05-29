@@ -131,11 +131,13 @@ const Poema = () => {
     setIsSubmitting(true);
     
     try {
+      const poemId = poema.id;
+
       // First, get the current hormiguear count
       const { data: currentPoem, error: fetchError } = await supabase
         .from('poema')
         .select('hormigueos, titulo, id_poemario, id_autor')
-        .eq('id', id || 1)
+        .eq('id', poemId || 1)
         .single();
       
       if (fetchError) throw fetchError;
@@ -157,6 +159,14 @@ const Poema = () => {
         .single();
         
       if (authorError) throw authorError;
+
+      const { data: revistaData, error: revistaError } = await supabase
+      .from('revista')
+      .select('formspree_url')
+      .eq('id', 1)
+      .single();
+    
+      if (revistaError) throw revistaError;
       
       // Calculate new count (default to 1 if it doesn't exist yet)
       const newCount = (currentPoem.hormigueos || 0) + 1;
@@ -165,9 +175,18 @@ const Poema = () => {
       const { error: updateError } = await supabase
         .from('poema')
         .update({ hormigueos: newCount })
-        .eq('id', id || 1);
+        .eq('id', poemId || 1);
       
       if (updateError) throw updateError;
+
+      const formData = {
+      mensaje_nombre: userName,
+      message: `¡Nuevo Hormigueo en "${currentPoem.titulo}" del poemario "${poemarioData?.titulo || 'Sin poemario'}" por ${authorData.nombre}`,
+      poema: currentPoem.titulo,
+      poemario: poemarioData?.titulo || 'Sin poemario',
+      autor: authorData.nombre,
+      fecha: new Date().toLocaleString()
+    };
       
       // If author has a formspree_url, submit to Formspree
       if (authorData.formspree_url) {
@@ -178,13 +197,7 @@ const Poema = () => {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-              mensaje_nombre: userName,
-              message: `¡Nuevo Hormigueo en "${currentPoem.titulo}" del poemario "${poemarioData?.titulo || 'Sin poemario'}"`,
-              poema: currentPoem.titulo,
-              poemario: poemarioData?.titulo || 'Sin poemario',
-              fecha: new Date().toLocaleString()
-            })
+            body: JSON.stringify(formData)
           });
           
           if (!formspreeResponse.ok) {
@@ -195,6 +208,25 @@ const Poema = () => {
           console.error('Error submitting to Formspree:', formspreeError);
         }
       }
+
+       if (revistaData.formspree_url) {
+      try {
+        const magazineFormspreeResponse = await fetch(revistaData.formspree_url, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        if (!magazineFormspreeResponse.ok) {
+          console.error('Magazine Formspree error:', magazineFormspreeResponse);
+        }
+      } catch (magazineFormspreeError) {
+        console.error('Error submitting to magazine Formspree:', magazineFormspreeError);
+      }
+    }
       
       // Show success message
       setHormiguearSuccess(true);
@@ -371,12 +403,6 @@ const handleGoToPoem = (poemTitle) => {
       paddingLeft: '20px',
       paddingRight: '20px'
     }}>
-      <ScrollReveal direction="left" delay={300}>
-        <div style={{ textAlign: 'left', color: '#888', fontSize: '14px', marginTop: '20px' }}>
-          {formatDate(poema?.fecha) || fallbackPoem.date}
-        </div>
-      </ScrollReveal>
-      
       <ScrollReveal direction="left" delay={400}>
         <div style={{ textAlign: 'left', marginTop: '10px', marginBottom: '5px' }}>
           {autor?.nombre || fallbackPoem.author}
@@ -398,6 +424,7 @@ const handleGoToPoem = (poemTitle) => {
           }}>
             {poema?.titulo?.toUpperCase() || fallbackPoem.title}
           </h2>
+          
         </div>
       </ScrollReveal>
      
@@ -406,6 +433,24 @@ const handleGoToPoem = (poemTitle) => {
         textAlign: 'left',
         padding: 0
       }}>
+        {poema?.mencion && (
+          <ScrollReveal direction="up" delay={600}>
+            <div style={{
+              fontSize: isDesktop ? '0.85rem' : '10px',
+              fontStyle: 'italic',
+              color: '#666',
+              marginBottom: '30px',
+              lineHeight: '1.6',
+              textAlign: 'left',
+              width: '96%',
+              whiteSpace: 'pre-line' // Add this line to preserve line breaks and indentation
+
+            }}>
+              {poema.mencion}
+            </div>
+          </ScrollReveal>
+        )}
+        
         {/* Poem section - cada sección con su propia animación */}
         <div style={{
           fontSize: isDesktop ? '0.9rem':'11px',
@@ -517,7 +562,7 @@ const handleGoToPoem = (poemTitle) => {
               textTransform: 'uppercase',
               fontSize: isDesktop ? '1.7rem':'18px'
             }}>
-              MAS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}
+              MÁS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}
             </h3>
           </ScrollReveal>
           

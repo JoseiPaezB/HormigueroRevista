@@ -434,7 +434,7 @@ const handleContributorClick = (bookId) => {
                     <>
                       OTROS BICHOS
                       <p className="subtitle" style={{  fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic' }}>
-                        Ensayos, cuentos y críticas
+                      Ensayo, entrevistas y homenajes      
                       </p>
                     </>
                   )
@@ -445,7 +445,12 @@ const handleContributorClick = (bookId) => {
         
         {/* Contributors list con ScrollReveal */}
         <ScrollReveal direction="up" delay={200}>
-          <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem',display:'grid'}}>
+          <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem',display:'grid',background: displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica' 
+  ? 'transparent' 
+  : 'transparent',
+boxShadow: isDesktop 
+  ? '0 6px 80px 25px rgba(0, 0, 0, 0.15)' 
+  : '0 4px 12px rgba(0, 0, 0, 0.15)',}}>
             {contributors.length > 0 ? (
               contributors.map((contributor, index) => {
                 // Find the matching book for this contributor
@@ -463,12 +468,15 @@ const handleContributorClick = (bookId) => {
                     <p 
                       onClick={() => matchingBook && handleContributorClick(matchingBook.id)}
                       style={{
+                        marginTop: '4px',
                         marginBottom: '10px',
                         cursor: matchingBook ? 'pointer' : 'default',
                         position: 'relative',
                         display: 'inline-block',
                         transition: 'transform 0.2s ease, color 0.3s ease',
-                      }}
+                        fontWeight:300
+                        
+                                          }}
                       // Add hover effects
                       onMouseEnter={(e) => {
                         if (matchingBook) {
@@ -560,6 +568,8 @@ const handleContributorClick = (bookId) => {
                     transition: 'all 0.3s ease', // Modified transition to include all properties
                     height: sizeStyles.height,
                     width: '100%', // Always use full width of grid cell
+                    boxShadow: '0 8px 12px rgba(0, 0, 0, 0.15)',
+                   
                   }}
                 >
                   {/* Use SVGRenderer for SVG covers, regular img tag for other images */}
