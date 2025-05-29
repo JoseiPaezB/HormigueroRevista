@@ -447,8 +447,10 @@ const handleContributorClick = (bookId) => {
         <ScrollReveal direction="up" delay={200}>
           <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem',display:'grid',background: displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica' 
   ? 'transparent' 
-  : 'rgba(128, 128, 128, 0.2)',
-boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'}}>
+  : 'rgba(128, 128, 128, 0.3)',
+boxShadow: isDesktop 
+  ? '0 6px 80px 25px rgba(0, 0, 0, 0.15)' 
+  : '0 4px 12px rgba(0, 0, 0, 0.15)',}}>
             {contributors.length > 0 ? (
               contributors.map((contributor, index) => {
                 // Find the matching book for this contributor
@@ -466,11 +468,13 @@ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'}}>
                     <p 
                       onClick={() => matchingBook && handleContributorClick(matchingBook.id)}
                       style={{
+                        marginTop: '4px',
                         marginBottom: '10px',
                         cursor: matchingBook ? 'pointer' : 'default',
                         position: 'relative',
                         display: 'inline-block',
                         transition: 'transform 0.2s ease, color 0.3s ease',
+                        fontWeight:300
                         
                                           }}
                       // Add hover effects
@@ -565,6 +569,7 @@ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'}}>
                     height: sizeStyles.height,
                     width: '100%', // Always use full width of grid cell
                     boxShadow: '0 8px 12px rgba(0, 0, 0, 0.15)',
+                   
                   }}
                 >
                   {/* Use SVGRenderer for SVG covers, regular img tag for other images */}
