@@ -100,7 +100,8 @@ const Creaciones = () => {
               backgroundRepeat: 'no-repeat',
               minWidth: '100vw',
               minHeight: '100vh',
-              opacity:0.8
+              opacity:0.8,
+              filter:'blur(2px)'
             }}
           />
         )}
