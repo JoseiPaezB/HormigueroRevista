@@ -562,7 +562,7 @@ const handleGoToPoem = (poemTitle) => {
               textTransform: 'uppercase',
               fontSize: isDesktop ? '1.7rem':'18px'
             }}>
-              MAS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}
+              MÁS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}
             </h3>
           </ScrollReveal>
           
