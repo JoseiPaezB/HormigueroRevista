@@ -471,7 +471,7 @@ const handleContributorClick = (bookId) => {
                         backgroundColor: 'rgba(128, 128, 128, 0.7)', // Add grey background
                         padding: '8px 12px', // Add padding for better spacing
                         borderRadius: '10px', // Add rounded corners
-                        backdropFilter: 'blur(2px)', // Optional: add blur effect
+                        backdropFilter: 'blur(4px)', // Optional: add blur effect
                                           }}
                       // Add hover effects
                       onMouseEnter={(e) => {
