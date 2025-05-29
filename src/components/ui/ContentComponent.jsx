@@ -447,7 +447,7 @@ const handleContributorClick = (bookId) => {
         <ScrollReveal direction="up" delay={200}>
           <div className="contributors-list" style={{marginTop: '-1.5rem', marginBottom: '2rem',display:'grid',background: displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica' 
   ? 'transparent' 
-  : 'rgba(128, 128, 128, 0.3)',
+  : 'transparent',
 boxShadow: isDesktop 
   ? '0 6px 80px 25px rgba(0, 0, 0, 0.15)' 
   : '0 4px 12px rgba(0, 0, 0, 0.15)',}}>
