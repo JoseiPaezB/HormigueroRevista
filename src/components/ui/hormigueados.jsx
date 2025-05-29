@@ -39,6 +39,7 @@ const HormigueadosSection = () => {
             nombre
           )
         `)
+        .not('hormigueos', 'is', null)
         .order('hormigueos', { ascending: false })
         .limit(3);
 

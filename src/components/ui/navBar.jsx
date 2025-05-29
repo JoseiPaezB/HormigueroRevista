@@ -192,7 +192,7 @@ const Navbar = () => {
               </Link>
               
               <a 
-                href="/#eventos" 
+                href="/#hormigueados" 
                 style={{ 
                   textDecoration: 'none', 
                   color: '#000',
@@ -202,7 +202,7 @@ const Navbar = () => {
                   whiteSpace: 'nowrap'
                 }}
               >
-                EVENTOS
+                HORMIGUEADOS
               </a>
               <a 
                 href="/#colaboradores" 
@@ -305,11 +305,11 @@ const Navbar = () => {
             
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <a
-                href="/#eventos" 
+                href="/#hormigueados" 
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
               >
-                EVENTOS
+                HORMIGUEADOS
               </a>
             </li>
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>

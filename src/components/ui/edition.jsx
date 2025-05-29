@@ -766,7 +766,9 @@ const renderEspiritusTitle = () => {
       {/* Additional articles section */}
       <br />
       <ScrollReveal direction="right">
-        <HormigueadosSection />
+        <div id="hormigueados">
+          <HormigueadosSection />
+        </div>
       </ScrollReveal>
       <br />
       
