@@ -615,7 +615,7 @@ const renderEspiritusTitle = () => {
   textAlign: 'left'
 }}>
   {/* Magazine Title */}
-  <ScrollReveal direction="left" delay={200}>
+  <ScrollReveal direction="left" delay={2000}>
     <div style={{ position: 'relative', display: 'inline-block' }}>
       {renderHormigueroTitle()}
 
