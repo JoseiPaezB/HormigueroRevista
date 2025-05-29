@@ -403,12 +403,6 @@ const handleGoToPoem = (poemTitle) => {
       paddingLeft: '20px',
       paddingRight: '20px'
     }}>
-      <ScrollReveal direction="left" delay={300}>
-        <div style={{ textAlign: 'left', color: '#888', fontSize: '14px', marginTop: '20px' }}>
-          {formatDate(poema?.fecha) || fallbackPoem.date}
-        </div>
-      </ScrollReveal>
-      
       <ScrollReveal direction="left" delay={400}>
         <div style={{ textAlign: 'left', marginTop: '10px', marginBottom: '5px' }}>
           {autor?.nombre || fallbackPoem.author}

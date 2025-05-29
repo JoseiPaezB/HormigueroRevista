@@ -88,42 +88,30 @@ const Creaciones = () => {
           </div>
         )}
 
-        {/* Error state */}
-       
-
         {/* Success state - Image loaded */}
         {!loading && !imageError && imageUrl && (
-          <>
-            {/* Loading placeholder while image loads */}
-           
-            
-            {/* Background Image */}
-            <img 
-              src={imageUrl}
-              alt="creaciones background"
-              className={`w-full h-full object-cover transition-opacity duration-500 ${
-                imageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{ 
-                minWidth: '100vw',
-                minHeight: '100vh',
-                pointerEvents: 'none'
-              }}
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-              onContextMenu={(e) => e.preventDefault()}
-              draggable={false}
-              crossOrigin="anonymous" // Try to handle CORS issues
-            />
-          </>
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: 'cover', // Change this to 'contain' to see full image, or keep 'cover' to fill container
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
+              minWidth: '100vw',
+              minHeight: '100vh',
+              opacity:0.8
+            }}
+          />
         )}
         
-        {/* Fallback background if no image URL */}
-        
+        {/* Error state fallback */}
+        {imageError && (
+          <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+            <p className="text-white">Failed to load background image</p>
+          </div>
+        )}
       </div>
-      
-      {/* Debug info (remove in production) */}
-      
       
       {/* Content overlay with higher z-index */}
       <div className="relative" style={{ zIndex: '1', color: 'white' }}>

@@ -468,7 +468,11 @@ const handleContributorClick = (bookId) => {
                         position: 'relative',
                         display: 'inline-block',
                         transition: 'transform 0.2s ease, color 0.3s ease',
-                      }}
+                        backgroundColor: 'rgba(128, 128, 128, 0.7)', // Add grey background
+                        padding: '8px 12px', // Add padding for better spacing
+                        borderRadius: '10px', // Add rounded corners
+                        backdropFilter: 'blur(2px)', // Optional: add blur effect
+                                          }}
                       // Add hover effects
                       onMouseEnter={(e) => {
                         if (matchingBook) {
