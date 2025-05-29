@@ -101,7 +101,7 @@ const Critica = () => {
               minWidth: '100vw',
               minHeight: '100vh',
               opacity:0.8,
-              filter:'blur(2px)'
+              filter:'blur(1px)'
             }}
           />
         )}
