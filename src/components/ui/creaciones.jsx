@@ -22,6 +22,7 @@ const Creaciones = () => {
         setLoading(true);
         setImageError(false);
         
+        // Method 1: Get data from table
         const { data, error } = await supabase
           .from('creaciones')
           .select('imagen')
@@ -35,13 +36,16 @@ const Creaciones = () => {
         }
         
         if (data && data.imagen) {
+          // Method 2: Get public URL if it's a storage path
           if (data.imagen.startsWith('portadas/')) {
+            // If it's a storage path, get the public URL
             const { data: urlData } = supabase.storage
               .from('portadas')
               .getPublicUrl(data.imagen.replace('portadas/', ''));
             
             setImageUrl(urlData.publicUrl);
           } else {
+            // If it's already a full URL, use it directly
             setImageUrl(data.imagen);
           }
         }
@@ -55,54 +59,64 @@ const Creaciones = () => {
 
     fetchImageUrl();
   }, []);
+
+  // Handle image load event
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
+  // Handle image error event
+  const handleImageError = (e) => {
+    console.error('Image failed to load:', e);
+    setImageError(true);
+    setImageLoaded(false);
+  };
   const isDesktop = windowWidth > 768;
 
   return (
-    <div 
-      style={{ 
-        position: 'relative',
-        width: '100%',
-        minHeight: isDesktop? '100vh': '100rem',
-        backgroundImage: !loading && !imageError && imageUrl ? `url(${imageUrl})` : 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed', // This keeps the background fixed
-      }}
-    >
-      {/* Loading overlay */}
-      {loading && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10
-        }}>
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-        </div>
-      )}
+    <div className="relative w-full min-h-screen">
+      {/* Image background wrapper */}
+      <div 
+        className="fixed top-0 left-0 w-full h-full"
+        style={{ 
+          position: 'fixed',
+          zIndex: '-1',
+        }}
+      >
+        {/* Loading state */}
+        {loading && (
+          <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          </div>
+        )}
 
-      {/* Background overlay for opacity */}
-      {!loading && !imageError && imageUrl && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.2)', // This creates the opacity effect
-          zIndex: 1
-        }} />
-      )}
+        {/* Success state - Image loaded */}
+        {!loading && !imageError && imageUrl && (
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: 'cover', // Change this to 'contain' to see full image, or keep 'cover' to fill container
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
+              minWidth: '100vw',
+              minHeight:isDesktop ?  '100vh':'800px',
+            }}
+          />
+        )}
+        
+        {/* Error state fallback */}
+        {imageError && (
+          <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+            <p className="text-white">Failed to load background image</p>
+          </div>
+        )}
+      </div>
       
-      {/* Content */}
-      <div style={{ position: 'relative', zIndex: 2, color: 'white' }}>
+      {/* Content overlay with higher z-index */}
+      <div className="relative" style={{ zIndex: '1', color: 'white' }}>
         <ContentComponent contentType="creaciones" />
       </div>
     </div>
