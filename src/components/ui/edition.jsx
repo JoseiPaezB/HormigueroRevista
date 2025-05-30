@@ -517,7 +517,7 @@ const renderEspiritusTitle = () => {
               fontWeight, 
               display: 'inline-block',
               letterSpacing: '0.5px',
-              fontSize: 'clamp(1.8rem, 5vw, 4.5rem)'
+              fontSize: 'clamp(1.5rem, 5vw, 4.5rem)'
             }}>
               {word}
             </span>
