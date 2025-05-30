@@ -10,19 +10,14 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const Creaciones = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(true);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
   useEffect(() => {
-    // Function to fetch the image URL from Supabase
     const fetchImageUrl = async () => {
       try {
         setLoading(true);
         setImageError(false);
         
-        // Method 1: Get data from table
         const { data, error } = await supabase
           .from('creaciones')
           .select('imagen')
@@ -36,16 +31,13 @@ const Creaciones = () => {
         }
         
         if (data && data.imagen) {
-          // Method 2: Get public URL if it's a storage path
           if (data.imagen.startsWith('portadas/')) {
-            // If it's a storage path, get the public URL
             const { data: urlData } = supabase.storage
               .from('portadas')
               .getPublicUrl(data.imagen.replace('portadas/', ''));
             
             setImageUrl(urlData.publicUrl);
           } else {
-            // If it's already a full URL, use it directly
             setImageUrl(data.imagen);
           }
         }
@@ -60,63 +52,65 @@ const Creaciones = () => {
     fetchImageUrl();
   }, []);
 
-  // Handle image load event
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-    setImageError(false);
-  };
-
-  // Handle image error event
-  const handleImageError = (e) => {
-    console.error('Image failed to load:', e);
-    setImageError(true);
-    setImageLoaded(false);
-  };
-  const isDesktop = windowWidth > 768;
-
   return (
-    <div className="relative w-full min-h-screen">
-      {/* Image background wrapper */}
-      <div 
-        className="fixed top-0 left-0 w-full h-full"
-        style={{ 
-          position: 'fixed',
-          zIndex: '-1',
-        }}
-      >
-        {/* Loading state */}
-        {loading && (
-          <div className="w-full h-full bg-gray-900 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          </div>
-        )}
+    <div style={{
+      position: 'relative',
+      minHeight: '100vh',
+      color: '#fff'
+    }}>
+      {/* Background image overlay - same as visuales */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        opacity: 0.3, // Add opacity for readability
+        zIndex: -1
+      }} />
 
-        {/* Success state - Image loaded */}
-        {!loading && !imageError && imageUrl && (
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              backgroundImage: `url(${imageUrl})`,
-              backgroundSize: 'cover', // Change this to 'contain' to see full image, or keep 'cover' to fill container
-              backgroundPosition: 'center center',
-              backgroundRepeat: 'no-repeat',
-              minWidth: '100vw',
-              minHeight:isDesktop ?  '100vh':'1000px',
-            }}
-          />
-        )}
-        
-        {/* Error state fallback */}
-        {imageError && (
-          <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-            <p className="text-white">Failed to load background image</p>
-          </div>
-        )}
-      </div>
+      {/* Loading state */}
+      {loading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10
+        }}>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        </div>
+      )}
+
+      {/* Error state fallback */}
+      {imageError && !loading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(50, 50, 50, 0.9)',
+          zIndex: -1
+        }} />
+      )}
       
       {/* Content overlay with higher z-index */}
-      <div className="relative" style={{ zIndex: '1', color: 'white' }}>
+      <div style={{ 
+        position: 'relative', 
+        zIndex: 1, 
+        color: 'white',
+        minHeight: '100vh'
+      }}>
         <ContentComponent contentType="creaciones" />
       </div>
     </div>
