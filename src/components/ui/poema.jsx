@@ -8,6 +8,7 @@ import hormigueroLogo2 from '../../assets/anticon2.svg'; // Make sure path is co
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground';
+import { Helmet } from 'react-helmet-async';
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -428,6 +429,23 @@ useEffect(() => {
         return part;
       });
     };
+
+      const getPoemExcerpt = (texto) => {
+    if (!texto) return '';
+    
+    // Limpiar marcadores de secciones y texto especial
+    const cleanText = texto
+      .replace(/^-([^-]+)-$/gm, '') // Remover títulos de secciones
+      .replace(/[01]([^01]+)[01]/g, '$1') // Remover marcadores de formato
+      .replace(/\n+/g, ' ') // Convertir saltos de línea a espacios
+      .replace(/\s+/g, ' ') // Normalizar espacios
+      .trim();
+      
+    // Retornar extracto de máximo 120 caracteres
+    return cleanText.length > 120 
+      ? cleanText.substring(0, 120) + '...'
+      : cleanText;
+  };
   // Process poem sections
   const poemSections = poema?.texto 
     ? processPoemaText(poema.texto) 
@@ -441,6 +459,47 @@ useEffect(() => {
   if (error) return <div>{error}</div>;
 
   return (
+    <>
+    <Helmet>
+        <title>{poema?.titulo ? `${poema.titulo} - ${autor?.nombre || ''} | Hormiguero de Poemas` : 'Poema - Hormiguero de Poemas'}</title>
+        <meta name="description" content={
+          poema?.texto && autor?.nombre
+            ? `"${poema.titulo}" por ${autor.nombre}. ${getPoemExcerpt(poema.texto)}`
+            : `Poema "${poema?.titulo || titulo}" en Hormiguero de Poemas`
+        } />
+        <meta name="keywords" content={`${poema?.titulo || titulo}, ${autor?.nombre || ''}, poema, poesía, literatura, hormiguero de poemas`} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={`${poema?.titulo || titulo} - ${autor?.nombre || 'Autor'}`} />
+        <meta property="og:description" content={
+          poema?.texto && autor?.nombre
+            ? `Poema de ${autor.nombre}: ${getPoemExcerpt(poema.texto)}`
+            : `Descubre este poema en Hormiguero de Poemas`
+        } />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`http://hormiguerodepoemas/poema/${encodeURIComponent(titulo)}`} />
+        <meta property="og:image" content={autor?.imagen || poema?.portada || '/default-poem.jpg'} />
+        <meta property="og:image:alt" content={`${poema?.titulo || titulo} - ${autor?.nombre || 'Autor'}`} />
+        
+        {/* Article specific */}
+        <meta property="article:author" content={autor?.nombre || ''} />
+        <meta property="article:published_time" content={poema?.fecha || ''} />
+        <meta property="article:section" content="Poesía" />
+        <meta property="article:tag" content="poema" />
+        <meta property="article:tag" content="poesía" />
+        <meta property="article:tag" content="literatura" />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${poema?.titulo || titulo} - ${autor?.nombre || 'Autor'}`} />
+        <meta name="twitter:description" content={
+          poema?.texto
+            ? `"${getPoemExcerpt(poema.texto)}"`
+            : `Poema en Hormiguero de Poemas`
+        } />
+        <meta name="twitter:image" content={autor?.imagen || poema?.portada || '/default-poem.jpg'} />
+        <meta name="twitter:creator" content={`@${autor?.nombre || ''}`} />
+      </Helmet>
   <div className="edition-container scroll-reveal-container" ref={articleContainerRef}>
     {/* Green gradient cover image */}
     <ScrollReveal direction="up">
@@ -918,6 +977,7 @@ useEffect(() => {
       }
     `}</style>
   </div>
+  </>
 );
 };
 

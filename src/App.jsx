@@ -1,6 +1,7 @@
 import './App.css';
 import './footer.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/ui/navBar.jsx';
 import Edicion from './components/ui/edition.jsx';
 import Contenido from './components/ui/contenidos.jsx';
@@ -18,24 +19,26 @@ import EntrevistaWrapper from './components/ui/entrevistaWrapper.jsx';
 
 function App() {
   return (
-    <BrowserRouter>
-      <ScrollToHashElement />
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Edicion />} />
-        <Route path="/contenidos" element={<Contenido />} />
-        <Route path="/creaciones" element={<Creaciones />} />
-        <Route path="/traducciones" element={<Traducciones />} />
-        <Route path="/critica" element={<Critica />} />
-        <Route path="/rescates" element={<Rescates />} />
-        <Route path="/visuales" element={<VisualesWrapper />} />
-        <Route path="/entrevista" element={<EntrevistaWrapper />} />
-        <Route path="/autor/:nombre" element={<AuthorBio />} />
-        <Route path="/poema/:titulo" element={<Poema />} />
-        <Route path="/evento/:id" element={<EventosContent />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <ScrollToHashElement />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Edicion />} />
+          <Route path="/contenidos" element={<Contenido />} />
+          <Route path="/creaciones" element={<Creaciones />} />
+          <Route path="/traducciones" element={<Traducciones />} />
+          <Route path="/critica" element={<Critica />} />
+          <Route path="/rescates" element={<Rescates />} />
+          <Route path="/visuales" element={<VisualesWrapper />} />
+          <Route path="/entrevista" element={<EntrevistaWrapper />} />
+          <Route path="/autor/:nombre" element={<AuthorBio />} />
+          <Route path="/poema/:titulo" element={<Poema />} />
+          <Route path="/evento/:id" element={<EventosContent />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 

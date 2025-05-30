@@ -21,6 +21,7 @@ import InsectColony from './MovingSvgBackground';
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según donde hayas guardado el componente
 import './ScrollReveal.css'; // Ajusta la ruta según donde hayas guardado los estilos
 import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según donde hayas guardado las utilidades
+import { Helmet } from 'react-helmet-async';
 
 // Initialize Supabase client
 const insects = [
@@ -222,6 +223,39 @@ const Contenido = () => {
   };
 
   return (
+    <>
+   <Helmet>
+      <title>{revista?.nombre ? `${revista.nombre} - Contenidos | Hormiguero de Poemas` : 'Los Espíritus de lo Mínimo - Contenidos'}</title>
+      <meta name="description" content={
+        revista?.nombre && revista?.sintesis 
+          ? `${revista.nombre}. ${revista.sintesis} Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga.`
+          : "Los Espíritus de lo Mínimo. Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga. Hormiguero de Poemas."
+      } />
+      <meta name="keywords" content="poesía, literatura, revista, hormiguero, poemas, verso, prosa, el hormiguero, otros bichos, a ojo de hormiga" />
+      
+      {/* Open Graph */}
+      <meta property="og:title" content={`${revista?.nombre || 'Los Espíritus de lo Mínimo'} - Contenidos`} />
+      <meta property="og:description" content={
+        revista?.sintesis 
+          ? `${revista.sintesis} Descubre nuestras secciones: El Hormiguero, Otros Bichos y A Ojo de Hormiga.`
+          : "Primera edición de Hormiguero de Poemas. Secciones: El Hormiguero, Otros Bichos y A Ojo de Hormiga."
+      } />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://hormiguerodepoemas.com/contenidos" />
+      <meta property="og:image" content={revista?.portada || '/default-cover.jpg'} />
+      <meta property="og:image:alt" content={`Portada de ${revista?.nombre || 'Hormiguero de Poemas'}`} />
+      
+      {/* Twitter Cards */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={`${revista?.nombre || 'Los Espíritus de lo Mínimo'} - Contenidos`} />
+      <meta name="twitter:description" content={
+        revista?.sintesis 
+          ? `${revista.sintesis} Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga.`
+          : "Contenidos de Hormiguero de Poemas: El Hormiguero, Otros Bichos, A Ojo de Hormiga."
+      } />
+      <meta name="twitter:image" content={revista?.portada || '/default-cover.jpg'} />
+      <meta name="twitter:site" content="@hormiguerodepoemas" />
+    </Helmet>
     <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
       <CustomStyles />
@@ -372,6 +406,8 @@ const Contenido = () => {
         </div>
       </ScrollReveal>
     </div>
+  </>
+
   );
 };
 

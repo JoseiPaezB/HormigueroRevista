@@ -15,6 +15,7 @@ import bee from '../../assets/images/bee.svg';
 import fly from '../../assets/images/roach.svg';
 import ant from '../../assets/images/libelula.svg';
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
+import { Helmet } from 'react-helmet-async';
 
 // Initialize Supabase client
 const insects = [
@@ -340,6 +341,38 @@ useEffect(() => {
 
 
 return (
+  <>
+   <Helmet>
+        <title>{autor?.nombre ? `${autor.nombre} - Hormiguero de Poemas` : 'Autor - Hormiguero de Poemas'}</title>
+        <meta name="description" content={
+          autor?.semblanza 
+            ? `${autor.nombre}: ${autor.semblanza.substring(0, 150)}...` 
+            : `Descubre la obra de ${autor?.nombre || nombre} en Hormiguero de Poemas`
+        } />
+        <meta name="keywords" content={`${autor?.nombre || nombre}, poesía, literatura, hormiguero de poemas, autor`} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={`${autor?.nombre || nombre} - Hormiguero de Poemas`} />
+        <meta property="og:description" content={
+          autor?.semblanza 
+            ? `${autor.nombre}: ${autor.semblanza.substring(0, 200)}...` 
+            : `Obra y biografía de ${autor?.nombre || nombre}`
+        } />
+        <meta property="og:type" content="profile" />
+        <meta property="og:url" content={`http://hormiguerodepoemas/autor/${encodeURIComponent(nombre)}`} />
+        <meta property="og:image" content={autor?.imagen || '/default-author.jpg'} />
+        <meta property="og:image:alt" content={`Foto de ${autor?.nombre || nombre}`} />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${autor?.nombre || nombre} - Hormiguero de Poemas`} />
+        <meta name="twitter:description" content={
+          autor?.semblanza 
+            ? `${autor.nombre}: ${autor.semblanza.substring(0, 150)}...` 
+            : `Descubre la obra de ${autor?.nombre || nombre}`
+        } />
+        <meta name="twitter:image" content={autor?.imagen || '/default-author.jpg'} />
+      </Helmet>
   <div className="bio-container scroll-reveal-container">
     {/* Cover image con ScrollReveal */}
     <ScrollReveal direction="up">
@@ -773,6 +806,7 @@ return (
       }
     `}</style>
   </div>
+  </>
 );
 };
 

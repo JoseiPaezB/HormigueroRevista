@@ -11,6 +11,8 @@ import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según tu
 import '../ui/ScrollReveal.css';
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
+import { Helmet } from 'react-helmet-async';
+
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -453,6 +455,7 @@ const renderHormigueroTitle = () => {
   const words = ['HORMIGUERO', 'DE POEMAS'];
   
   return (
+    
     <div style={{ 
       display: 'flex', 
       flexDirection: 'column',
@@ -584,6 +587,45 @@ useEffect(() => {
   const isDesktop = windowWidth > 840;
 
   return (
+    <>
+      <Helmet>
+          <title>{revista?.nombre ? `Hormiguero de Poemas - ${revista.nombre}` : 'Hormiguero de Poemas - Los Espíritus de lo Mínimo'}</title>
+          <meta name="description" content={
+            revista?.general && revista?.nombre 
+              ? `${revista.general} Primer número: ${revista.nombre}.`
+              : "Hormiguero de Poemas - Revista de literatura especializada en poesía. Primer número: Los Espíritus de lo Mínimo."
+          } />
+          <meta name="keywords" content="poesía, literatura, revista, hormiguero, poemas, verso, prosa, los espíritus de lo mínimo" />
+          
+          {/* Open Graph */}
+          <meta property="og:title" content={revista?.nombre ? `Hormiguero de Poemas - ${revista.nombre}` : 'Hormiguero de Poemas - Los Espíritus de lo Mínimo'} />
+          <meta property="og:description" content={
+            revista?.general 
+              ? `${revista.general} Descubre nuestro primer número: ${revista?.nombre || 'Los Espíritus de lo Mínimo'}.`
+              : "Revista de literatura especializada en poesía. Descubre nuestro primer número: Los Espíritus de lo Mínimo."
+          } />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://hormiguerodepoemas.com/" />
+          <meta property="og:image" content={revista?.portada || '../../assets/anticon.svg'} />
+          <meta property="og:image:alt" content={`Portada de ${revista?.nombre || 'Hormiguero de Poemas'}`} />
+          
+          {/* Twitter Cards */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={revista?.nombre ? `Hormiguero de Poemas - ${revista.nombre}` : 'Hormiguero de Poemas - Los Espíritus de lo Mínimo'} />
+          <meta name="twitter:description" content={
+            revista?.general 
+              ? `${revista.general} Primer número: ${revista?.nombre || 'Los Espíritus de lo Mínimo'}.`
+              : "Revista de literatura especializada en poesía. Primer número: Los Espíritus de lo Mínimo."
+          } />
+          <meta name="twitter:image" content={revista?.portada || '/default-cover.jpg'} />
+          <meta name="twitter:site" content="@hormiguerodepoemas" />
+          
+          {/* Additional meta tags */}
+          <meta name="author" content="Hormiguero de Poemas" />
+          <meta name="robots" content="index, follow" />
+          <link rel="canonical" href="https://hormiguerodepoemas.com/" />
+      </Helmet>
+
     <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
       <CustomStyles />
@@ -793,6 +835,7 @@ useEffect(() => {
       </ScrollReveal>
       <div id="contacto"></div>
     </div>
+    </>
   );
 };
 

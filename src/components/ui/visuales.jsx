@@ -8,6 +8,8 @@ import InsectColony from './InsectColony2';
 import authorSvg from '../../assets/cinco2.svg'; // Adjust the path as necessary
 import ant from '../../assets/uno.svg'; // Adjust the path as necessary
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
+import { Helmet } from 'react-helmet-async';
+
 
 
 // Initialize Supabase client
@@ -374,8 +376,109 @@ useEffect(() => {
   if (error) return <div>{error}</div>;
   const isDesktop = window.innerWidth > 768;
 
-  
+    const getAllWorksNames = () => {
+    if (!allVisualPieces.length) return '';
+    
+    const worksNames = allVisualPieces
+      .map(piece => piece.nombre_pieza)
+      .filter(name => name) // Filtrar nombres vacíos
+      .slice(0, 10) // Máximo 10 obras para no hacer muy largo
+      .join(', ');
+    
+    return worksNames;
+  };
+
+  // Función para obtener nombres de autores
+  const getAuthorsNames = () => {
+    if (!authors.length) return '';
+    
+    return authors
+      .map(author => author.nombre)
+      .join(', ');
+  };
+
+  // Función para obtener extracto de semblanzas
+  const getSemblanzasExcerpt = () => {
+    if (!authors.length) return '';
+    
+    const semblanzas = authors
+      .map(author => author.semblanza)
+      .filter(semblanza => semblanza)
+      .join(' ');
+    
+    return semblanzas.length > 200 
+      ? semblanzas.substring(0, 200) + '...'
+      : semblanzas;
+  };
+
+
   return (
+    <>
+      <Helmet>
+        <title>A Ojo de Hormiga - Obras Visuales | Hormiguero de Poemas</title>
+        <meta name="description" content={
+          authors.length > 0
+            ? `Obras visuales en Hormiguero de Poemas. Artistas: ${getAuthorsNames()}. ${getSemblanzasExcerpt()}`
+            : "Descubre las obras visuales de nuestros artistas en A Ojo de Hormiga - Hormiguero de Poemas"
+        } />
+        <meta name="keywords" content={`visuales, arte visual, obras, ${getAuthorsNames()}, hormiguero de poemas, a ojo de hormiga, ${getAllWorksNames()}`} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="A Ojo de Hormiga - Obras Visuales | Hormiguero de Poemas" />
+        <meta property="og:description" content={
+          authors.length > 0
+            ? `Galería de obras visuales con ${authors.length} artista${authors.length > 1 ? 's' : ''}: ${getAuthorsNames()}`
+            : "Galería de obras visuales en Hormiguero de Poemas"
+        } />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://localhost:3000/visuales" />
+        <meta property="og:image" content={
+          backgroundImage || 
+          (authors.length > 0 && authors[0].imagen) || 
+          (allVisualPieces.length > 0 && allVisualPieces[0].pieza) || 
+          '/default-visuales.jpg'
+        } />
+        <meta property="og:image:alt" content="A Ojo de Hormiga - Obras Visuales" />
+        
+        {/* Específico para galería */}
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta name="theme-color" content="#000000" />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="A Ojo de Hormiga - Obras Visuales" />
+        <meta name="twitter:description" content={
+          allVisualPieces.length > 0
+            ? `${allVisualPieces.length} obra${allVisualPieces.length > 1 ? 's' : ''} visual${allVisualPieces.length > 1 ? 'es' : ''} de ${authors.length} artista${authors.length > 1 ? 's' : ''} en Hormiguero de Poemas`
+            : "Galería de obras visuales en Hormiguero de Poemas"
+        } />
+        <meta name="twitter:image" content={
+          backgroundImage || 
+          (allVisualPieces.length > 0 && allVisualPieces[0].pieza) || 
+          '/default-visuales.jpg'
+        } />
+        
+        {/* Schema.org para galería de arte */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ImageGallery",
+            "name": "A Ojo de Hormiga - Obras Visuales",
+            "description": `Galería de obras visuales con ${authors.length} artistas`,
+            "url": "http://localhost:3000/visuales",
+            "publisher": {
+              "@type": "Organization",
+              "name": "Hormiguero de Poemas"
+            },
+            "image": backgroundImage || (allVisualPieces.length > 0 && allVisualPieces[0].pieza),
+            "numberOfItems": allVisualPieces.length,
+            "about": {
+              "@type": "CreativeWork",
+              "name": "Arte Visual Contemporáneo"
+            }
+          })}
+        </script>
+      </Helmet>
    <div className="visuales-container" style={{
     position: 'relative',
     minHeight: '100vh',
@@ -794,6 +897,7 @@ useEffect(() => {
       </div>
     )}
   </div>
+  </>
 );
 };
 

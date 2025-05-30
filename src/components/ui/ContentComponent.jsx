@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import SVGRenderer from './SVGRenderer'; // Import the SVGRenderer component
 import {useRef} from 'react';
+import { Helmet } from 'react-helmet-async';
+
 
 // Import your book cover images
 import bookCover1 from '../../assets/images/1res.png';
@@ -412,13 +414,115 @@ const handleContributorClick = (bookId) => {
     // No establecemos animatingBookId para evitar la animación de pulso que puede causar los parpadeos
   }
 };
-  
+    const getSectionTitle = () => {
+    switch(contentType.toLowerCase()) {
+      case 'creaciones':
+        return 'El Hormiguero';
+      case 'critica':
+      case 'crítica':
+        return 'Otros Bichos';
+      case 'traducciones':
+        return 'Traducciones';
+      case 'rescates':
+        return 'Rescates';
+      default:
+        return contentType.charAt(0).toUpperCase() + contentType.slice(1);
+    }
+  };
+   const getSectionSubtitle = () => {
+    switch(contentType.toLowerCase()) {
+      case 'creaciones':
+        return 'Poemas en verso y prosa';
+      case 'critica':
+      case 'crítica':
+        return 'Ensayos, cuentos y críticas';
+      case 'traducciones':
+        return 'Traducciones de poesía mundial';
+      case 'rescates':
+        return 'Rescates literarios';
+      default:
+        return `Contenido de ${contentType}`;
+    }
+  };
+    const getAuthorsNames = () => {
+    if (!contributors.length) return '';
+    return contributors.slice(0, 8).join(', '); // Máximo 8 autores
+  };
   const isDesktop = windowWidth > 840; // Define el umbral para desktop igual que en getTitleStyles
   
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
+    <>
+     <Helmet>
+        <title>{`${getSectionTitle()} - ${getSectionSubtitle()} | Hormiguero de Poemas`}</title>
+        <meta name="description" content={
+          contributors.length > 0
+            ? `${getSectionTitle()}: ${getSectionSubtitle()}. Autores: ${getAuthorsNames()}.`
+            : `${getSectionTitle()} - ${getSectionSubtitle()} en Hormiguero de Poemas`
+        } />
+        <meta name="keywords" content={`${contentType}, ${getSectionTitle().toLowerCase()}, ${getAuthorsNames()}, hormiguero de poemas, literatura, poesía`} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={`${getSectionTitle()} - ${getSectionSubtitle()}`} />
+        <meta property="og:description" content={
+          contributors.length > 0
+            ? `${getSectionTitle()}: ${getSectionSubtitle()}. Con ${contributors.length} autor${contributors.length > 1 ? 'es' : ''}: ${getAuthorsNames()}`
+            : `Descubre ${getSectionTitle()} en Hormiguero de Poemas`
+        } />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`http://hormiguerodepoemas/${contentType}`} />
+        <meta property="og:image" content={
+          content?.imagen ||
+          (poemarios.length > 0 && poemarios[0].cover) ||
+          '/default-section.jpg'
+        } />
+        <meta property="og:image:alt" content={`${getSectionTitle()} - Hormiguero de Poemas`} />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${getSectionTitle()} - ${getSectionSubtitle()}`} />
+        <meta name="twitter:description" content={
+          contributors.length > 0
+            ? `${contributors.length} autor${contributors.length > 1 ? 'es' : ''} en ${getSectionTitle()}: ${getAuthorsNames()}`
+            : `${getSectionTitle()}: ${getSectionSubtitle()}`
+        } />
+        <meta name="twitter:image" content={
+          content?.imagen ||
+          (poemarios.length > 0 && poemarios[0].cover) ||
+          '/default-section.jpg'
+        } />
+        <meta name="twitter:site" content="@hormiguerodepoemas" />
+        
+        {/* Específico por sección */}
+        <meta property="article:section" content={getSectionTitle()} />
+        <meta property="article:tag" content={contentType} />
+        <meta property="article:tag" content="literatura" />
+        <meta property="article:tag" content="poesía" />
+        
+        {/* Schema.org */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": `${getSectionTitle()} - ${getSectionSubtitle()}`,
+            "description": `${getSectionTitle()}: ${getSectionSubtitle()}`,
+            "url": `http://localhost:3000/${contentType}`,
+            "publisher": {
+              "@type": "Organization",
+              "name": "Hormiguero de Poemas"
+            },
+            "image": content?.imagen,
+            "numberOfItems": poemarios.length,
+            "about": {
+              "@type": "CreativeWork",
+              "name": getSectionTitle()
+            }
+          })}
+        </script>
+      </Helmet>
+
     <div className="edition-container scroll-reveal-container">
       {/* Cover image */}
       
@@ -686,6 +790,7 @@ boxShadow: isDesktop
         }
       `}</style>
     </div>
+    </>
   );
 };
 
