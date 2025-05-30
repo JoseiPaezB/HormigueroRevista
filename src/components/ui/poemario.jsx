@@ -526,7 +526,7 @@ return (
                       alt={autor?.nombre || "Author"} 
                       style={{
                         float: 'right',
-                        height: isDesktop ? '400px' : '200px',
+                        height: isDesktop ? '400px' : '175px',
                         objectFit: 'cover',
                         margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
                         border: '1px solid #eee'
