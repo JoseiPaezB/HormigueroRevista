@@ -74,7 +74,7 @@ const CustomStyles = () => (
       content: '';
       position: absolute;
       bottom: -5px;
-      left: 15%;
+      left:0%;
       transform: translateX(-50%);
       height: 2px;
       background-color: white;
