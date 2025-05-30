@@ -69,7 +69,6 @@ const Creaciones = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
-        opacity: 0.3, // Add opacity for readability
         zIndex: -1
       }} />
 
