@@ -8,7 +8,7 @@ import hormigueroLogo2 from '../../assets/anticon2.svg'; // Make sure path is co
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground';
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;

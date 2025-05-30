@@ -21,7 +21,7 @@ import InsectColony from './MovingSvgBackground';
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según donde hayas guardado el componente
 import './ScrollReveal.css'; // Ajusta la ruta según donde hayas guardado los estilos
 import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según donde hayas guardado las utilidades
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 
 // Initialize Supabase client
 const insects = [

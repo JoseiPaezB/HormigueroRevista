@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import SVGRenderer from './SVGRenderer'; // Import the SVGRenderer component
 import {useRef} from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 
 
 // Import your book cover images

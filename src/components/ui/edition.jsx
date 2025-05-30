@@ -11,7 +11,7 @@ import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según tu
 import '../ui/ScrollReveal.css';
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 
 
 // Initialize Supabase client
