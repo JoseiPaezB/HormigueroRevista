@@ -239,8 +239,8 @@ const Footer = () => {
           {/* Newsletter */}
           <ScrollReveal direction="up" delay={700}>
             <div className="footer-section" id="suscribir">
-              <h3 className="footer-heading">QUEDATE AL PENDIENTE</h3>
-              <p className="newsletter-text">SUSCRIBETE PARA RECIBIR LAS ULTIMAS NOTICIAS</p>
+              <h3 className="footer-heading">QUÉDATE AL PENDIENTE</h3>
+              <p className="newsletter-text">SUSCRÍBETE PARA RECIBIR LAS ÚLTIMAS NOTICIAS</p>
               <form className="newsletter-form" onSubmit={handleSubscribe}>
                 <input
                   type="email"

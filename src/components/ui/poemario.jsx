@@ -310,7 +310,7 @@ useEffect(() => {
           transform: 'translate(-50%, -50%)',
           textAlign: 'center',
           color: 'white',
-          fontSize: '24px',
+          fontSize: '20px',
           fontWeight: 'bold',
           letterSpacing: '1px',
           textShadow: '2px 2px 4px rgba(0,0,0,0.8)',

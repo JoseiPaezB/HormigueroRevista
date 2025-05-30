@@ -188,7 +188,7 @@ const Navbar = () => {
                   whiteSpace: 'nowrap'
                 }}
               >
-                EDICION {revista?.numero || 1}
+                EDICIÓN {revista?.numero || 1}
               </Link>
               
               <a 
@@ -299,7 +299,7 @@ const Navbar = () => {
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
               >
-                EDICION {revista?.numero || 1}
+                EDICIÓN {revista?.numero || 1}
               </Link>
             </li>
             
