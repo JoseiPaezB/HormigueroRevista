@@ -508,7 +508,7 @@ const handleContributorClick = (bookId) => {
             "@type": "CollectionPage",
             "name": `${getSectionTitle()} - ${getSectionSubtitle()}`,
             "description": `${getSectionTitle()}: ${getSectionSubtitle()}`,
-            "url": `http://localhost:3000/${contentType}`,
+            "url": `http://hormiguerodepoemas/${contentType}`,
             "publisher": {
               "@type": "Organization",
               "name": "Hormiguero de Poemas"

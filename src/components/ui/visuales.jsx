@@ -465,7 +465,7 @@ useEffect(() => {
             "@type": "ImageGallery",
             "name": "A Ojo de Hormiga - Obras Visuales",
             "description": `Galería de obras visuales con ${authors.length} artistas`,
-            "url": "http://localhost:3000/visuales",
+            "url": "http://hormiguerodepoemas/visuales",
             "publisher": {
               "@type": "Organization",
               "name": "Hormiguero de Poemas"
