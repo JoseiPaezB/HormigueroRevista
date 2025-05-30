@@ -597,7 +597,7 @@ useEffect(() => {
     backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
     position: 'relative',
     overflow: 'hidden',
-    minHeight: isDesktop ? '190vh': '1000px',
+    minHeight: isDesktop ? '190vh': '800px',
     display: 'flex',
     flexDirection: 'column'
   }}

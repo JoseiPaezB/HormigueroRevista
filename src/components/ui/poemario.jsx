@@ -444,7 +444,7 @@ return (
                         src={autor?.imagen || eventImage} 
                         alt={autor?.nombre || "Author"} 
                         style={{
-                          height: isDesktop ? '300px' : '200px', // Increased height
+                          height: isDesktop ? '410px' : '200px', // Increased height
                           width: isDesktop ? '50%':'75%',
                           objectFit: 'cover',
                           border: '1px solid #eee',
