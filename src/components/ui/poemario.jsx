@@ -6,7 +6,7 @@ import bookCover2 from '../../assets/images/2res.png';
 import bookCover3 from '../../assets/images/3res.png';
 import bookCover4 from '../../assets/images/4res.png';
 import bookCover5 from '../../assets/images/5res.png';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
 import mosquito from '../../assets/images/mosquito.svg';
@@ -59,6 +59,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const AuthorBio = () => {
     const { nombre } = useParams(); // Get author ID from URL if available
     const navigate = useNavigate(); // Initialize navigate function
+    const location = useLocation();
     const [autor, setAutor] = useState(null);
     const [poemas, setPoemas] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -83,9 +84,52 @@ const AuthorBio = () => {
       if (!text) return 0;
       return text.split(/\s+/).filter(word => word.length > 0).length;
     };
+useEffect(() => {
+    // Only store the referrer if we don't already have one stored
+     if (!sessionStorage.getItem('authorPageReferrer') && !location.state?.fromRegresar) {
+        const referrer = document.referrer;
+        if (referrer.includes('/creaciones')) {
+          sessionStorage.setItem('authorPageReferrer', 'creaciones');
+        } else if (referrer.includes('/critica')) {
+          sessionStorage.setItem('authorPageReferrer', 'critica');
+        }
+      }
+  }, [location.state]);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      const referrer = sessionStorage.getItem('authorPageReferrer');
+      if (referrer) {
+        sessionStorage.removeItem('authorPageReferrer'); // Clean up
+        navigate(`/${referrer}`, { replace: true });
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
     // Fetch data on component mount
     // Fetch data on component mount
+// Add this useEffect in your ContentComponent
+useEffect(() => {
+  // Always scroll to top when the component mounts
+  window.scrollTo(0, 0);
+  
+  // Disable scroll restoration temporarily
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  
+  return () => {
+    // Re-enable scroll restoration when component unmounts
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'auto';
+    }
+  };
+}, []);
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -102,7 +146,8 @@ useEffect(() => {
 
       if (autorError) throw autorError;
       setAutor(autorData);
-      
+
+       
       // Get the actual author ID from the database
       const authorId = autorData.id; // This is the actual ID we need
       

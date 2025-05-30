@@ -124,7 +124,7 @@ const ContentComponent = ({ contentType }) => {
                 author: poemario.autor ? poemario.autor.nombre : 'Unknown',
                 cover: poemario.portada,
                 isSVG: isSVG(poemario.portada),
-                link: `/autor/${poemario.autor ? poemario.autor.nombre : 'unknown'}`,                
+                link: `/autor/${encodeURIComponent(poemario.autor ? poemario.autor.nombre : 'unknown')}`,
                 poemCount: countError ? Math.floor(Math.random() * 10) + 1 : count
               };
             })
@@ -146,7 +146,23 @@ const ContentComponent = ({ contentType }) => {
     
     return () => window.removeEventListener('resize', handleResize);
   }, [contentType]);
+  // Add this useEffect in your ContentComponent
+useEffect(() => {
+  // Always scroll to top when the component mounts
+  window.scrollTo(0, 0);
   
+  // Disable scroll restoration temporarily
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  
+  return () => {
+    // Re-enable scroll restoration when component unmounts
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'auto';
+    }
+  };
+}, []);
   // Modifica la función getBookSize para usar porcentajes en desktop
   const getBookSize = (poemCount, sizeCategory) => {
     const isDesktop = windowWidth > 840; // Define el umbral para desktop
@@ -552,6 +568,7 @@ boxShadow: isDesktop
               <Link 
                 key={book.id} 
                 to={book.link} 
+                state={{ fromInternal: true, contentType: contentType }}
                 style={{
                   textDecoration: 'none', 
                   color: 'inherit',

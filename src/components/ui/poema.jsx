@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import portada from '../../assets/images/edicion1.png';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import hormigueroLogo from '../../assets/anticon.svg';
 import FloatingHormiguearButton from './hormiguearButton'; // Import our new component
@@ -20,7 +20,6 @@ const Poema = () => {
   
     const [isFocused, setIsFocused] = useState(false);
 
-  const { id } = useParams(); // Get poem ID from URL
   const navigate = useNavigate();
   const [poema, setPoema] = useState(null);
   const [autor, setAutor] = useState(null);
@@ -34,11 +33,12 @@ const Poema = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { titulo } = useParams(); // Get only the poem title
-
+  const location = useLocation();
   
   const masPoemasSectionRef = useRef(null);
   const articleContainerRef = useRef(null);
 
+  
   // Fetch data on component mount
   useEffect(() => {
       const fetchData = async () => {
@@ -65,8 +65,10 @@ const Poema = () => {
               .single();
 
             if (autorError) throw autorError;
+            sessionStorage.setItem('poemPageAuthor', autorData.nombre);
+
             setAutor(autorData);
-            
+
             // 3. Fetch other poems by the same author from the same poemario
             if (poemaData.id_poemario) {
               const { data: otrosPoemaData, error: otrosPoemaError } = await supabase
@@ -103,6 +105,40 @@ const Poema = () => {
       fetchData();
     }, [titulo]);
 
+  // Add this useEffect after you've fetched the author data
+
+// Handle browser back/forward navigation
+useEffect(() => {
+  // Store current poem in navigation history
+  const currentPoem = titulo;
+  const navigationHistory = JSON.parse(sessionStorage.getItem('poemHistory') || '[]');
+  
+  // If this is a new poem (not going back), add it to history
+  if (navigationHistory[navigationHistory.length - 1] !== currentPoem) {
+    navigationHistory.push(currentPoem);
+    sessionStorage.setItem('poemHistory', JSON.stringify(navigationHistory));
+  }
+  
+  // Listen for popstate (browser back/forward)
+  const handlePopState = (event) => {
+    const history = JSON.parse(sessionStorage.getItem('poemHistory') || '[]');
+    const currentIndex = history.indexOf(currentPoem); // Remove the -1
+    
+    // If we're going back and this was the first poem visited, redirect to author
+    if (currentIndex <= 0 && autor) {
+      sessionStorage.removeItem('poemHistory');
+      sessionStorage.removeItem('poemPageAuthor');
+      navigate(`/autor/${encodeURIComponent(autor.nombre)}`, { replace: true });
+    }
+  };
+  
+  window.addEventListener('popstate', handlePopState);
+  
+  return () => {
+    window.removeEventListener('popstate', handlePopState);
+  };
+}, [titulo, autor, navigate]);
+
   // Format date for display (YYYY-MM-DD to DD/MM/YY)
   const formatDate = (dateString) => {
     if (!dateString) return '01/08/25';
@@ -113,6 +149,12 @@ const Poema = () => {
       year: '2-digit'
     });
   };
+
+  const handleGoToPoem = (poemTitle) => {
+  
+  navigate(`/poema/${encodeURIComponent(poemTitle.toLowerCase())}`, { replace: true });
+  window.scrollTo(0, 0);
+};
   
   const handleHormiguear = async () => {
     setShowHormiguearModal(true);
@@ -262,10 +304,7 @@ const Poema = () => {
   };
   
   // Handle navigation to another poem
-const handleGoToPoem = (poemTitle) => {
-  navigate(`/poema/${encodeURIComponent(poemTitle.toLowerCase())}`);
-  window.scrollTo(0, 0); // Scroll to top when navigating
-};
+
 
   // Process poem text to handle indentation and stanzas
   const processPoemaText = (text) => {
@@ -623,8 +662,29 @@ const handleGoToPoem = (poemTitle) => {
       {/* Back button */}
       <ScrollReveal direction="up" delay={200}>
         <div 
-          onClick={() => navigate(`/autor/${encodeURIComponent(autor.nombre)}`)}
-          style={{
+        onClick={() => {
+          // Clear the poem navigation history since we're explicitly going back to author
+          sessionStorage.removeItem('poemHistory');
+          sessionStorage.removeItem('poemPageAuthor');
+          
+          // Set the correct referrer based on author type before navigating
+          if (autor.tipo_creacion === 'creaciones') {
+            sessionStorage.setItem('authorPageReferrer', 'creaciones');
+          } else if (autor.tipo_creacion === 'critica' || autor.tipo_creacion === 'crítica') {
+            sessionStorage.setItem('authorPageReferrer', 'critica');
+          } else {
+            // For other types like traducciones, rescates, etc.
+            sessionStorage.setItem('authorPageReferrer', 'creaciones');
+          }
+
+           history.replaceState(null, '', window.location.href);
+  
+  // Navigate with a small delay
+          setTimeout(() => {
+            navigate(`/autor/${encodeURIComponent(autor.nombre)}`, { replace: true });
+          }, 10);
+        }}
+        style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

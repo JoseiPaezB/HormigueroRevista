@@ -622,7 +622,7 @@ useEffect(() => {
 {/* Top Section - Magazine Identity */}
 <div style={{
   position: 'absolute',
-  top: '80px',
+  top: '60px',
   left: '10px',
   zIndex: 10,
   textAlign: 'left'

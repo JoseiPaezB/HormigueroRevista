@@ -104,7 +104,7 @@ const Critica = () => {
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
               minWidth: '100vw',
-              minHeight:isDesktop ?  '100vh':'800px',
+              minHeight:isDesktop ?  '100vh':'1000px',
               opacity:0.8,
             }}
           />
