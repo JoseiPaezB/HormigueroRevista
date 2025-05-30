@@ -164,42 +164,50 @@ const Footer = () => {
                COLABORADORES
               
             </h3>
-            <div className="colaboradores-list" style={{ 
-              display: 'flex', 
-              flexDirection: 'column',  // Cambio clave para mostrar en columna
-              gap: '8px', 
-              marginTop: '12px',
-              maxWidth: '100%'
-            }}>
-              {colaboradores.length > 0 ? (
-                colaboradores.map((colaborador, index) => (
-                  <span 
-                    key={index}
-                    style={{ 
-                      display: 'block',  // Cambiado a block para ocupar todo el ancho
-                      padding: '4px 8px',
-                      fontSize: '14px',
-                      transition: 'all 0.2s ease',
-                      cursor: 'default',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateX(5px)';  // Modificado para un efecto horizontal
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateX(0)';
-                    }}
-                  >
-                   <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Users size={16} /> {colaborador.toUpperCase()}
+           <div className="colaboradores-list" style={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            gap: '8px', 
+            marginTop: '12px',
+            maxWidth: '100%'
+          }}>
+            {colaboradores.length > 0 ? (
+              colaboradores.map((colaborador, index) => (
+                <span 
+                  key={index}
+                  style={{ 
+                    display: 'block',
+                    padding: '4px 8px',
+                    fontSize: '14px',
+                    transition: 'all 0.2s ease',
+                    cursor: 'default',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateX(5px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateX(0)';
+                  }}
+                >
+                  {colaborador.toLowerCase().includes('miembros del consejo editorial') ? (
+                    // Visible icon for "miembros del consejo editorial"
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Users size={16} style={{ opacity: 0 }} /> {colaborador.toUpperCase()}
                     </span>
-                  </span>
-                ))
-              ) : (
-                <p style={{ fontSize: '14px', fontStyle: 'italic', margin: '0' }}>
-                  Cargando colaboradores...
-                </p>
-              )}
-            </div>
+                  ) : (
+                    // Invisible icon for Bruno and Jose to maintain padding
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Users size={8} style={{ opacity: 0 }} /> {colaborador.toUpperCase()}
+                    </span>
+                  )}
+                </span>
+              ))
+            ) : (
+              <p style={{ fontSize: '14px', fontStyle: 'italic', margin: '0' }}>
+                Cargando colaboradores...
+              </p>
+            )}
+          </div>
           </div>
           </ScrollReveal>
           
