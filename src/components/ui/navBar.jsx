@@ -95,9 +95,9 @@ const Navbar = () => {
     if (isMobile) {
       return { width: '30px', height: 'auto' };
     } else if (window.innerWidth <= 1200) {
-      return { width: '37px', height: 'auto' }; // Smaller for medium screens
+      return { width: '25px', height: 'auto' }; // Smaller for medium screens
     } else {
-      return { width: '40px', height: 'auto' }; // Smaller for large screens
+      return { width: '25px', height: 'auto' }; // Smaller for large screens
     }
   };
 

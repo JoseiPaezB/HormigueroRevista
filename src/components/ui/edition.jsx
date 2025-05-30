@@ -74,7 +74,7 @@ const CustomStyles = () => (
       content: '';
       position: absolute;
       bottom: -5px;
-      left: 50%;
+      left: 15%;
       transform: translateX(-50%);
       height: 2px;
       background-color: white;
@@ -94,7 +94,7 @@ const CustomStyles = () => (
     /* Animación al entrar en viewport */
     .animate-link::after {
       animation: pulseLine 3.5s infinite ease-in-out;
-      width: 100%;
+      width: 15%;
     }
     
     .animate-link .click-hint {
@@ -600,6 +600,7 @@ useEffect(() => {
     minHeight: isDesktop ? '190vh': '800px',
     display: 'flex',
     flexDirection: 'column'
+
   }}
 >
    <div style={{ 
@@ -671,20 +672,45 @@ useEffect(() => {
   color: 'white',
   zIndex: 10,
   maxWidth: window.innerWidth <= 768 ? '90%' : '60%',
-  textAlign: 'left'
+  textAlign: 'left',
+
 }}>
   
   <ScrollReveal direction="up" delay={2000}>
     {renderEspiritusTitle()}
 
   </ScrollReveal>
+  <div style={{
+  bottom:isDesktop ?'4rem' : '6rem',
+  left: isDesktop ?'10%' : '25%',
+  zIndex: 10
+}}>
+  <ScrollReveal direction="left" delay={200}>
+      <Link
+        ref={editionLinkRef}
+        to="/contenidos"
+        className="edition-link hover-underline-animation"
+        style={{
+          color: 'white',
+          fontSize: 'clamp(0.7rem, 1.5vw, 1rem)',
+          fontWeight: '300',
+          letterSpacing: '1px',
+          textDecoration: 'none',
+          paddingBottom: '2px',
+        }}
+      >
+        HAZ CLIC PARA VER MÁS
+      </Link>
+    </ScrollReveal>
+</div>
   
   <ScrollReveal direction="up" delay={1000}>
     <div style={{
       fontSize: 'clamp(0.8rem, 2vw, 1.4rem)',
       fontWeight: '300',
       letterSpacing: '1px',
-      width:'95%'
+      width:'95%',
+      marginTop:'2rem'
     }}>
       30.05.25 PRIMER NÚMERO
     </div>
@@ -727,31 +753,7 @@ useEffect(() => {
 </div>
 
 {/* Center Bottom - CTA */}
-<div style={{
-  position: 'absolute',
-  bottom:isDesktop ?'4rem' : '6rem',
-  left: isDesktop ?'10%' : '25%',
-  transform: 'translateX(-50%)',
-  zIndex: 10
-}}>
-  <ScrollReveal direction="left" delay={200}>
-      <Link
-        ref={editionLinkRef}
-        to="/contenidos"
-        className="edition-link hover-underline-animation"
-        style={{
-          color: 'white',
-          fontSize: 'clamp(0.7rem, 1.5vw, 1rem)',
-          fontWeight: '300',
-          letterSpacing: '1px',
-          textDecoration: 'none',
-          paddingBottom: '2px'
-        }}
-      >
-        HAZ CLIC PARA VER MÁS
-      </Link>
-    </ScrollReveal>
-</div>
+
 </div>
       
       {/* Article preview section */}
