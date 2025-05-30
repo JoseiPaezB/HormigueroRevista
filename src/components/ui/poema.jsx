@@ -413,7 +413,21 @@ useEffect(() => {
       }
     ]
   };
-
+    const processTextWithItalics = (text) => {
+      if (!text) return text;
+      
+      // Split text by the pattern 0text0
+      const parts = text.split(/0([^0]+)0/);
+      
+      return parts.map((part, index) => {
+        // Every odd index (1, 3, 5...) is text that was between 0s
+        if (index % 2 === 1) {
+          return <em key={index}>{part}</em>;
+        }
+        // Even indices are regular text
+        return part;
+      });
+    };
   // Process poem sections
   const poemSections = poema?.texto 
     ? processPoemaText(poema.texto) 
@@ -451,7 +465,7 @@ useEffect(() => {
       <ScrollReveal direction="up" delay={500}>
         <div style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'space-between',  
           alignItems: 'center',
           marginBottom: '40px'
         }}>
@@ -482,8 +496,7 @@ useEffect(() => {
               lineHeight: '1.6',
               textAlign: 'left',
               width: '96%',
-              whiteSpace: 'pre-line' // Add this line to preserve line breaks and indentation
-
+              whiteSpace: 'pre-line'
             }}>
               {poema.mencion}
             </div>
@@ -499,94 +512,114 @@ useEffect(() => {
           marginLeft: 0,
           width:'96%'
         }}>
-          {poemSections.map((section, index) => (
-          <div 
-            key={index}
-            style={{ 
-              marginBottom: '40px',
-              textAlign: 'left'
-            }}
-          >
-            {section.title && (
-              <p style={{ 
-                marginBottom: '15px',
-                textAlign: 'left' 
-              }}>{section.title}</p>
-            )}
-            <div style={{ 
-              textAlign: 'left'
-            }}>
-              {poema.id === 50 ? (
-            (() => {
-              const lines = section.content.split('\n');
-              let currentQuestion = null;
-              let currentAnswer = [];
-              const questionAnswerPairs = [];
-              let qaIndex = 0;
-
-              lines.forEach((line, lineIndex) => {
-                const startsWithNumber = /^\d+\./.test(line.trim());
-                
-                if (startsWithNumber) {
-                  // If we have a previous question and answer, save it
-                  if (currentQuestion !== null) {
-                    questionAnswerPairs.push({
-                      question: currentQuestion,
-                      answer: currentAnswer.join('\n'),
-                      index: qaIndex++
-                    });
-                  }
-                  // Start new question
-                  currentQuestion = line;
-                  currentAnswer = [];
-                } else if (line.trim() !== '') {
-                  // Add to current answer
-                  currentAnswer.push(line);
+          {poemSections.map((section, index) => {
+            // Add this function to process italics
+            const processTextWithItalics = (text) => {
+              if (!text) return text;
+              
+              // Split text by the pattern 0text0
+              const parts = text.split(/0([^0]+)0/);
+              
+              return parts.map((part, index) => {
+                // Every odd index (1, 3, 5...) is text that was between 0s
+                if (index % 2 === 1) {
+                  return <em key={index}>{part}</em>;
                 }
+                // Even indices are regular text
+                return part;
               });
+            };
 
-              // Don't forget the last question-answer pair
-              if (currentQuestion !== null) {
-                questionAnswerPairs.push({
-                  question: currentQuestion,
-                  answer: currentAnswer.join('\n'),
-                  index: qaIndex++
-                });
-              }
+            return (
+              <div 
+                key={index}
+                style={{ 
+                  marginBottom: '40px',
+                  textAlign: 'left'
+                }}
+              >
+                {section.title && (
+                  <p style={{ 
+                    marginBottom: '15px',
+                    textAlign: 'left' 
+                  }}>{section.title}</p>
+                )}
+                <div style={{ 
+                  textAlign: 'left'
+                }}>
+                  {poema.id === 50 ? (
+                    (() => {
+                      const lines = section.content.split('\n');
+                      let currentQuestion = null;
+                      let currentAnswer = [];
+                      const questionAnswerPairs = [];
+                      let qaIndex = 0;
 
-              return questionAnswerPairs.map((qa, qaIndex) => (
-                <div key={qaIndex} style={{ marginBottom: '30px' }}>
-                  <ScrollReveal 
-                    direction="up" 
-                    delay={200 + (qaIndex * 300)}
-                  >
-                    <div style={{ marginBottom: '10px' }}>
-                      <strong>{qa.question}</strong>
+                      lines.forEach((line, lineIndex) => {
+                        const startsWithNumber = /^\d+\./.test(line.trim());
+                        
+                        if (startsWithNumber) {
+                          // If we have a previous question and answer, save it
+                          if (currentQuestion !== null) {
+                            questionAnswerPairs.push({
+                              question: currentQuestion,
+                              answer: currentAnswer.join('\n'),
+                              index: qaIndex++
+                            });
+                          }
+                          // Start new question
+                          currentQuestion = line;
+                          currentAnswer = [];
+                        } else if (line.trim() !== '') {
+                          // Add to current answer
+                          currentAnswer.push(line);
+                        }
+                      });
+
+                      // Don't forget the last question-answer pair
+                      if (currentQuestion !== null) {
+                        questionAnswerPairs.push({
+                          question: currentQuestion,
+                          answer: currentAnswer.join('\n'),
+                          index: qaIndex++
+                        });
+                      }
+
+                      return questionAnswerPairs.map((qa, qaIndex) => (
+                        <div key={qaIndex} style={{ marginBottom: '30px' }}>
+                          <ScrollReveal 
+                            direction="up" 
+                            delay={200 + (qaIndex * 300)}
+                          >
+                            <div style={{ marginBottom: '10px' }}>
+                              <strong>{qa.question}</strong>
+                            </div>
+                          </ScrollReveal>
+                          
+                          <ScrollReveal 
+                            direction="up" 
+                            delay={400 + (qaIndex * 300)}
+                          >
+                            <div style={{ 
+                              whiteSpace: 'pre-line',
+                              marginBottom: '20px'
+                            }}>
+                              {qa.answer}
+                            </div>
+                          </ScrollReveal>
+                        </div>
+                      ));
+                    })()
+                  ) : (
+                    // For all other poems, apply the italic processing
+                    <div style={{ whiteSpace: 'pre-line' }}>
+                      {processTextWithItalics(section.content)}
                     </div>
-                  </ScrollReveal>
-                  
-                  <ScrollReveal 
-                    direction="up" 
-                    delay={400 + (qaIndex * 300)}
-                  >
-                    <div style={{ 
-                      whiteSpace: 'pre-line',
-                      marginBottom: '20px'
-                    }}>
-                      {qa.answer}
-                    </div>
-                  </ScrollReveal>
+                  )}
                 </div>
-              ));
-            })()
-          ) : (
-            <div style={{ whiteSpace: 'pre-line' }}>
-              {section.content}
-            </div>
-          )}
-        </div>
-      </div>
-    ))}
+              </div>
+            );
+          })}
         </div>
       </div>
       
