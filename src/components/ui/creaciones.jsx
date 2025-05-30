@@ -12,6 +12,12 @@ const Creaciones = () => {
   const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [fixedHeight, setFixedHeight] = useState(null); // Add this state
+
+  useEffect(() => {
+    // Set the height once on mount and never change it
+    setFixedHeight(window.innerHeight);
+  }, []);
 
   useEffect(() => {
     // Function to fetch the image URL from Supabase
@@ -93,14 +99,13 @@ const Creaciones = () => {
           <div
             style={{
               width: '100%',
-              height: '100%',
+              height: fixedHeight ? `${fixedHeight}px` : '100vh', // Use fixed height
               backgroundImage: `url(${imageUrl})`,
-              backgroundSize: 'cover', // Change this to 'contain' to see full image, or keep 'cover' to fill container
+              backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
               minWidth: '100vw',
-              minHeight: '100vh',
-              opacity:0.8,
+              opacity: 0.8,
             }}
           />
         )}
