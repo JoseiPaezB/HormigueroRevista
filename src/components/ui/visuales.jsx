@@ -8,7 +8,7 @@ import InsectColony from './InsectColony2';
 import authorSvg from '../../assets/cinco2.svg'; // Adjust the path as necessary
 import ant from '../../assets/uno.svg'; // Adjust the path as necessary
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 
 
 

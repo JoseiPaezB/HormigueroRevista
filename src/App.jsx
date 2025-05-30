@@ -1,7 +1,7 @@
 import './App.css';
 import './footer.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 import Navbar from './components/ui/navBar.jsx';
 import Edicion from './components/ui/edition.jsx';
 import Contenido from './components/ui/contenidos.jsx';
@@ -19,7 +19,6 @@ import EntrevistaWrapper from './components/ui/entrevistaWrapper.jsx';
 
 function App() {
   return (
-    <HelmetProvider>
       <BrowserRouter>
         <ScrollToHashElement />
         <Navbar />
@@ -38,7 +37,6 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </HelmetProvider>
   );
 }
 
