@@ -95,7 +95,7 @@ const Visuales = () => {
         // 3. Fetch all authors who have visual pieces
         const { data: authorsData, error: authorsError } = await supabase
           .from('autor')
-          .select('id, nombre, semblanza')
+          .select('id, nombre, semblanza, imagen')
           .order('nombre')
           .eq('tipo_creacion', 'visuales');
   
@@ -349,120 +349,163 @@ const Visuales = () => {
   const isDesktop = window.innerWidth > 768;
 
   
-return (
-  <div className="visuales-container">
-    <div className="visuales-content" style={{ padding: '0 20px', marginTop: '6rem' }}>
-      
-      <ScrollReveal diretion="right" delay={200}>
-        <h2 className="visuales-title" style={{
-          fontWeight: 'bold',
-          textAlign: 'center',
-          margin: '30px 0',
-          textTransform: 'uppercase',
-          fontSize: isDesktop ? '3rem' : '40px'
-        }}>
-          A OJO DE HORMIGA
-        </h2>
-      </ScrollReveal>
-      
-      {/* Regular sized ants */}
-      <InsectColony 
-        insects={insects}
-        count={80}
-      />
-
-      {/* Show all authors with their works */}
-      {authors.map(author => {
-        // Filter visual pieces for this specific author
-        const authorPieces = allVisualPieces.filter(
-          piece => piece.id_autor === author.id
-        );
+  return (
+    <div className="visuales-container">
+      <div className="visuales-content" style={{ padding: '0 20px', marginTop: '6rem' }}>
         
-        // Process the pieces for this author
-        const processedPieces = authorPieces.map((piece, index) => {
-          const gridProps = getRandomGridProperties(index, authorPieces.length);
-          return {
-            ...piece,
-            ...gridProps,
-            margin: `${Math.floor(Math.random() * 15)}px`,
-            order: index
-          };
-        });
+        <ScrollReveal direction="right" delay={200}> {/* Fixed typo: diretion -> direction */}
+          <h2 className="visuales-title" style={{
+            fontWeight: 'bold',
+            textAlign: 'center',
+            margin: '30px 0',
+            textTransform: 'uppercase',
+            fontSize: isDesktop ? '3rem' : '40px'
+          }}>
+            A OJO DE HORMIGA
+          </h2>
+        </ScrollReveal>
+        
+        {/* Regular sized ants */}
+        <InsectColony 
+          insects={insects}
+          count={80}
+        />
 
-        return (
-          <div key={author.id} style={{ marginBottom: '80px' }}>
-            {/* Author info section */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '40px 0',
-              padding: '20px',
-            }}>
-            <ScrollReveal direction="up">
-              <h3 style={{ 
-                fontSize: isDesktop ? '2rem' : '1.5rem',
-                marginBottom: '20px',
-                textAlign: 'center'
-              }}>
-                {author.nombre.toUpperCase()}
-              </h3>
-               </ScrollReveal>
-              
+        {/* Show all authors with their works */}
+        {authors.map(author => {
+          // Filter visual pieces for this specific author
+          const authorPieces = allVisualPieces.filter(
+            piece => piece.id_autor === author.id
+          );
+          
+          // Process the pieces for this author
+          const processedPieces = authorPieces.map((piece, index) => {
+            const gridProps = getRandomGridProperties(index, authorPieces.length);
+            return {
+              ...piece,
+              ...gridProps,
+              margin: `${Math.floor(Math.random() * 15)}px`,
+              order: index
+            };
+          });
+
+          return (
+            <div key={author.id} style={{ marginBottom: '80px' }}>
+              {/* Author info section */}
               <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
+                margin: '40px 0',
+                padding: '20px',
               }}>
-                <ScrollReveal direction="down" delay={500}>
-                  <p style={{
-                    width: isDesktop ? '70%' : '100%',
-                    textAlign: 'justify',
-                    fontSize: '14px',
-                    color: '#000',
-                    margin: isDesktop ? '0 auto ' :'10px 0',
-                    lineHeight: '1.6'
+                {/* Author name */}
+               
+
+                {/* Split semblanza with image in between */}
+                {(() => {
+                  // Split the semblanza text in half
+                  const words = author.semblanza ? author.semblanza.split(' ') : [];
+                  const midPoint = Math.floor(words.length / 2);
+                  const firstHalf = words.slice(0, midPoint).join(' ');
+                  const secondHalf = words.slice(midPoint).join(' ');
+
+                  return (
+                    <>
+                      {/* First half of semblanza */}
+                      {firstHalf && (
+                        <ScrollReveal direction="down" delay={500}>
+                          <p style={{
+                            width: isDesktop ? '70%' : '100%',
+                            textAlign: 'justify',
+                            fontSize: '14px',
+                            color: '#000',
+                            margin: isDesktop ? '0 auto 20px auto' : '10px 0 20px 0',
+                            lineHeight: '1.6'
+                          }}>
+                            {firstHalf}
+                          </p>
+                        </ScrollReveal>
+                      )}
+                      
+                      {/* Author image section */}
+                      {author.imagen && (
+                        <ScrollReveal direction="up" delay={700}>
+                          <div style={{
+                            margin: '30px 0',
+                            display: 'flex',
+                            justifyContent: 'center'
+                          }}>
+                            <img 
+                              src={author.imagen} 
+                              alt={author.nombre} 
+                              style={{
+                                height: isDesktop ? '300px' : '150px',
+                                width: 'auto',
+                                maxWidth: isDesktop ? '100%' : '100%',
+                                objectFit: 'cover',
+                                border: '1px solid #eee',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                              }}
+                            />
+                          </div>
+                        </ScrollReveal>
+                      )}
+
+                      {/* Second half of semblanza */}
+                      {secondHalf && (
+                        <ScrollReveal direction="down" delay={900}>
+                          <p style={{
+                            width: isDesktop ? '70%' : '100%',
+                            textAlign: 'justify',
+                            fontSize: '14px',
+                            color: '#000',
+                            margin: isDesktop ? '20px auto 0 auto' : '20px 0 0 0',
+                            lineHeight: '1.6'
+                          }}>
+                            {secondHalf}
+                          </p>
+                        </ScrollReveal>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* Author's visual works */}
+              <div className="angled-grid-container" style={{
+                maxWidth: '1000px',
+                margin: '0 auto',
+                padding: '20px',
+                position: 'relative'
+              }}>
+                {/* Rest of your existing code continues unchanged... */}
+                {processedPieces.length > 0 ? (
+                  processedPieces.map((piece, index) => (
+                    <ScrollRevealItem 
+                      key={piece.id || index}
+                      index={index}
+                      piece={piece}
+                      handlePieceClick={handlePieceClick}
+                      totalPieces={processedPieces.length}
+                    />
+                  ))
+                ) : (
+                  <p style={{ 
+                    textAlign: 'center', 
+                    padding: '20px 0',
+                    fontStyle: 'italic',
+                    color: '#666'
                   }}>
-                    {author.semblanza}
+                    No hay obras visuales disponibles para este artista.
                   </p>
-                </ScrollReveal>
+                )}
               </div>
             </div>
-
-            {/* Author's visual works */}
-            <div className="angled-grid-container" style={{
-              maxWidth: '1000px',
-              margin: '0 auto',
-              padding: '20px',
-              position: 'relative'
-            }}>
-              {processedPieces.length > 0 ? (
-                processedPieces.map((piece, index) => (
-                  <ScrollRevealItem 
-                    key={piece.id || index}
-                    index={index}
-                    piece={piece}
-                    handlePieceClick={handlePieceClick}
-                    totalPieces={processedPieces.length}
-                  />
-                ))
-              ) : (
-                <p style={{ 
-                  textAlign: 'center', 
-                  padding: '20px 0',
-                  fontStyle: 'italic',
-                  color: '#666'
-                }}>
-                  No hay obras visuales disponibles para este artista.
-                </p>
-              )}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
     {/* Popup for detailed view */}
     {showPopup && selectedPiece && (
       <div className="popup-overlay" 
