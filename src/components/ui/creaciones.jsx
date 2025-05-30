@@ -62,7 +62,7 @@ const Creaciones = () => {
       style={{ 
         position: 'relative',
         width: '100%',
-        minHeight: isDesktop? '100vh': '800px',
+        minHeight: isDesktop? '100vh': '100rem',
         backgroundImage: !loading && !imageError && imageUrl ? `url(${imageUrl})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
