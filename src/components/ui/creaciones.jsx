@@ -12,6 +12,8 @@ const Creaciones = () => {
   const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
 
   useEffect(() => {
     // Function to fetch the image URL from Supabase
@@ -70,6 +72,7 @@ const Creaciones = () => {
     setImageError(true);
     setImageLoaded(false);
   };
+  const isDesktop = windowWidth > 768;
 
   return (
     <div className="relative w-full min-h-screen">
@@ -99,8 +102,7 @@ const Creaciones = () => {
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
               minWidth: '100vw',
-              minHeight: '100vh',
-              opacity:0.8,
+              minHeight:isDesktop ?  '100vh':'800px',
             }}
           />
         )}

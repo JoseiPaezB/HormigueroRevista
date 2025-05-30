@@ -103,7 +103,7 @@ const HormigueadosSection = () => {
       
 
       <div className="hormigueados-header" style={{ position: 'relative', zIndex: 1 }}>
-        <h2 className="edition-title" style={{ fontWeight: 'bold',fontSize:'clamp(18px, 4vw, 3rem)',marginBottom:'-1rem' }}>LOS MAS HORMIGUEADOS</h2>
+        <h2 className="edition-title" style={{ fontWeight: 'bold',fontSize:'clamp(18px, 4vw, 3rem)',marginBottom:'-1rem' }}>LOS MÁS HORMIGUEADOS</h2>
       </div>
       <div style={{ 
         position: 'absolute', 
