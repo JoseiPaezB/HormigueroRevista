@@ -271,12 +271,12 @@ const Contenido = () => {
       
       {/* Article preview section - aquí empiezan las animaciones */}
       <ScrollReveal direction="up">
-        <div className="article-preview">
+        <div className="res" >
           {/* Usa el título con animación que creamos */}
           {renderTitle()}
           
           <ScrollReveal delay={300} direction="up">
-            <div className="article-content">
+            <div className="article-content" >
               <p id="sintesis" style={{whiteSpace:'pre-line'}}>
                 {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
               </p>
