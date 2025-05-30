@@ -242,7 +242,7 @@ const Navbar = () => {
                   whiteSpace: 'nowrap'  
                 }}
               >
-                SUSCRIBETE
+                SUSCRÍBETE
               </a>
             </div>
           )}
@@ -338,7 +338,7 @@ const Navbar = () => {
                 style={{ textDecoration: 'none', color: '#000' }}
                 onClick={() => setMenuOpen(false)}
               >
-                SUSCRIBETE
+                SUSCRÍBETE
               </a>
             </li>
           </ul>
