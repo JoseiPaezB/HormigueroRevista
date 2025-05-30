@@ -130,6 +130,32 @@ const Visuales = () => {
     fetchData();
   }, []);
 
+  // Add this state at the top of your component
+const [backgroundImage, setBackgroundImage] = useState('');
+
+// Add this useEffect to fetch the background image
+useEffect(() => {
+  const fetchBackgroundImage = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('creaciones')
+        .select('imagen')
+        .eq('tipo', 'visuales') // or whatever identifies the visuales section
+        .single();
+      
+      if (error) throw error;
+      
+      if (data && data.imagen) {
+        setBackgroundImage(data.imagen);
+      }
+    } catch (error) {
+      console.error('Error fetching background image:', error);
+    }
+  };
+
+  fetchBackgroundImage();
+}, []);
+
   // Handle author change
   const handleAuthorChange = (event) => {
     const authorId = event.target.value;
@@ -350,128 +376,155 @@ const Visuales = () => {
 
   
   return (
-    <div className="visuales-container">
-      <div className="visuales-content" style={{ padding: '0 20px', marginTop: '6rem' }}>
+   <div className="visuales-container" style={{
+    position: 'relative',
+    minHeight: '100vh',
+    color:'#fff'
+  }}>
+    {/* Background image overlay */}
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center center',
+      backgroundRepeat: 'no-repeat',
+      zIndex: -1
+    }} />
+
+    <div className="visuales-content" style={{ 
+      padding: '0 20px', 
+      marginTop: '6rem',
+      position: 'relative',
+      zIndex: 1 
+    }}>
+      
+      <ScrollReveal direction="right" delay={200}>
+        <h2 className="visuales-title" style={{
+          fontWeight: 'bold',
+          textAlign: 'center',
+          margin: '30px 0',
+          textTransform: 'uppercase',
+          fontSize: isDesktop ? '3rem' : '40px',
+          textShadow: '2px 2px 4px rgba(0,0,0,0.5)' // Add text shadow for better readability
+        }}>
+          A OJO DE HORMIGA
+        </h2>
+      </ScrollReveal>
+      
+      {/* Regular sized ants */}
+      <InsectColony 
+        insects={insects}
+        count={80}
+      />
+
+      {/* Show all authors with their works */}
+      {authors.map(author => {
+        // Filter visual pieces for this specific author
+        const authorPieces = allVisualPieces.filter(
+          piece => piece.id_autor === author.id
+        );
         
-        <ScrollReveal direction="right" delay={200}> {/* Fixed typo: diretion -> direction */}
-          <h2 className="visuales-title" style={{
-            fontWeight: 'bold',
-            textAlign: 'center',
-            margin: '30px 0',
-            textTransform: 'uppercase',
-            fontSize: isDesktop ? '3rem' : '40px'
+        // Process the pieces for this author
+        const processedPieces = authorPieces.map((piece, index) => {
+          const gridProps = getRandomGridProperties(index, authorPieces.length);
+          return {
+            ...piece,
+            ...gridProps,
+            margin: `${Math.floor(Math.random() * 15)}px`,
+            order: index
+          };
+        });
+
+        return (
+          <div key={author.id} style={{ 
+            marginBottom: '80px',
+            borderRadius: '8px',
+            padding: '20px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+
           }}>
-            A OJO DE HORMIGA
-          </h2>
-        </ScrollReveal>
-        
-        {/* Regular sized ants */}
-        <InsectColony 
-          insects={insects}
-          count={80}
-        />
+            {/* Author info section */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '40px 0',
+              padding: '20px',
+            }}>
+              {/* Author name */}
+            
 
-        {/* Show all authors with their works */}
-        {authors.map(author => {
-          // Filter visual pieces for this specific author
-          const authorPieces = allVisualPieces.filter(
-            piece => piece.id_autor === author.id
-          );
-          
-          // Process the pieces for this author
-          const processedPieces = authorPieces.map((piece, index) => {
-            const gridProps = getRandomGridProperties(index, authorPieces.length);
-            return {
-              ...piece,
-              ...gridProps,
-              margin: `${Math.floor(Math.random() * 15)}px`,
-              order: index
-            };
-          });
+              {/* Split semblanza with image in between */}
+              {(() => {
+                // Split the semblanza text in half
+                const words = author.semblanza ? author.semblanza.split(' ') : [];
+                const midPoint = Math.floor(words.length / 2);
+                const firstHalf = words.slice(0, midPoint).join(' ');
+                const secondHalf = words.slice(midPoint).join(' ');
 
-          return (
-            <div key={author.id} style={{ marginBottom: '80px' }}>
-              {/* Author info section */}
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '40px 0',
-                padding: '20px',
-              }}>
-                {/* Author name */}
-               
+                return (
+                  <>
+                    {/* First half of semblanza */}
+                    {firstHalf && (
+                      <ScrollReveal direction="down" delay={500}>
+                        <p style={{
+                          width: isDesktop ? '70%' : '100%',
+                          textAlign: 'justify',
+                          fontSize: '14px',
+                          margin: isDesktop ? '0 auto 20px auto' : '10px 0 20px 0',
+                          lineHeight: '1.6'
+                        }}>
+                          {firstHalf}
+                        </p>
+                      </ScrollReveal>
+                    )}
+                    
+                    {/* Author image section */}
+                    {author.imagen && (
+                      <ScrollReveal direction="up" delay={700}>
+                        <div style={{
+                          margin: '30px 0',
+                          display: 'flex',
+                          justifyContent: 'center'
+                        }}>
+                          <img 
+                            src={author.imagen} 
+                            alt={author.nombre} 
+                            style={{
+                              height: isDesktop ? '200px' : '150px',
+                              width: 'auto',
+                              maxWidth: isDesktop ? '100%' : '100%',
+                              objectFit: 'cover',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            }}
+                          />
+                        </div>
+                      </ScrollReveal>
+                    )}
 
-                {/* Split semblanza with image in between */}
-                {(() => {
-                  // Split the semblanza text in half
-                  const words = author.semblanza ? author.semblanza.split(' ') : [];
-                  const midPoint = Math.floor(words.length / 2);
-                  const firstHalf = words.slice(0, midPoint).join(' ');
-                  const secondHalf = words.slice(midPoint).join(' ');
-
-                  return (
-                    <>
-                      {/* First half of semblanza */}
-                      {firstHalf && (
-                        <ScrollReveal direction="down" delay={500}>
-                          <p style={{
-                            width: isDesktop ? '70%' : '100%',
-                            textAlign: 'justify',
-                            fontSize: '14px',
-                            color: '#000',
-                            margin: isDesktop ? '0 auto 20px auto' : '10px 0 20px 0',
-                            lineHeight: '1.6'
-                          }}>
-                            {firstHalf}
-                          </p>
-                        </ScrollReveal>
-                      )}
-                      
-                      {/* Author image section */}
-                      {author.imagen && (
-                        <ScrollReveal direction="up" delay={700}>
-                          <div style={{
-                            margin: '30px 0',
-                            display: 'flex',
-                            justifyContent: 'center'
-                          }}>
-                            <img 
-                              src={author.imagen} 
-                              alt={author.nombre} 
-                              style={{
-                                height: isDesktop ? '300px' : '150px',
-                                width: 'auto',
-                                maxWidth: isDesktop ? '100%' : '100%',
-                                objectFit: 'cover',
-                                border: '1px solid #eee',
-                                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                              }}
-                            />
-                          </div>
-                        </ScrollReveal>
-                      )}
-
-                      {/* Second half of semblanza */}
-                      {secondHalf && (
-                        <ScrollReveal direction="down" delay={900}>
-                          <p style={{
-                            width: isDesktop ? '70%' : '100%',
-                            textAlign: 'justify',
-                            fontSize: '14px',
-                            color: '#000',
-                            margin: isDesktop ? '20px auto 0 auto' : '20px 0 0 0',
-                            lineHeight: '1.6'
-                          }}>
-                            {secondHalf}
-                          </p>
-                        </ScrollReveal>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
+                    {/* Second half of semblanza */}
+                    {secondHalf && (
+                      <ScrollReveal direction="down" delay={900}>
+                        <p style={{
+                          width: isDesktop ? '70%' : '100%',
+                          textAlign: 'justify',
+                          fontSize: '14px',
+                          margin: isDesktop ? '20px auto 0 auto' : '20px 0 0 0',
+                          lineHeight: '1.6'
+                        }}>
+                          {secondHalf}
+                        </p>
+                      </ScrollReveal>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
 
               {/* Author's visual works */}
               <div className="angled-grid-container" style={{
@@ -496,7 +549,6 @@ const Visuales = () => {
                     textAlign: 'center', 
                     padding: '20px 0',
                     fontStyle: 'italic',
-                    color: '#666'
                   }}>
                     No hay obras visuales disponibles para este artista.
                   </p>
