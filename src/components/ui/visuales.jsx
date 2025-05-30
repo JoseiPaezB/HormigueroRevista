@@ -431,7 +431,7 @@ useEffect(() => {
             : "Galería de obras visuales en Hormiguero de Poemas"
         } />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://localhost:3000/visuales" />
+        <meta property="og:url" content="http://hormiguerodepoemasvisuales" />
         <meta property="og:image" content={
           backgroundImage || 
           (authors.length > 0 && authors[0].imagen) || 
