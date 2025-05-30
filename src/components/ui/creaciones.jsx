@@ -12,6 +12,8 @@ const Creaciones = () => {
   const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
 
   useEffect(() => {
     // Function to fetch the image URL from Supabase
@@ -53,13 +55,14 @@ const Creaciones = () => {
 
     fetchImageUrl();
   }, []);
+  const isDesktop = windowWidth > 768;
 
   return (
     <div 
       style={{ 
         position: 'relative',
         width: '100%',
-        minHeight: '100vh',
+        minHeight: isDesktop? '100vh': '800px',
         backgroundImage: !loading && !imageError && imageUrl ? `url(${imageUrl})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
