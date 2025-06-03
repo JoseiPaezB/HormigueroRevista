@@ -31,15 +31,15 @@ body, html {
   margin-bottom: 4px !important;
 }
 /* Cover image styling */
-.cover-image {
-  position: relative;
-  background-image: url('../../assets/images/edicion1.png');
-  height: 100vh; /* Adjust this value as needed */
-  width: 100%;
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-}
+  .cover-image {
+    position: relative;
+    background-image: url('../../assets/images/edicion1.png');
+    height: 100vh; /* Adjust this value as needed */
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
 
 /* Texture overlay */
 .texture-overlay {

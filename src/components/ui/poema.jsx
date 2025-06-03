@@ -325,7 +325,7 @@ useEffect(() => {
       // No section markers, treat the whole text as one section
       sections.push({
         title: '',
-        content: processStanzas(text)
+        content: text
       });
     } else {
       // If there's content before the first section marker
@@ -671,7 +671,7 @@ useEffect(() => {
                     })()
                   ) : (
                     // For all other poems, apply the italic processing
-                    <div style={{ whiteSpace: 'pre-line' }}>
+                    <div style={{ whiteSpace: 'pre-wrap' }}>
                       {processTextWithItalics(section.content)}
                     </div>
                   )}
