@@ -893,7 +893,7 @@ useEffect(() => {
         className="cover-image" 
         id="main-content" 
         style={{
-          backgroundImage: 'url(/assets/resres5.jpg)',
+          backgroundImage: 'url(../assets/resres5.jpg)',
           
           position: 'relative',
           overflow: 'hidden',
