@@ -628,12 +628,7 @@ useEffect(() => {
 
     <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
-      <div>
-        <h1>Test</h1>
-        <img src="/assets/images/LOS ESPÍRITUS DE LO MÍNIMO (5).png" alt="test" style={{width: '200px'}} />
-        <p>If you see this image, the path works</p>
-      </div>      
-<CustomStyles />
+      <CustomStyles />
       
         {/* Green gradient cover image */}
        <div 
