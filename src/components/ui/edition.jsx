@@ -628,6 +628,7 @@ useEffect(() => {
 
     <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
+      <img src="/assets/images/web/resres5-min.jpg" alt="" />
       <CustomStyles />
       
         {/* Green gradient cover image */}
