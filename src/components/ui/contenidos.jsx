@@ -322,12 +322,12 @@ const Contenido = () => {
               }}></div>
 
               {/* Optional: Add overlay for better text readability */}
-              <RainDrops 
+              {/* <RainDrops 
               count={20}
               speed="superSlow"
               intensity="light"
               svgPath="/assets/images/GOTA.png"
-            /> 
+            />  */}
 
               <div className="vertical-menu" style={{
                 display: 'grid',
@@ -396,7 +396,7 @@ const Contenido = () => {
                 }}>
                   
                 </div>
-                 <DancingBodies 
+                 {/* <DancingBodies 
                     count={10}  // Exactamente 10 para movimientos únicos
                     imagePaths={[
                       '/assets/images/web/manilargo.webp',
@@ -413,7 +413,7 @@ const Contenido = () => {
                       swayDistance={25} // Adjust how far they sway (pixels)
                       containerHeight="400px"
                       containerWidth="100%"
-                  />
+                  /> */}
                   
                 {/* Map through menu items con animaciones secuenciales */}
                 {menuItems.map((item, index) => {
