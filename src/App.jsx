@@ -16,6 +16,7 @@ import Critica from './components/ui/critica.jsx';
 import Rescates from './components/ui/rescates.jsx';
 import VisualesWrapper from './components/ui/visuales_wrapper.jsx';
 import EntrevistaWrapper from './components/ui/entrevistaWrapper.jsx';
+import Res from './components/ui/res.jsx';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/autor/:nombre" element={<AuthorBio />} />
           <Route path="/poema/:titulo" element={<Poema />} />
           <Route path="/evento/:id" element={<EventosContent />} />
+          <Route path="/res" element={<Res />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -10,11 +10,13 @@ import homrigueroLogo3 from '../../assets/cinco2.svg';
 import homrigueroLogo4 from '../../assets/cuatro.svg';
 import homrigueroLogo5 from '../../assets/tres2.svg';
 import homrigueroLogo6 from '../../assets/seis.svg';
+import homrigueroLogo7 from '../../assets/images/manilargo.png';
+import RainDrops from './rainDrop';
 import { createClient } from '@supabase/supabase-js';
-import mosquito from '../../assets/images/mosquito.svg';
-import bee from '../../assets/images/bee.svg';
-import fly from '../../assets/images/roach.svg';
-import ant from '../../assets/images/libelula.svg';
+import mosquito from '../../assets/images/manilargo.png';
+import bee from '../../assets/images/manilargo.png';
+import fly from '../../assets/images/manilargo.png';
+import ant from '../../assets/images/manilargo.png';
 import FlyingInsectsSwarm from './FlyingMosquito';
 import InsectColony from './MovingSvgBackground';
 // Importar ScrollReveal
@@ -22,6 +24,10 @@ import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según donde hayas 
 import './ScrollReveal.css'; // Ajusta la ruta según donde hayas guardado los estilos
 import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según donde hayas guardado las utilidades
 import { Helmet } from 'react-helmet';
+import DancingBodies from './manilargos';
+import RotatingHeads from './rotatingHeads';
+import PeekingEyes from './peekinEyes';
+
 
 // Initialize Supabase client
 const insects = [
@@ -145,6 +151,7 @@ const Contenido = () => {
 
   // Determine grid layout based on screen width
   const isDesktop = windowWidth > 840;
+  const isMobile = windowWidth <= 840;
   const gridColumns = isDesktop ? 3 : 1; // 3 columns for desktop, 1 for mobile
   
   // Renderizar título con animación
@@ -256,20 +263,30 @@ const Contenido = () => {
       <meta name="twitter:image" content={revista?.portada || '/default-cover.jpg'} />
       <meta name="twitter:site" content="@hormiguerodepoemas" />
     </Helmet>
-    <div className="edition-container scroll-reveal-container">
+     <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
       <CustomStyles />
       
       {/* Cover image with title - esta no tiene animación */}
       <div className="cover-image image_2" style={{
-        backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
+        backgroundImage: `url(src/assets/resres5.jpg)`  ,
         position: 'relative',
         marginTop: isDesktop ? '60px':'none' // Space for navbar
       }}>
         
-      </div>
+     </div>
       
       {/* Article preview section - aquí empiezan las animaciones */}
+       <PeekingEyes 
+        eyeImages={[
+          'src/assets/images/ojo1.png',
+          'src/assets/images/ojo2.png',
+          'src/assets/images/ojo3.png',
+        ]}
+        peekDuration={7000}  // 7 segundos visible
+        hideDuration={5000}  // 5 segundos entre apariciones
+        slideDistance={120}  // Qué tanto se asoman (px)
+      />
       <ScrollReveal direction="up">
         <div className="res" >
           {/* Usa el título con animación que creamos */}
@@ -277,138 +294,195 @@ const Contenido = () => {
           
           <ScrollReveal delay={300} direction="up">
             <div className="article-content" >
+              
               <p id="sintesis" style={{whiteSpace:'pre-line'}}>
                 {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
               </p>
             </div>
           </ScrollReveal>
 
-          {/* Menu Grid with Numbered Ants */}
+          {/* Menu Grid with Background Image */}
           <ScrollReveal direction="scale" delay={400}>
-            <div className="vertical-menu" style={{
-              display: 'grid',
-              gap: '30px',
-              padding: '8px',
-              width: '100%',
-              margin: '30px 0',
-              fontSize: '1.3rem',
-              position: 'relative' // Asegura que los insectos se posicionen relativos a este contenedor
-            }}>
-              {/* Define the keyframes animation for pulsing effect */}
-              <style>
-                {`
-                  @keyframes pulse {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.1); }
-                    100% { transform: scale(1); }
-                  }
-                  
-                  @keyframes textPulse {
-                    0% { opacity: 0.75; }
-                    50% { opacity: 1; }
-                    100% { opacity: 0.75; }
-                  }
-                  
-                  .pulsing-ant {
-                    animation: pulse 2s infinite ease-in-out;
-                  }
-                  
-                  .pulsing-text {
-                    animation: textPulse 2s infinite ease-in-out;
-                  }
-                  
-                  .menu-item:hover .pulsing-ant {
-                    animation: pulse 1s infinite ease-in-out;
-                  }
-                  
-                  .menu-item:hover .pulsing-text {
-                    animation: textPulse 0.5s infinite ease-in-out;
-                  }
+            <div 
+              className="menu-background-section"
+              style={{
+                position: 'relative',
+                padding: isMobile ? '60px 20px' : '200px 20px',
+                margin: '30px 0',
+                overflow: 'hidden'
+              }}
+            >
+              {/* Background Image */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundImage: 'url(src/assets/images/Cerro_de_la_SillaDDD.png)', // Change this path
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                opacity: 0.5,
+                zIndex: -2
+              }}></div>
 
-                  .menu-item:hover .index-number {
-                    opacity: 1;
-                    transform: translate(-50%, -50%) scale(1.2);
-                  }
-                `}
-              </style>
-              
-              {/* Contenedor de insectos */}
-              <div style={{ 
-                position: 'absolute', 
-                top: 0, 
-                left: 0, 
-                width: '100%', 
-                height: '100%', 
-                zIndex: 0 // Para estar detrás de los elementos del menú
+              {/* Optional: Add overlay for better text readability */}
+              <RainDrops 
+              count={20}
+              speed="superSlow"
+              intensity="light"
+              svgPath="src/assets/images/GOTA.png"
+            /> 
+
+              <div className="vertical-menu" style={{
+                display: 'grid',
+                gap: '30px',
+                padding: '8px',
+                width: '100%',
+                fontSize: '1.3rem',
+                position: 'relative',
+                zIndex: 1
               }}>
-                <InsectColony 
-                  insects={insects}
-                  count={25}
-                />
-              </div>
+                {/* Define the keyframes animation for pulsing effect */}
+                <style>
+                  {`
+                    @keyframes pulse {
+                      0% { transform: scale(1); }
+                      50% { transform: scale(1.1); }
+                      100% { transform: scale(1); }
+                    }
+                    
+                    @keyframes textPulse {
+                      0% { opacity: 0.75; }
+                      50% { opacity: 1; }
+                      100% { opacity: 0.75; }
+                    }
+                    
+                    .pulsing-ant {
+                      animation: pulse 2s infinite ease-in-out;
+                    }
+                    
+                    .pulsing-text {
+                      animation: textPulse 2s infinite ease-in-out;
+                    }
+                    
+                    .menu-item:hover .pulsing-ant {
+                      animation: pulse 1s infinite ease-in-out;
+                    }
+                    
+                    .menu-item:hover .pulsing-text {
+                      animation: textPulse 0.5s infinite ease-in-out;
+                    }
 
-              {/* Map through menu items con animaciones secuenciales */}
-              {menuItems.map((item, index) => {
-                // Determine which SVG to use based on index
-                let antIcon;
-                switch(index) {
-                  case 0: antIcon = homrigueroLogo1; break;
-                  case 1: antIcon = homrigueroLogo2; break;
-                  case 2: antIcon = homrigueroLogo3; break;
-                  case 3: antIcon = homrigueroLogo4; break;
-                  case 4: antIcon = homrigueroLogo5; break;
-                  case 5: antIcon = homrigueroLogo6; break;
-                  default: antIcon = hormigueroLogo;
-                }
+                    .menu-item:hover .index-number {
+                      opacity: 1;
+                      transform: translate(-50%, -50%) scale(1.2);
+                    }
+
+                    /* Enhanced menu item styling for better visibility on background */
+                    .menu-item {
+                      transition: all 0.3s ease;
+                    }
+
+                    .menu-item:hover {
+                      transform: translateY(-5px);
+                    }
+                  `}
+                </style>
                 
-                // Elegir una dirección diferente para cada elemento del menú
-                const directions = ['left', 'right', 'up'];
-                const direction = directions[index % directions.length];
-                
-                return (
-                  <ScrollReveal key={index} delay={index * 200} direction={direction}>
-                    <Link 
-                      to={item.path} 
-                      className="menu-item" 
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textDecoration: 'none',
-                        color: 'black',
-                        transition: 'transform 0.2s',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        padding: '15px',
-                        position: 'relative',
-                        zIndex: 1 // Para estar por encima de los insectos
-                      }}
-                    >
-                      <div 
-                        className="menu-text pulsing-text" 
+                {/* Contenedor de insectos */}
+                <div style={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  left: 0, 
+                  width: '100%', 
+                  height: '100%', 
+                  zIndex: 0
+                }}>
+                  
+                </div>
+                 <DancingBodies 
+                    count={10}  // Exactamente 10 para movimientos únicos
+                    imagePaths={[
+                      'src/assets/images/manilargo.png',
+                      'src/assets/images/manilargo1.png',
+                      'src/assets/images/manilargo2.png',
+                      'src/assets/images/manilargo3.png',
+                      'src/assets/images/manilargo4.png',
+                      'src/assets/images/manilargo5.png',
+                      'src/assets/images/manilargo6.png',
+                      'src/assets/images/manilargo7.png',
+                      'src/assets/images/maniLlargo8.png',
+                      'src/assets/images/manilargo9.png',
+                    ]}
+                      swayDistance={25} // Adjust how far they sway (pixels)
+                      containerHeight="400px"
+                      containerWidth="100%"
+                  />
+                  
+                {/* Map through menu items con animaciones secuenciales */}
+                {menuItems.map((item, index) => {
+                  // Determine which SVG to use based on index
+                  let antIcon;
+                  switch(index) {
+                    case 0: antIcon = homrigueroLogo7; break;
+                    case 1: antIcon = homrigueroLogo7; break;
+                    case 2: antIcon = homrigueroLogo7; break;
+                    case 3: antIcon = homrigueroLogo7; break;
+                    case 4: antIcon = homrigueroLogo7; break;
+                    case 5: antIcon = homrigueroLogo7; break;
+                    default: antIcon = hormigueroLogo;
+                  }
+                  
+                  // Elegir una dirección diferente para cada elemento del menú
+                  const directions = ['left', 'right', 'up'];
+                  const direction = directions[index % directions.length];
+                  
+                  return (
+                    <ScrollReveal key={index} delay={index * 200} direction={direction}>
+                      <Link 
+                        to={item.path} 
+                        className="menu-item" 
                         style={{
-                          fontSize: windowWidth > 728 ? '1.7rem' : '18px',
-                          letterSpacing: '1px',
-                          animationDelay: `${item.delay}s`,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          textDecoration: 'none',
+                          color: 'black',
+                          justifyContent: 'center',
+                          textAlign: 'center',
+                          padding: '20px', // Increased padding for better visibility
                           position: 'relative',
-                          zIndex: 1,
-                          fontWeight: 'bold',
+                          zIndex: 2
                         }}
                       >
-                        {item.title}
-                      </div>
-                    </Link>
-                  </ScrollReveal>
-                );
-              })}
+                       
+                        <div 
+                          className="menu-text pulsing-text" 
+                          style={{
+                            fontSize: windowWidth > 728 ? '1.7rem' : '18px',
+                            letterSpacing: '1px',
+                            animationDelay: `${item.delay}s`,
+                            position: 'relative',
+                            zIndex: 1,
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {item.title}
+                        </div>
+                      </Link>
+                    </ScrollReveal>
+                  );
+                })}
+              </div>
             </div>
           </ScrollReveal>
         </div>
       </ScrollReveal>
     </div>
   </>
-
-  );
+);
 };
 
 export default Contenido;

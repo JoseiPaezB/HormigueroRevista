@@ -115,7 +115,7 @@ const HormigueadosSection = () => {
         pointerEvents: 'none' // Para que no interfiera con clics
       }}>
        <InsectColony 
-        insects={insects.filter(insect => insect.type === 'mosquito')}
+        insects={insects.filter(insect => insect.type === 'mosquito' || insect.type === 'bee' || insect.type === 'fly2')}
         count={100}
       />
       </div>
