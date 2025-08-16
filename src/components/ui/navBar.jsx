@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import hormigueroLogo from '/assets/cara6.svg'; // Adjust the path as necessary
+import hormigueroLogo from '/assets/images/caras/cara6.svg'; // Adjust the path as necessary
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;

@@ -31,7 +31,7 @@ const headNumbers = [7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18];
   return (
     <div className={`rotating-head-container ${className}`}>
       <img 
-        src={`assets/cara${currentHead}.svg`}
+        src={`assets/images/caras/cara${currentHead}.svg`}
         alt={`Colored head ${currentHead}`}
         className={`rotating-head ${isTransitioning ? 'fade-out' : 'fade-in'}`}
       />
