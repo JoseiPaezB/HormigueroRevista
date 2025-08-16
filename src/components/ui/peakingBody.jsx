@@ -9,42 +9,42 @@ const PeekingBodyParts = () => {
     // 6 Arms - alternating left/right positions
     {
       id: 'arm1',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'left',
       top: '15%',
       size: '80px'
     },
     {
       id: 'arm2', 
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'right',
       top: '25%',
       size: '75px'
     },
     {
       id: 'arm3',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'left',
       top: '35%',
       size: '85px'
     },
     {
       id: 'arm4',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'right',
       top: '45%',
       size: '70px'
     },
     {
       id: 'arm5',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'left',
       top: '55%',
       size: '78px'
     },
     {
       id: 'arm6',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'right',
       top: '65%',
       size: '82px'
@@ -52,42 +52,42 @@ const PeekingBodyParts = () => {
     // 6 Legs - alternating left/right positions
     {
       id: 'leg1',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'left',
       bottom: '30%',
       size: '90px'
     },
     {
       id: 'leg2',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'right',
       bottom: '25%', 
       size: '85px'
     },
     {
       id: 'leg3',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'left',
       bottom: '20%',
       size: '88px'
     },
     {
       id: 'leg4',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'right',
       bottom: '15%',
       size: '92px'
     },
     {
       id: 'leg5',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'left',
       bottom: '10%',
       size: '87px'
     },
     {
       id: 'leg6',
-      src: 'src/assets/MANIS/manilargo.png',
+      src: '/assets/MANIS/manilargo.png',
       position: 'right',
       bottom: '5%',
       size: '89px'

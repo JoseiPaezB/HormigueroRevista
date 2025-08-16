@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
-import portada from '../../assets/images/edicion1.png'; // Fallback image
+import portada from '/assets/images/edicion1.png'; // Fallback image
 import HormigueadosSection from './hormigueados';
 import EventosSection from './eventos';
 import Footer from './footer';
@@ -862,7 +862,7 @@ useEffect(() => {
           } />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://hormiguerodepoemas.com/" />
-          <meta property="og:image" content={revista?.portada || '../../assets/anticon.svg'} />
+          <meta property="og:image" content={revista?.portada || '/assets/anticon.svg'} />
           <meta property="og:image:alt" content={`Portada de ${revista?.nombre || 'Hormiguero de Poemas'}`} />
           
           {/* Twitter Cards */}
@@ -893,7 +893,7 @@ useEffect(() => {
         className="cover-image" 
         id="main-content" 
         style={{
-          backgroundImage: 'url(src/assets/resres5.jpg)',
+          backgroundImage: 'url(/assets/resres5.jpg)',
           
           position: 'relative',
           overflow: 'hidden',
@@ -1077,7 +1077,7 @@ useEffect(() => {
           {/* Top part - Head/Upper torso */}
           <div className="figure-part top">
             <img 
-              src="src/assets/images/deba2.png" 
+              src="/assets/images/deba2.png" 
               
               alt="Figure head and upper torso"
             />

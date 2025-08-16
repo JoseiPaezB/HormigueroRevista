@@ -1,9 +1,8 @@
-import mosquito from '../../src/assets/images/mosquito.svg';
-// import ant from '../../assets/images/ant.svg';
-import bee from '../../src/assets/images/ojo3.png';
-import fly from '../../src/assets/images/ojo2.png';
-import ant from '../../src/assets/images/libelula.svg';
-import ant2 from '../../src/assets/images/ojo1.png';
+import mosquito from '/assets/images/mosquito.svg';
+import bee from '/assets/images/ojo3.png';
+import fly from '/assets/images/ojo2.png';
+import ant from '/assets/images/libelula.svg';
+import ant2 from '/assets/images/ojo1.png';
 
 
 export  const insects = [

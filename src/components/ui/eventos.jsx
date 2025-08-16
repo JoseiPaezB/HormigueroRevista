@@ -12,8 +12,8 @@ import { createClient } from '@supabase/supabase-js';
 import { FaCalendarAlt, FaMapMarkerAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 // Import button background image
-import buttonBg from '../../assets/images/aplasta.gif';
-import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
+import buttonBg from '/assets/images/aplasta.gif';
+import hormigueroLogo from '/assets/anticon.svg'; // Adjust the path as necessary
 
 
 // Create the Supabase client

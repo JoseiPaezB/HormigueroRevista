@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import hormigueroLogo from '../../assets/anticon.svg';
+import hormigueroLogo from '/assets/anticon.svg';
 import { createClient } from '@supabase/supabase-js';
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground'; // Adjust the path as needed

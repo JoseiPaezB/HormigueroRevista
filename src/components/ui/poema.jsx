@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import portada from '../../assets/images/edicion1.png';
+import portada from '/assets/images/edicion1.png';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
-import hormigueroLogo from '../../assets/anticon.svg';
+import hormigueroLogo from '/assets/anticon.svg';
 import FloatingHormiguearButton from './hormiguearButton'; // Import our new component
-import hormigueroLogo2 from '../../assets/anticon2.svg'; // Make sure path is correct
+import hormigueroLogo2 from '/assets/anticon2.svg'; // Make sure path is correct
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground';

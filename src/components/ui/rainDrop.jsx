@@ -5,7 +5,7 @@ const RainDrops = ({
   count = 50, 
   speed = 'medium', 
   intensity = 'normal',
-  svgPath = 'src/assets/images/raindrop.svg',
+  svgPath = '/assets/images/raindrop.svg',
   containerHeight = '100vh',
   containerWidth = '100vw'
 }) => {
@@ -165,7 +165,7 @@ const RainDrops = ({
 const RainDropsWithSprite = ({ 
   count = 50,
   spriteId = '#raindrop1',
-  spritePath = 'src/assets/images/rain-sprite.svg'
+  spritePath = '/assets/images/rain-sprite.svg'
 }) => {
   const [rainDrops, setRainDrops] = useState([]);
 
@@ -244,7 +244,7 @@ const UsageExamples = () => {
         count={100}
         speed="fast"
         intensity="heavy"
-        svgPath="src/assets/images/my-raindrop.svg"
+        svgPath="/assets/images/my-raindrop.svg"
       />
       
       {/* Light drizzle */}
@@ -258,7 +258,7 @@ const UsageExamples = () => {
       <RainDropsWithSprite 
         count={75}
         spriteId="#drop1"
-        spritePath="src/assets/images/rain-drops.svg"
+        spritePath="/assets/images/rain-drops.svg"
       />
     </div>
   );

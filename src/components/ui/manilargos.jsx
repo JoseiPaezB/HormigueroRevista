@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 const DancingBodies = ({ 
 count = 10, 
   imagePaths = [
-    'src/assets/images/body1.png',
-    'src/assets/images/body2.png',
-    'src/assets/images/body3.png',
-    'src/assets/images/body4.png',
-    'src/assets/images/body5.png'
+    '/assets/images/body1.png',
+    '/assets/images/body2.png',
+    '/assets/images/body3.png',
+    '/assets/images/body4.png',
+    '/assets/images/body5.png'
   ], // Array of different body images
   containerHeight = '100vh',
   containerWidth = '100vw',

@@ -1,5 +1,5 @@
 import React from 'react';
-import hormigueroLogo from '../../assets/anticon.svg'; // Asegurate de que el path sea correcto
+import hormigueroLogo from '/assets/anticon.svg'; // Asegurate de que el path sea correcto
 
 const LoadingPage = () => {
   return (

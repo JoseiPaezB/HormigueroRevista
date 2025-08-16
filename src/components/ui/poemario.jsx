@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import eventImage from '../../assets/images/evento1.png';
-import portada from '../../assets/images/edicion1.png';
-import bookCover1 from '../../assets/images/1res.png';
-import bookCover2 from '../../assets/images/2res.png';
-import bookCover3 from '../../assets/images/3res.png';
-import bookCover4 from '../../assets/images/4res.png';
-import bookCover5 from '../../assets/images/5res.png';
+import eventImage from '/assets/images/evento1.png';
+import portada from '/assets/images/edicion1.png';
+import bookCover1 from '/assets/images/1res.png';
+import bookCover2 from '/assets/images/2res.png';
+import bookCover3 from '/assets/images/3res.png';
+import bookCover4 from '/assets/images/4res.png';
+import bookCover5 from '/assets/images/5res.png';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
-import mosquito from '../../assets/images/mosquito.svg';
-// import ant from '../../assets/images/ant.svg';
-import bee from '../../assets/images/bee.svg';
-import fly from '../../assets/images/roach.svg';
-import ant from '../../assets/images/libelula.svg';
+import mosquito from '/assets/images/mosquito.svg';
+// import ant from '/assets/images/ant.svg';
+import bee from '/assets/images/bee.svg';
+import fly from '/assets/images/roach.svg';
+import ant from '/assets/images/libelula.svg';
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import { Helmet } from 'react-helmet';
 

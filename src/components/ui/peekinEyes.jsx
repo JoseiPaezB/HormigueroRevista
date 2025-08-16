@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react';
 
 const PeekingEyes = ({ 
   eyeImages = [
-    'src/assets/images/eye1.png',
-    'src/assets/images/eye2.png',
-    'src/assets/images/eye3.png',
-    'src/assets/images/eye4.png',
-    'src/assets/images/eye5.png'
+    '/assets/images/eye1.png',
+    '/assets/images/eye2.png',
+    '/assets/images/eye3.png',
+    '/assets/images/eye4.png',
+    '/assets/images/eye5.png'
   ],
   peekDuration = 7000, // 7 seconds visible
   hideDuration = 3000, // 3 seconds hidden between peeks
@@ -354,9 +354,9 @@ const UsageExamples = () => {
       {/* Single eye peeking */}
       <PeekingEyes 
         eyeImages={[
-          'src/assets/images/eye1.png',
-          'src/assets/images/eye2.png',
-          'src/assets/images/eye3.png'
+          '/assets/images/eye1.png',
+          '/assets/images/eye2.png',
+          '/assets/images/eye3.png'
         ]}
         peekDuration={7000}
         hideDuration={3000}
@@ -365,10 +365,10 @@ const UsageExamples = () => {
       {/* Multiple eyes peeking */}
       <MultiPeekingEyes 
         eyeImages={[
-          'src/assets/images/eye1.png',
-          'src/assets/images/eye2.png',
-          'src/assets/images/eye3.png',
-          'src/assets/images/eye4.png'
+          '/assets/images/eye1.png',
+          '/assets/images/eye2.png',
+          '/assets/images/eye3.png',
+          '/assets/images/eye4.png'
         ]}
         maxEyes={2}
         peekDuration={6000}
@@ -377,7 +377,7 @@ const UsageExamples = () => {
       
       {/* Quick peeking eyes */}
       <PeekingEyes 
-        eyeImages={['src/assets/images/spooky-eye.png']}
+        eyeImages={['/assets/images/spooky-eye.png']}
         peekDuration={3000}
         hideDuration={8000}
       />

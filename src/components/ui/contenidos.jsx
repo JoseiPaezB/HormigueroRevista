@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import portada from '../../assets/images/edicion1.png';
+import portada from '/assets/images/edicion1.png';
 import HormigueadosSection from './hormigueados';
 import EventosSection from './eventos';
 import {Link} from 'react-router-dom';
-import hormigueroLogo from '../../assets/anticon.svg';
-import homrigueroLogo1 from '../../assets/uno.svg';
-import homrigueroLogo2 from '../../assets/dos.svg';
-import homrigueroLogo3 from '../../assets/cinco2.svg';
-import homrigueroLogo4 from '../../assets/cuatro.svg';
-import homrigueroLogo5 from '../../assets/tres2.svg';
-import homrigueroLogo6 from '../../assets/seis.svg';
-import homrigueroLogo7 from '../../assets/images/manilargo.png';
+import hormigueroLogo from '/assets/anticon.svg';
+import homrigueroLogo7 from '/assets/images/manilargo.png';
 import RainDrops from './rainDrop';
 import { createClient } from '@supabase/supabase-js';
-import mosquito from '../../assets/images/manilargo.png';
-import bee from '../../assets/images/manilargo.png';
-import fly from '../../assets/images/manilargo.png';
-import ant from '../../assets/images/manilargo.png';
+import mosquito from '/assets/images/manilargo.png';
+import bee from '/assets/images/manilargo.png';
+import fly from '/assets/images/manilargo.png';
+import ant from '/assets/images/manilargo.png';
 import FlyingInsectsSwarm from './FlyingMosquito';
 import InsectColony from './MovingSvgBackground';
 // Importar ScrollReveal
@@ -269,7 +263,7 @@ const Contenido = () => {
       
       {/* Cover image with title - esta no tiene animación */}
       <div className="cover-image image_2" style={{
-        backgroundImage: `url(src/assets/resres5.jpg)`  ,
+        backgroundImage: `url(/assets/resres5.jpg)`  ,
         position: 'relative',
         marginTop: isDesktop ? '60px':'none' // Space for navbar
       }}>
@@ -279,9 +273,9 @@ const Contenido = () => {
       {/* Article preview section - aquí empiezan las animaciones */}
        <PeekingEyes 
         eyeImages={[
-          'src/assets/images/ojo1.png',
-          'src/assets/images/ojo2.png',
-          'src/assets/images/ojo3.png',
+          '/assets/images/ojo1.png',
+          '/assets/images/ojo2.png',
+          '/assets/images/ojo3.png',
         ]}
         peekDuration={7000}  // 7 segundos visible
         hideDuration={5000}  // 5 segundos entre apariciones
@@ -319,7 +313,7 @@ const Contenido = () => {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                backgroundImage: 'url(src/assets/images/Cerro_de_la_SillaDDD.png)', // Change this path
+                backgroundImage: 'url(/assets/images/Cerro_de_la_SillaDDD.png)', // Change this path
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -332,7 +326,7 @@ const Contenido = () => {
               count={20}
               speed="superSlow"
               intensity="light"
-              svgPath="src/assets/images/GOTA.png"
+              svgPath="/assets/images/GOTA.png"
             /> 
 
               <div className="vertical-menu" style={{
@@ -405,16 +399,16 @@ const Contenido = () => {
                  <DancingBodies 
                     count={10}  // Exactamente 10 para movimientos únicos
                     imagePaths={[
-                      'src/assets/images/manilargo.png',
-                      'src/assets/images/manilargo1.png',
-                      'src/assets/images/manilargo2.png',
-                      'src/assets/images/manilargo3.png',
-                      'src/assets/images/manilargo4.png',
-                      'src/assets/images/manilargo5.png',
-                      'src/assets/images/manilargo6.png',
-                      'src/assets/images/manilargo7.png',
-                      'src/assets/images/maniLlargo8.png',
-                      'src/assets/images/manilargo9.png',
+                      '/assets/images/manilargo.png',
+                      '/assets/images/manilargo1.png',
+                      '/assets/images/manilargo2.png',
+                      '/assets/images/manilargo3.png',
+                      '/assets/images/manilargo4.png',
+                      '/assets/images/manilargo5.png',
+                      '/assets/images/manilargo6.png',
+                      '/assets/images/manilargo7.png',
+                      '/assets/images/maniLlargo8.png',
+                      '/assets/images/manilargo9.png',
                     ]}
                       swayDistance={25} // Adjust how far they sway (pixels)
                       containerHeight="400px"
