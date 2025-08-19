@@ -68,13 +68,7 @@ const AuthorBio = () => {
     
 
     // Default book covers mapping
-    const defaultCovers = {
-      1: bookCover1,
-      2: bookCover2,
-      3: bookCover3,
-      4: bookCover4,
-      5: bookCover5
-    };
+   
 
     // Count words in a text
     const countWords = (text) => {
@@ -191,7 +185,7 @@ useEffect(() => {
             id: poema.id,
             title: poema.titulo,
             author: autorData.nombre,
-            cover: poema.portada || defaultCovers[(index % 5) + 1], // Cycle through available covers
+            cover: poema.portada, // Cycle through available covers
             link: `/poema/${encodeURIComponent(poema.titulo.toLowerCase())}`, // Convert to lowercase
             wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
           };
