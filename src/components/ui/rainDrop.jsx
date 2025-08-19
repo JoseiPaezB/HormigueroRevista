@@ -1,15 +1,23 @@
-// RainDrops.js - Animated rain drops component
+// RainDrops.js - Animated rain drops component with database SVG
 import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const RainDrops = ({ 
   count = 50, 
   speed = 'medium', 
   intensity = 'normal',
-  svgPath = '',
   containerHeight = '100vh',
-  containerWidth = '100vw'
+  containerWidth = '100vw',
+  svgName = 'gota' // Name of the SVG in the database
 }) => {
   const [rainDrops, setRainDrops] = useState([]);
+  const [svgContent, setSvgContent] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Speed configurations
   const speedConfig = {
@@ -29,24 +37,50 @@ const RainDrops = ({
   const currentSpeed = speedConfig[speed] || speedConfig.medium;
   const currentIntensity = intensityConfig[intensity] || intensityConfig.normal;
 
+  // Fetch SVG from database
+  useEffect(() => {
+    const fetchSVG = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('svgs')
+          .select('url')
+          .single();
+
+        
+          setSvgContent(data.url);
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching SVG:', err);
+        setLoading(false);
+      }
+    };
+
+    fetchSVG();
+  }, [svgName]);
+
   // Generate initial rain drops
   useEffect(() => {
-    const drops = Array.from({ length: count }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100, // Percentage position
-      y: Math.random() * -100, // Start above screen
-      size: (Math.random() * 0.5 + 0.5) * currentIntensity.sizeMultiplier, // Random size
-      speed: Math.random() * (currentSpeed.max - currentSpeed.min) + currentSpeed.min,
-      opacity: Math.random() * 0.3 + currentIntensity.opacity,
-      rotation: Math.random() * 360, // Random rotation
-      delay: Math.random() * 5 // Random animation delay
-    }));
-    
-    setRainDrops(drops);
-  }, [count, speed, intensity]);
+    if (!loading) {
+      const drops = Array.from({ length: count }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100, // Percentage position
+        y: Math.random() * -100, // Start above screen
+        size: (Math.random() * 0.5 + 0.5) * currentIntensity.sizeMultiplier, // Random size
+        speed: Math.random() * (currentSpeed.max - currentSpeed.min) + currentSpeed.min,
+        opacity: Math.random() * 0.3 + currentIntensity.opacity,
+        rotation: Math.random() * 360, // Random rotation
+        delay: Math.random() * 5 // Random animation delay
+      }));
+      
+      setRainDrops(drops);
+    }
+  }, [count, speed, intensity, loading]);
 
   // Animation loop
   useEffect(() => {
+    if (loading) return;
+
     const animationFrame = () => {
       setRainDrops(prevDrops => 
         prevDrops.map(drop => {
@@ -70,7 +104,22 @@ const RainDrops = ({
 
     const interval = setInterval(animationFrame, 16); // ~60fps
     return () => clearInterval(interval);
-  }, [currentSpeed]);
+  }, [currentSpeed, loading]);
+
+  // Function to check if SVG content is URL or inline SVG
+  const isUrl = (str) => {
+    try {
+      new URL(str);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // Don't render drops while loading SVG
+  if (loading) {
+    return null;
+  }
 
   return (
     <div 
@@ -101,15 +150,28 @@ const RainDrops = ({
             height: '30px'
           }}
         >
-          <img 
-            src={svgPath}
-            alt="rain drop"
-            style={{
-              width: '100%',
-              height: '100%',
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
-            }}
-          />
+          {isUrl(svgContent) ? (
+            // If it's a URL, use img tag
+            <img 
+              src={svgContent}
+              alt="rain drop"
+              style={{
+                width: '100%',
+                height: '100%',
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+              }}
+            />
+          ) : (
+            // If it's inline SVG, render directly
+            <div 
+              dangerouslySetInnerHTML={{ __html: svgContent }}
+              style={{
+                width: '100%',
+                height: '100%',
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+              }}
+            />
+          )}
         </div>
       ))}
 
@@ -155,114 +217,19 @@ const RainDrops = ({
               height: 20px;
             }
           }
+
+          /* Style for inline SVG */
+          .rain-drop svg {
+            width: 100%;
+            height: 100%;
+          }
         `}
       </style>
     </div>
   );
 };
 
-// Alternative version with SVG sprite support
-const RainDropsWithSprite = ({ 
-  count = 50,
-  spriteId = '#raindrop1',
-  spritePath = ''
-}) => {
-  const [rainDrops, setRainDrops] = useState([]);
-
-  useEffect(() => {
-    const drops = Array.from({ length: count }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * -100,
-      size: Math.random() * 0.5 + 0.5,
-      speed: Math.random() * 10 + 5,
-      opacity: Math.random() * 0.4 + 0.4,
-      delay: Math.random() * 5
-    }));
-    
-    setRainDrops(drops);
-  }, [count]);
-
-  useEffect(() => {
-    const animationFrame = () => {
-      setRainDrops(prevDrops => 
-        prevDrops.map(drop => {
-          let newY = drop.y + drop.speed * 0.1;
-          if (newY > 110) {
-            newY = Math.random() * -20;
-            return { ...drop, y: newY, x: Math.random() * 100 };
-          }
-          return { ...drop, y: newY };
-        })
-      );
-    };
-
-    const interval = setInterval(animationFrame, 16);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="rain-container" style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      pointerEvents: 'none',
-      overflow: 'hidden',
-      zIndex: 1
-    }}>
-      {rainDrops.map(drop => (
-        <svg
-          key={drop.id}
-          style={{
-            position: 'absolute',
-            left: `${drop.x}%`,
-            top: `${drop.y}%`,
-            width: `${20 * drop.size}px`,
-            height: `${30 * drop.size}px`,
-            opacity: drop.opacity,
-            transition: 'all 0.1s linear'
-          }}
-        >
-          <use href={`${spritePath}${spriteId}`} />
-        </svg>
-      ))}
-    </div>
-  );
-};
-
 // Usage examples
-const UsageExamples = () => {
-  return (
-    <div>
-      {/* Basic usage */}
-      <RainDrops />
-      
-      {/* Customized rain */}
-      <RainDrops 
-        count={100}
-        speed="fast"
-        intensity="heavy"
-        svgPath=""
-      />
-      
-      {/* Light drizzle */}
-      <RainDrops 
-        count={30}
-        speed="slow"
-        intensity="light"
-      />
-      
-      {/* With sprite */}
-      <RainDropsWithSprite 
-        count={75}
-        spriteId="#drop1"
-        spritePath=""
-      />
-    </div>
-  );
-};
+
 
 export default RainDrops;
-export { RainDropsWithSprite };

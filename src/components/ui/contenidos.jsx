@@ -281,11 +281,11 @@ const Contenido = () => {
 
                 {/* Optional: Add overlay for better text readability */}
                 <RainDrops 
-                count={20}
-                speed="superSlow"
-                intensity="light"
-                svgPath="/assets/GOTA.png"
-               />  
+                count={75}
+                speed="fast"
+                intensity="heavy"
+                svgName="gota"
+              />
 
                 <div className="vertical-menu" style={{
                 display: 'grid',
