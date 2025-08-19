@@ -5,7 +5,6 @@ import { Link} from 'react-router-dom';
 import hormigueroLogo2 from '/assets/anticon2.svg'; // Adjust the path as necessary
 import ScrollRevealItem from './scrollRevealItem';
 import InsectColony from './InsectColony2';
-import authorSvg from '/assets/cinco2.svg'; // Adjust the path as necessary
 import ant from '/assets/uno.svg'; // Adjust the path as necessary
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import { Helmet } from 'react-helmet';

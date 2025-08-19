@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
-import portada from '/assets/images/edicion1.png'; // Fallback image
+
 import HormigueadosSection from './hormigueados';
-import EventosSection from './eventos';
+import EventosSection from '../../../assets/imagenesno/eventos';
 import Footer from './footer';
 // Importa los nuevos componentes
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
@@ -12,11 +12,8 @@ import '../ui/ScrollReveal.css';
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
 import { Helmet } from 'react-helmet';
-import RotatingHeads from './rotatingHeads';
-import PeekingBodyParts from './peakingBody';
-import RotatingBody from './rotatingBody';
-import RotatingEyes from './rotatingEyes';
-import RotatingBackground from './rotatingBg';
+
+
 import RotatingMani from './rotatingMani';
 
 
@@ -910,7 +907,7 @@ useEffect(() => {
 
   }}
 >
-    <PeekingBodyParts />
+    
 
    <div style={{ 
         position: 'absolute', 

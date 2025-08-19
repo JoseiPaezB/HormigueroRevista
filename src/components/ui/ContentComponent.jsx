@@ -7,11 +7,7 @@ import { Helmet } from 'react-helmet';
 
 
 // Import your book cover images
-import bookCover1 from '/assets/images/1res.png';
-import bookCover2 from '/assets/images/2res.png';
-import bookCover3 from '/assets/images/3res.png';
-import bookCover4 from '/assets/images/4res.png';
-import bookCover5 from '/assets/images/5res.png';
+
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 
 // Initialize Supabase client
@@ -34,19 +30,8 @@ const ContentComponent = ({ contentType }) => {
   const [highlightedAuthorId, setHighlightedAuthorId] = useState(null);
 
   // Default book covers mapping
-  const defaultCovers = {
-    1: bookCover1,
-    2: bookCover2,
-    3: bookCover3,
-    4: bookCover4,
-    5: bookCover5
-  };
-  let tipoQuery;
-  if (contentType === 'creaciones') {
-    tipoQuery = ['creaciones', 'creaciones2'];
-  } else if (contentType === 'traducciones') {
-    tipoQuery = ['traducciones', 'traducciones2'];
-  }
+  
+
   // Capitalize first letter for display purposes
   const displayTitle = contentType.charAt(0).toUpperCase() + contentType.slice(1);
 

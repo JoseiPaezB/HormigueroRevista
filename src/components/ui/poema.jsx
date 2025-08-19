@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import portada from '/assets/images/edicion1.png';
+import portada from '/assets/edicion1.png';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import hormigueroLogo from '/assets/anticon.svg';

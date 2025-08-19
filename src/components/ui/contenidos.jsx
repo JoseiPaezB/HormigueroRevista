@@ -1,61 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import portada from '/assets/images/edicion1.png';
 import HormigueadosSection from './hormigueados';
-import EventosSection from './eventos';
 import {Link} from 'react-router-dom';
 import hormigueroLogo from '/assets/anticon.svg';
-import homrigueroLogo7 from '/assets/images/web/manilargo.webp';
 import RainDrops from './rainDrop';
 import { createClient } from '@supabase/supabase-js';
-import mosquito from '/assets/images/web/manilargo.webp';
-import bee from '/assets/images/web/manilargo.webp';
-import fly from '/assets/images/web/manilargo.webp';
-import ant from '/assets/images/web/manilargo.webp';
-import FlyingInsectsSwarm from './FlyingMosquito';
-import InsectColony from './MovingSvgBackground';
+
 // Importar ScrollReveal
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según donde hayas guardado el componente
 import './ScrollReveal.css'; // Ajusta la ruta según donde hayas guardado los estilos
 import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según donde hayas guardado las utilidades
 import { Helmet } from 'react-helmet';
-import DancingBodies from './manilargos';
-import RotatingHeads from './rotatingHeads';
-import PeekingEyes from './peekinEyes';
+
 import RotatingBackground from './rotatingBg';
-import PeekingBodyParts from './peakingBody';
+
 
 
 // Initialize Supabase client
-const insects = [
-    {
-      src: mosquito,
-      type: 'mosquito',
-      size: 30,
-      // Optional: customize further
-      // speed: 2.5,
-      // initialPosition: { x: 100, y: 100 }
-    },
-    {
-      src: ant,
-      type: 'ant',
-      size: 25
-    },
-    {
-      src: bee,
-      type: 'bee',
-      size: 35
-    },
-    {
-      src: fly,
-      type: 'fly',
-      size: 28
-    },
-    {
-      src: mosquito, // You can reuse the same SVG with different behavior
-      type: 'default',
-      size: 32
-    }
-  ];
+
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -102,7 +63,7 @@ const Contenido = () => {
         const { data, error } = await supabase
           .from('revista')
           .select('*')
-          .eq('id', 1)
+          .eq('id', 2)
           .single();
 
         if (error) throw error;
@@ -224,24 +185,9 @@ const Contenido = () => {
       </h2>
     );
   };
-  const backgroundImages = [
-  '/assets/images/cerroDDD1.png',
-  '/assets/images/cerroDDD2.png',
-  '/assets/images/cerroDDD3.png',
-];
 
-// In your component:
-const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentBgIndex(prevIndex => 
-      (prevIndex + 1) % backgroundImages.length
-    );
-  }, 10); // Change every 4 seconds
 
-  return () => clearInterval(interval);
-}, []);
 
   return (
     <>
@@ -283,7 +229,7 @@ useEffect(() => {
       
       {/* Cover image with title - esta no tiene animación */}
       <div className="cover-image image_2" style={{
-        backgroundImage: `url(/assets/images/web/resres5-min.jpg)`  ,
+        backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
         position: 'relative',
         marginTop: isDesktop ? '60px':'none' // Space for navbar
       }}>
@@ -338,7 +284,7 @@ useEffect(() => {
                 count={20}
                 speed="superSlow"
                 intensity="light"
-                svgPath="/assets/images/GOTA.png"
+                svgPath="/assets/GOTA.png"
                />  
 
                 <div className="vertical-menu" style={{
@@ -413,24 +359,17 @@ useEffect(() => {
                 {/* Map through menu items con animaciones secuenciales */}
                 {menuItems.map((item, index) => {
                   // Array of background images
-                  const backgroundImages = [
-                    '/assets/images/cejac.png',
-                    '/assets/images/ojo69.png', 
-                    '/assets/images/lips.png',
-                  ];
                   
-                  // Get background based on index (cycles through if more items than images)
-                  const currentBackground = backgroundImages[index % backgroundImages.length];
                   
                   // Determine which SVG to use based on index
                   let antIcon;
                   switch(index) {
-                    case 0: antIcon = homrigueroLogo7; break;
-                    case 1: antIcon = homrigueroLogo7; break;
-                    case 2: antIcon = homrigueroLogo7; break;
-                    case 3: antIcon = homrigueroLogo7; break;
-                    case 4: antIcon = homrigueroLogo7; break;
-                    case 5: antIcon = homrigueroLogo7; break;
+                    case 0: antIcon = hormigueroLogo; break;
+                    case 1: antIcon = hormigueroLogo; break;
+                    case 2: antIcon = hormigueroLogo; break;
+                    case 3: antIcon = hormigueroLogo; break;
+                    case 4: antIcon = hormigueroLogo; break;
+                    case 5: antIcon = hormigueroLogo; break;
                     default: antIcon = hormigueroLogo;
                   }
                   

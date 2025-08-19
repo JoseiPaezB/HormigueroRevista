@@ -1,7 +1,7 @@
 import React from 'react';
 import { Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import anti from '/assets/images/dead-ant-isolated-on-white-600nw-2117536565.webp'; // Adjust the path as necessary
+import anti from '/assets/dead-ant-isolated-on-white-600nw-2117536565.webp'; // Adjust the path as necessary
 
 const NotFound = () => {
   return (
