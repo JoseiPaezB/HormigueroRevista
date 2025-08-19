@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
 import HormigueadosSection from './hormigueados';
-import EventosSection from '../../../assets/imagenesno/eventos';
 import Footer from './footer';
 // Importa los nuevos componentes
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
