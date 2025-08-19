@@ -15,7 +15,8 @@ const Navbar = () => {
   const [revista, setRevista] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [hormigueroLogoUrl, setHormigueroLogoUrl] = useState('');
+
   // Check screen size and update state when it changes
   useEffect(() => {
     const checkScreenSize = () => {
@@ -69,7 +70,7 @@ const Navbar = () => {
         const { data, error } = await supabase
           .from('revista')
           .select('*')
-          .eq('id', 1)
+          .eq('id', 2)
           .single();
 
         if (error) throw error;
@@ -89,7 +90,23 @@ const Navbar = () => {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('caras')
+          .select('url')
+          .single();
 
+        if (error) throw error;
+        setHormigueroLogoUrl(data.url);
+      } catch (err) {
+        console.error('Error fetching logo:', err);
+      }
+    };
+
+    fetchLogo();
+  }, []);
   // Logo and brand size based on screen size
   const getLogoSize = () => {
     if (isMobile) {
@@ -152,7 +169,7 @@ const Navbar = () => {
 
           }}>
             <img
-              src={hormigueroLogo}
+              src={hormigueroLogoUrl || hormigueroLogo} // fallback al logo local si no carga desde DB
               alt="Hormiga"
               style={getLogoSize()}
             />

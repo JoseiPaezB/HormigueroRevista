@@ -21,6 +21,8 @@ import { Helmet } from 'react-helmet';
 import DancingBodies from './manilargos';
 import RotatingHeads from './rotatingHeads';
 import PeekingEyes from './peekinEyes';
+import RotatingBackground from './rotatingBg';
+import PeekingBodyParts from './peakingBody';
 
 
 // Initialize Supabase client
@@ -222,6 +224,24 @@ const Contenido = () => {
       </h2>
     );
   };
+  const backgroundImages = [
+  '/assets/images/cerroDDD1.png',
+  '/assets/images/cerroDDD2.png',
+  '/assets/images/cerroDDD3.png',
+];
+
+// In your component:
+const [currentBgIndex, setCurrentBgIndex] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentBgIndex(prevIndex => 
+      (prevIndex + 1) % backgroundImages.length
+    );
+  }, 10); // Change every 4 seconds
+
+  return () => clearInterval(interval);
+}, []);
 
   return (
     <>
@@ -269,31 +289,26 @@ const Contenido = () => {
       }}>
         
      </div>
-      
       {/* Article preview section - aquí empiezan las animaciones */}
-       <PeekingEyes 
-        eyeImages={[
-          '/assets/images/web/ojo1.webp',
-          '/assets/images/web/ojo2.webp',
-          '/assets/images/web/ojo3.webp',
-        ]}
-        peekDuration={7000}  // 7 segundos visible
-        hideDuration={5000}  // 5 segundos entre apariciones
-        slideDistance={120}  // Qué tanto se asoman (px)
-      />
+      
+        
+    
       <ScrollReveal direction="up">
         <div className="res" >
           {/* Usa el título con animación que creamos */}
           {renderTitle()}
           
           <ScrollReveal delay={300} direction="up">
-            <div className="article-content" >
+            
+              <div className="article-content" >
               
-              <p id="sintesis" style={{whiteSpace:'pre-line'}}>
-                {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
-              </p>
-            </div>
+                <p id="sintesis" style={{whiteSpace:'pre-line'}}>
+                  {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
+                </p>
+              </div>
+              
           </ScrollReveal>
+          
 
           {/* Menu Grid with Background Image */}
           <ScrollReveal direction="scale" delay={400}>
@@ -301,35 +316,32 @@ const Contenido = () => {
               className="menu-background-section"
               style={{
                 position: 'relative',
-                padding: isMobile ? '60px 20px' : '200px 20px',
-                margin: '30px 0',
-                overflow: 'hidden'
+                padding: isMobile ? '0' : '400px 20px',
+                margin: isMobile ? '30px 0' :'0px 0',
+                overflow: 'hidden',
+                marginRight: isMobile ? '0' : '2rem'
               }}
             >
               {/* Background Image */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundImage: 'url(/assets/images/web/Cerro_de_la_SillaDDD.webp)', // Change this path
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                opacity: 0.5,
-                zIndex: -2
-              }}></div>
+              <div >
+                  <RotatingBackground 
+                    changeInterval={250}
+                    opacity={1}
+                    zIndex={-1}
+                    supabase={supabase}
 
-              {/* Optional: Add overlay for better text readability */}
-              {/* <RainDrops 
-              count={20}
-              speed="superSlow"
-              intensity="light"
-              svgPath="/assets/images/GOTA.png"
-            />  */}
+                  />
+              </div>
 
-              <div className="vertical-menu" style={{
+                {/* Optional: Add overlay for better text readability */}
+                <RainDrops 
+                count={20}
+                speed="superSlow"
+                intensity="light"
+                svgPath="/assets/images/GOTA.png"
+               />  
+
+                <div className="vertical-menu" style={{
                 display: 'grid',
                 gap: '30px',
                 padding: '8px',
@@ -337,7 +349,7 @@ const Contenido = () => {
                 fontSize: '1.3rem',
                 position: 'relative',
                 zIndex: 1
-              }}>
+                }}>
                 {/* Define the keyframes animation for pulsing effect */}
                 <style>
                   {`
@@ -396,27 +408,20 @@ const Contenido = () => {
                 }}>
                   
                 </div>
-                 {/* <DancingBodies 
-                    count={10}  // Exactamente 10 para movimientos únicos
-                    imagePaths={[
-                      '/assets/images/web/manilargo.webp',
-                      '/assets/images/web/manilargo1.webp',
-                      '/assets/images/web/manilargo2.webp',
-                      '/assets/images/web/manilargo3.webp',
-                      '/assets/images/web/manilargo4.webp',
-                      '/assets/images/web/manilargo5.webp',
-                      '/assets/images/web/manilargo6.webp',
-                      '/assets/images/web/manilargo7.webp',
-                      '/assets/images/web/maniLlargo8.webp',
-                      '/assets/images/web/manilargo9.webp',
-                    ]}
-                      swayDistance={25} // Adjust how far they sway (pixels)
-                      containerHeight="400px"
-                      containerWidth="100%"
-                  /> */}
+                  
                   
                 {/* Map through menu items con animaciones secuenciales */}
                 {menuItems.map((item, index) => {
+                  // Array of background images
+                  const backgroundImages = [
+                    '/assets/images/cejac.png',
+                    '/assets/images/ojo69.png', 
+                    '/assets/images/lips.png',
+                  ];
+                  
+                  // Get background based on index (cycles through if more items than images)
+                  const currentBackground = backgroundImages[index % backgroundImages.length];
+                  
                   // Determine which SVG to use based on index
                   let antIcon;
                   switch(index) {
@@ -429,7 +434,6 @@ const Contenido = () => {
                     default: antIcon = hormigueroLogo;
                   }
                   
-                  // Elegir una dirección diferente para cada elemento del menú
                   const directions = ['left', 'right', 'up'];
                   const direction = directions[index % directions.length];
                   
@@ -443,15 +447,16 @@ const Contenido = () => {
                           flexDirection: 'column',
                           alignItems: 'center',
                           textDecoration: 'none',
-                          color: 'black',
+                          color: 'white',
                           justifyContent: 'center',
                           textAlign: 'center',
-                          padding: '20px', // Increased padding for better visibility
+                          padding: '20px',
                           position: 'relative',
-                          zIndex: 2
+                          zIndex: 2,
+                          
+
                         }}
                       >
-                       
                         <div 
                           className="menu-text pulsing-text" 
                           style={{
@@ -461,6 +466,16 @@ const Contenido = () => {
                             position: 'relative',
                             zIndex: 1,
                             fontWeight: 'bold',
+                            textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
+                            background: `
+                            rgb(0,0,0,0.5)
+                          `, 
+                          borderRadius:'3px',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.7)',
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                          backgroundRepeat: 'no-repeat',
+                          padding: '5px'
                           }}
                         >
                           {item.title}

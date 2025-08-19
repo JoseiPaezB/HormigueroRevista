@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react';
 
 const PeekingEyes = ({ 
   eyeImages = [
-    '/assets/images/eye1.png',
-    '/assets/images/eye2.png',
-    '/assets/images/eye3.png',
-    '/assets/images/eye4.png',
-    '/assets/images/eye5.png'
+    '/assets/images/caras/cara6.svg',
+    '/assets/images/caras/cara7.svg',
+    '/assets/images/caras/cara8.svg',
+    '/assets/images/caras/cara9.svg',
+    '/assets/images/caras/cara10.svg'
   ],
   peekDuration = 7000, // 7 seconds visible
   hideDuration = 3000, // 3 seconds hidden between peeks
@@ -19,7 +19,7 @@ const PeekingEyes = ({
   const [animationState, setAnimationState] = useState('hidden'); // 'hidden', 'sliding-in', 'visible', 'sliding-out'
 
   // Possible peek positions (from edges)
-  const peekPositions = [
+  const peekPositions = React.useMemo(() => [
     // From left edge
     { 
       side: 'left', 
@@ -107,7 +107,7 @@ const PeekingEyes = ({
       x: '75%',
       rotation: 0 
     }
-  ];
+  ], [slideDistance]);
 
   useEffect(() => {
     const peekCycle = () => {
@@ -272,7 +272,7 @@ const MultiPeekingEyes = ({
 }) => {
   const [activeEyes, setActiveEyes] = useState([]);
 
-  const peekPositions = [
+  const peekPositions = React.useMemo(() => [
     { side: 'left', top: '15%', left: '-80px', rotation: 0 },
     { side: 'left', top: '45%', left: '-80px', rotation: 0 },
     { side: 'left', top: '75%', left: '-80px', rotation: 0 },
@@ -283,7 +283,7 @@ const MultiPeekingEyes = ({
     { side: 'top', top: '-80px', left: '75%', rotation: 90 },
     { side: 'bottom', bottom: '-80px', left: '25%', rotation: -90 },
     { side: 'bottom', bottom: '-80px', left: '75%', rotation: -90 }
-  ];
+  ], []);
 
   useEffect(() => {
     const addEye = () => {
@@ -347,43 +347,8 @@ const MultiPeekingEyes = ({
   );
 };
 
-// Usage examples
-const UsageExamples = () => {
-  return (
-    <div>
-      {/* Single eye peeking */}
-      <PeekingEyes 
-        eyeImages={[
-          '/assets/images/eye1.png',
-          '/assets/images/eye2.png',
-          '/assets/images/eye3.png'
-        ]}
-        peekDuration={7000}
-        hideDuration={3000}
-      />
-      
-      {/* Multiple eyes peeking */}
-      <MultiPeekingEyes 
-        eyeImages={[
-          '/assets/images/eye1.png',
-          '/assets/images/eye2.png',
-          '/assets/images/eye3.png',
-          '/assets/images/eye4.png'
-        ]}
-        maxEyes={2}
-        peekDuration={6000}
-        hideDuration={4000}
-      />
-      
-      {/* Quick peeking eyes */}
-      <PeekingEyes 
-        eyeImages={['/assets/images/spooky-eye.png']}
-        peekDuration={3000}
-        hideDuration={8000}
-      />
-    </div>
-  );
-};
+
+
 
 export default PeekingEyes;
 export { MultiPeekingEyes };

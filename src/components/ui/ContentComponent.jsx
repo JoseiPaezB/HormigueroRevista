@@ -41,7 +41,12 @@ const ContentComponent = ({ contentType }) => {
     4: bookCover4,
     5: bookCover5
   };
-
+  let tipoQuery;
+  if (contentType === 'creaciones') {
+    tipoQuery = ['creaciones', 'creaciones2'];
+  } else if (contentType === 'traducciones') {
+    tipoQuery = ['traducciones', 'traducciones2'];
+  }
   // Capitalize first letter for display purposes
   const displayTitle = contentType.charAt(0).toUpperCase() + contentType.slice(1);
 
@@ -65,7 +70,7 @@ const ContentComponent = ({ contentType }) => {
         const { data: revistaData, error: revistaError } = await supabase
           .from('revista')
           .select('*')
-          .eq('id', 1)
+          .eq('id', 2)
           .single();
   
         if (revistaError) throw revistaError;
@@ -75,7 +80,7 @@ const ContentComponent = ({ contentType }) => {
         const { data: contentData, error: contentError } = await supabase
           .from('creaciones') // This table holds all content types (both creaciones and traducciones)
           .select('*')
-          .eq('id_revista', 1)
+          .eq('id_revista', 2)
           .eq('tipo', contentType) // Use the contentType prop to differentiate
           .single();
   
@@ -417,6 +422,7 @@ const handleContributorClick = (bookId) => {
     const getSectionTitle = () => {
     switch(contentType.toLowerCase()) {
       case 'creaciones':
+      case 'creaciones2':
         return 'El Hormiguero';
       case 'critica':
       case 'crítica':
@@ -432,6 +438,7 @@ const handleContributorClick = (bookId) => {
    const getSectionSubtitle = () => {
     switch(contentType.toLowerCase()) {
       case 'creaciones':
+      case 'creaciones2':
         return 'Poemas en verso y prosa';
       case 'critica':
       case 'crítica':

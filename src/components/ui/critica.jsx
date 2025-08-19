@@ -22,6 +22,7 @@ const Critica = () => {
           .from('creaciones')
           .select('imagen')
           .eq('tipo', 'critica')
+          .eq('id_revista', 2)
           .single();
         
         if (error) {
@@ -69,7 +70,7 @@ const Critica = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
-        zIndex: -1
+        zIndex: -1, 
       }} />
 
       {/* Loading state */}
@@ -107,8 +108,10 @@ const Critica = () => {
       <div style={{ 
         position: 'relative', 
         zIndex: 1, 
-        color: 'white',
-        minHeight: '100vh'
+        color: 'black',
+        minHeight: '100vh',
+        backgroundColor: 'rgba(255, 255, 255, 0.5)'
+
       }}>
         <ContentComponent contentType="critica" />
       </div>

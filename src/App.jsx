@@ -35,7 +35,6 @@ function App() {
           <Route path="/autor/:nombre" element={<AuthorBio />} />
           <Route path="/poema/:titulo" element={<Poema />} />
           <Route path="/evento/:id" element={<EventosContent />} />
-          <Route path="/res" element={<Res />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

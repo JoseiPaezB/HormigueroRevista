@@ -12,6 +12,12 @@ import '../ui/ScrollReveal.css';
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
 import { Helmet } from 'react-helmet';
+import RotatingHeads from './rotatingHeads';
+import PeekingBodyParts from './peakingBody';
+import RotatingBody from './rotatingBody';
+import RotatingEyes from './rotatingEyes';
+import RotatingBackground from './rotatingBg';
+import RotatingMani from './rotatingMani';
 
 
 // Initialize Supabase client
@@ -147,7 +153,7 @@ const CustomStyles = () => (
   `}</style>
 );
 
-const Edicion = () => {
+const Res= () => {
   // State for revista data
   const [revista, setRevista] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -252,56 +258,58 @@ useEffect(() => {
 
   // Fetch revista data on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // 1. Fetch the revista with ID 1
-        const { data: revistaData, error: revistaError } = await supabase
-          .from('revista')
-          .select('*')
-          .eq('id', 1)
-          .single();
+  const fetchData = async () => {
+    try {
+      // 1. Fetch the revista with ID 2
+      const { data: revistaData, error: revistaError } = await supabase
+        .from('revista')
+        .select('*')
+        .eq('id', 2)
+        .single();
 
-        if (revistaError) throw revistaError;
-        setRevista(revistaData);
-        
-        // 2. Parse contributors string into array if it exists
-        if (revistaData.contribuyentes) {
-          const contributorsList = revistaData.contribuyentes.split(',').map(name => name.trim());
-          setContributors(contributorsList);
-        }
-
-        // 3. Fetch authors from the autor table
-        const { data: authorsData, error: authorsError } = await supabase
-          .from('autor')
-          .select('nombre')
-          .order('nombre');
-
-        if (authorsError) throw authorsError;
-        
-        // 4. If we have authors from the database, use them
-        if (authorsData && authorsData.length > 0) {
-          const authorNames = authorsData
-    .map(author => author.nombre)
-    .sort(); // Additional alphabetical sort in JavaScript
-    setAllAuthors(authorNames);
-    setAutores(authorNames);
-          
-          // If no contributors in revista, use authors
-          if (!revistaData.contribuyentes || revistaData.contribuyentes.trim() === '') {
-            setContributors(authorNames);
-          }
-        }
-        
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to load magazine data');
-        setLoading(false);
+      if (revistaError) throw revistaError;
+      setRevista(revistaData);
+      
+      // 2. Parse contributors string into array if it exists
+      if (revistaData.contribuyentes) {
+        const contributorsList = revistaData.contribuyentes.split(',').map(name => name.trim());
+        setContributors(contributorsList);
       }
-    };
 
-    fetchData();
-  }, []);
+      // 3. Fetch authors ONLY for revista 2 from the revista_autor junction table
+      const { data: authorsData, error: authorsError } = await supabase
+        .from('revista_autor')
+        .select(`
+          autor(nombre)
+        `)
+        .eq('id_revista', 2);
+
+      if (authorsError) throw authorsError;
+      
+      // 4. If we have authors from the database, use them
+      if (authorsData && authorsData.length > 0) {
+        const authorNames = authorsData
+          .map(item => item.autor.nombre)
+          .sort(); // Alphabetical sort
+        setAllAuthors(authorNames);
+        setAutores(authorNames);
+        
+        // If no contributors in revista, use authors
+        if (!revistaData.contribuyentes || revistaData.contribuyentes.trim() === '') {
+          setContributors(authorNames);
+        }
+      }
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError('Failed to load magazine data');
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
 
   // Generate safe position for the author name
   // Generate safe position for the author name
@@ -440,7 +448,7 @@ const getAuthorFontSize = () => {
     textTransform: 'uppercase',
     letterSpacing: '1px',
     color: 'white',
-    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+    textShadow: '1px 1px 2px black, -1px -1px 2px black, 1px -1px 2px black, -1px 1px 2px black',
     transition: 'all 0.5s ease-in-out',
     whiteSpace: 'nowrap',
     maxWidth: windowWidth < 768 ? '60%' : '90%',
@@ -479,7 +487,8 @@ const renderHormigueroTitle = () => {
               letterSpacing: word === 'HORMIGUERO' ? '2px' : '1px',
               fontSize: index === 0 ? (isDesktop ? '6rem' : '2.5rem') : (isDesktop ? '4.5rem' : '1.5rem'),
               lineHeight: '0.9',
-              color: 'white'
+              color: 'white',
+              textShadow: '2px 2px 2px rgba(0, 0, 0, 0.5)' // More subtle
             }}>
               {word}
             </span>
@@ -502,7 +511,9 @@ const renderEspiritusTitle = () => {
       justifyContent: 'flex-start',
       gap: '12px',
       margin: '0 0 15px 0',
-      lineHeight: '1.1'
+      lineHeight: '1.1',
+      textShadow: '2px 2px 2px rgba(0, 0, 0, 0.5)' // More subtle
+
     }}>
       {words.map((word, index) => {
         const fontWeights = ['300', '900', '300', '300', '900']; // LOS(light), ESPÍRITUS(bold), DE(light), LO(light), MÍNIMO(bold)
@@ -585,7 +596,259 @@ useEffect(() => {
 }, []);
 
   const isDesktop = windowWidth > 840;
+const figureBackgroundStyles = `
+  .figure-background-container {
+    position: relative;
+    z-index: 1;
+  }
 
+  .large-figure-overlay {
+    position: absolute;
+    top: 0;
+    right: -50%;
+    width: 120vw;
+    height: 100%;
+    z-index: -1;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 1.2s ease-out;
+    transform: translateX(0);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .large-figure-overlay.visible {
+    opacity: .8;
+    transform: translateX(-25%);
+  }
+
+  .figure-part {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: all 0.6s ease-out;
+    transform: translateX(100px);
+    opacity: 0;
+  }
+
+  .figure-part img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    filter: brightness(0.8) contrast(1.1);
+  }
+
+  /* Head section - NEW */
+  .figure-part.head {
+    height: 20%;
+    min-height: 120px;
+    
+  }
+
+  /* Top part - Body without head */
+  .figure-part.top {
+    height: 40%; /* Reduced from 70% */
+    min-height: 300px;
+  }
+
+  /* Bottom part - Lower body/Legs */
+  .figure-part.bottom {
+    height: 30%;
+    min-height: 200px;
+  }
+
+  /* Head section specific styles */
+  .figure-part.head .rotating-head-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+   
+    align-items: flex-end; /* Changed from center to flex-end - pushes head to bottom */
+    padding-bottom: 10px; /* Small gap before body */
+  }
+
+  .figure-part.head .rotating-head {
+    width: auto;
+    height: 80%;
+    object-fit: contain;
+    transition: opacity 0.2s ease-in-out;
+
+  }
+
+  /* Rotating head styles - Updated */
+  .rotating-head-container {
+    position: absolute;
+    top: 0;
+    left: 85%;
+    transform: translateX(-50%);
+    z-index: 2;
+    width: 80px;
+    height: 80px;
+  }
+
+  .rotating-head {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.2s ease-in-out;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .rotating-head.fade-out {
+    opacity: 0;
+  }
+
+  .rotating-head.fade-in {
+    opacity: 1;
+  }
+
+  /* Individual part animations */
+  .large-figure-overlay.visible .figure-part.head {
+    transform: translateX(0);
+    opacity: 1;
+    transition-delay: 0.1s;
+  }
+
+  .large-figure-overlay.visible .figure-part.top {
+    transform: translateX(0);
+    opacity: 1;
+    transition-delay: 0.2s;
+  }
+
+ 
+
+  /* Ensure text readability */
+  .figure-background-container h2,
+  .figure-background-container h3,
+  .figure-background-container p {
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .large-figure-overlay {
+      width: 140vw;
+    }
+    
+    .large-figure-overlay.visible {
+      transform: translateX(-30%);
+      opacity: 0.8;
+    }
+
+    .figure-part.head {
+      height: 22%;
+      min-height: 80px;
+      margin-bottom: -8rem; /* Overlap slightly with body section */
+      z-index: 3; /* Higher z-index to appear on top */
+
+    }
+
+    .figure-part.top {
+      height: 50%;
+      min-height: 200px;
+    }
+
+  
+
+    .rotating-head-container {
+      width: 60px;
+      height: 60px;
+    }
+
+    .figure-part.head .rotating-head {
+      height: 70%;
+    }
+
+    .figure-background-container {
+      background: rgba(255, 255, 255, 0.97);
+    }
+  }
+
+  .large-figure-overlay.from-left {
+    right: auto;
+    left: -50%;
+  }
+
+  .large-figure-overlay.from-left.visible {
+    transform: translateX(25%);
+  }
+    .peeking-part {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .peeking-part.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .peeking-part--left {
+    transform-origin: right center;
+  }
+
+  .peeking-part--right {
+    transform-origin: left center;
+  }
+
+  /* Optional: Add subtle animation while visible */
+  .peeking-part.visible img {
+    animation: subtleFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes subtleFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .peeking-part {
+      width: 60px !important;
+      height: 60px !important;
+    }
+  }
+`;
+
+// Add this useEffect to trigger the figure animation
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const figureOverlay = document.getElementById('figure-overlay');
+          if (figureOverlay) {
+            figureOverlay.classList.add('visible');
+          }
+        }
+      });
+    },
+    { 
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    }
+  );
+
+  const articlePreview = document.querySelector('.article-preview');
+  if (articlePreview) {
+    observer.observe(articlePreview);
+  }
+
+  return () => {
+    if (articlePreview) {
+      observer.unobserve(articlePreview);
+    }
+  };
+}, []);
   return (
     <>
       <Helmet>
@@ -629,22 +892,26 @@ useEffect(() => {
     <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
       <CustomStyles />
-      
+      <style>{figureBackgroundStyles}</style>
+
         {/* Green gradient cover image */}
        <div 
-  ref={coverImageRef}
-  className="cover-image" 
-  id="main-content" 
-  style={{
-    backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
-    position: 'relative',
-    overflow: 'hidden',
-    minHeight: isDesktop ? '190vh': '800px',
-    display: 'flex',
-    flexDirection: 'column'
+        ref={coverImageRef}
+        className="cover-image" 
+        id="main-content" 
+        style={{
+          backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
+          position: 'relative',
+          overflow: 'hidden',
+          minHeight: isDesktop ? '190vh': '800px',
+          display: 'flex',
+          flexDirection: 'column',
+        
 
   }}
 >
+    <PeekingBodyParts />
+
    <div style={{ 
         position: 'absolute', 
         top: '80px', 
@@ -654,10 +921,10 @@ useEffect(() => {
         zIndex: 0, // Para estar detrás de los elementos
         pointerEvents: 'none' // Para que no interfiera con clics
       }}>
-       <InsectColony 
+       {/* <InsectColony 
         insects={insects.filter(insect => insect.type === 'mosquito')}
         count={10}
-      />
+      /> */}
       </div>
   <div className="texture-overlay"></div>
   
@@ -696,7 +963,9 @@ useEffect(() => {
         lineHeight: '1.3',
         letterSpacing: '1px',
         opacity: '0.8',
-        margin: isDesktop ? '0 auto' : 'none'
+        margin: isDesktop ? '0 auto' : 'none',
+        textShadow: '2px 2px 2px rgba(0, 0, 0, 0.5)' // More subtle
+
       }}>
         REVISTA DE LITERATURA<br/>
         ESPECIALIZADA EN POESÍA
@@ -754,7 +1023,7 @@ useEffect(() => {
       width:'95%',
       marginTop:'2rem'
     }}>
-      30.05.25 PRIMER NÚMERO
+      24.08.25 SEGUNDO NÚMERO
     </div>
   </ScrollReveal>
   {/* Authors */}
@@ -768,7 +1037,9 @@ useEffect(() => {
         lineHeight: '1.4',
         fontWeight: '300',
         letterSpacing: '0.5px', 
-        width:'95%'
+        width:'95%',
+        textShadow: '2px 2px 2px rgba(0, 0, 0, 0.5)' // More subtle
+
       }}>
       {autores.length > 0 ? autores.join(' · ') : 'Cargando autores...'}
       </div>
@@ -797,16 +1068,46 @@ useEffect(() => {
 {/* Center Bottom - CTA */}
 
 </div>
-      
+      <div className="figure-background-container" style={{ 
+        position: 'relative', 
+        minHeight: '100vh',
+        overflow: 'hidden',
+     
+      }}>
+        <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: -1
+      }}>  <RotatingMani
+          supabase={supabase}
+          changeInterval={1500}
+          opacity={0.5}
+          zIndex={-1}
+        />
+          <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(255, 255, 255, 0.1)',
+          zIndex: 1
+        }} />
+      </div>
+        {/* Three-Part Figure Background */}
+       
       {/* Article preview section */}
       <ScrollReveal direction="up">
         <div className="article-preview">
           {renderTitle()}
           
           <ScrollReveal delay={300} direction="up">
-            <div className="article-content">
+            <div className="article-content" >
               <p style={{whiteSpace:"pre-line", fontSize:isDesktop? 'auto':'11px'}}>
-                {revista?.general || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra egestas euismod gravida, ut fringilla neque interdum. Vivamus non interdum nisi. Aenean quis egestas justo, vitae tristique ut fermentum risus fermentum. Cras pharetra nec leo sed vel. Sed et sodales tellus, sed feugiat. Proin venenatis dolor non lectus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra egestas enim eu gravida, ut fringilla neque interdum. Vivamus non interdum nisi. Aenean quis.Fusce posuere fermentum. Cras pharetra nec leo sed vel. Sed et sodales tellus, sed feugiat.'}
+                {revista?.general || 'Lorem ipsum...'}
               </p>
               
               <ScrollReveal delay={500} direction="left">
@@ -820,6 +1121,7 @@ useEffect(() => {
       </ScrollReveal>
 
       {/* Additional articles section */}
+      
       <br />
       <ScrollReveal direction="right">
         <div id="hormigueados">
@@ -835,8 +1137,11 @@ useEffect(() => {
       </ScrollReveal>
       <div id="contacto"></div>
     </div>
+    </div>
+    
     </>
   );
+  
 };
 
-export default Edicion;
+export default Res;
