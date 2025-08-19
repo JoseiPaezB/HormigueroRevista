@@ -271,7 +271,7 @@ const Contenido = () => {
               {/* Background Image */}
               <div >
                   <RotatingBackground 
-                    changeInterval={250}
+                    changeInterval={850}
                     opacity={1}
                     zIndex={-1}
                     supabase={supabase}
