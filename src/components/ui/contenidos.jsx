@@ -272,7 +272,7 @@ const Contenido = () => {
               <div >
                   <RotatingBackground 
                     changeInterval={850}
-                    opacity={1}
+                    opacity={0.6}
                     zIndex={-1}
                     supabase={supabase}
 
@@ -386,7 +386,7 @@ const Contenido = () => {
                           flexDirection: 'column',
                           alignItems: 'center',
                           textDecoration: 'none',
-                          color: 'white',
+                          color: 'black',
                           justifyContent: 'center',
                           textAlign: 'center',
                           padding: '20px',
@@ -405,15 +405,15 @@ const Contenido = () => {
                             position: 'relative',
                             zIndex: 1,
                             fontWeight: 'bold',
-                            textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
-                            background: `
-                            rgb(0,0,0,0.5)
-                          `, 
-                          borderRadius:'3px',
-                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.7)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          backgroundRepeat: 'no-repeat',
+                          //   textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
+                          //   background: `
+                          //   rgb(0,0,0,0.5)
+                          // `, 
+                          // borderRadius:'3px',
+                          // boxShadow: '0 4px 8px rgba(0, 0, 0, 0.7)',
+                          // backgroundSize: 'cover',
+                          // backgroundPosition: 'center',
+                          // backgroundRepeat: 'no-repeat',
                           padding: '5px'
                           }}
                         >
