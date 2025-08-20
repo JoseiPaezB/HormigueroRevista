@@ -1122,7 +1122,7 @@ useEffect(() => {
               
               <ScrollReveal delay={500} direction="left">
                 <a href="/contenidos#sintesis" className="read-more">
-                Leer primer número...
+                Leer segundo número...
                 </a>
               </ScrollReveal>
             </div>
