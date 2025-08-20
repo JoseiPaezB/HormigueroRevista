@@ -99,12 +99,27 @@ const Contenido = () => {
   };
 
   // Array of menu items for the grid
-  const menuItems = [
-    { path: "/creaciones", title: "EL HORMIGUERO", delay: 0 },
-    { path: "/critica", title: "OTROS BICHOS", delay: 0.3 },
-    { path: "/visuales", title: "A OJO DE HORMIGA", delay: 1.2 },
-    //{ path: "/entrevista", title: "ENTREVISTAS", delay: 1.5 }
-  ];
+const menuItems = [
+  { 
+    path: "/creaciones", 
+    title: "EL HORMIGUERO", 
+    subtitle: "Poemas en verso y prosa",
+    delay: 0 
+  },
+  { 
+    path: "/critica", 
+    title: "OTROS BICHOS", 
+    subtitle: "Ensayos, entrevistas y traducciones",
+    delay: 0.3 
+  },
+  { 
+    path: "/visuales", 
+    title: "A OJO DE HORMIGA", 
+    subtitle: "Visuales",
+    delay: 1.2 
+  },
+  //{ path: "/entrevista", title: "ENTREVISTAS", subtitle: "Conversaciones", delay: 1.5 }
+];
 
   // Determine grid layout based on screen width
   const isDesktop = windowWidth > 840;
@@ -360,7 +375,6 @@ const Contenido = () => {
                 {menuItems.map((item, index) => {
                   // Array of background images
                   
-                  
                   // Determine which SVG to use based on index
                   let antIcon;
                   switch(index) {
@@ -382,18 +396,17 @@ const Contenido = () => {
                         to={item.path} 
                         className="menu-item" 
                         style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textDecoration: 'underline',
-                        color: 'black',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        padding: '20px',
-                        position: 'relative',
-                        zIndex: 2,
-
-                      }}
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          textDecoration: 'none',
+                          color: 'black',
+                          justifyContent: 'center',
+                          textAlign: 'center',
+                          padding: '20px',
+                          position: 'relative',
+                          zIndex: 2,
+                        }}
                       >
                         <div 
                           className="menu-text pulsing-text" 
@@ -404,18 +417,24 @@ const Contenido = () => {
                             position: 'relative',
                             zIndex: 1,
                             fontWeight: '800',
-                          //   background: `
-                          //   rgba(110, 11, 11, 0.7)
-                          // `, 
-                          // borderRadius:'3px',
-                          // boxShadow: '0 4px 8px rgba(110, 11, 11, 0.7)',
-                          // backgroundSize: 'cover',
-                          // backgroundPosition: 'center',
-                          // backgroundRepeat: 'no-repeat',
-                          padding: '5px'
+                            padding: '5px'
                           }}
                         >
                           {item.title}
+                        </div>
+                        
+                        {/* Nuevo subtítulo */}
+                        <div 
+                          className="menu-subtitle"
+                          style={{
+                            fontSize: windowWidth > 728 ? '0.9rem' : '0.5rem',
+                            letterSpacing: '0.5px',
+                            fontWeight: '300',
+                            color: 'rgba(0, 0, 0, 0.7)',
+                            fontStyle: 'italic'
+                          }}
+                        >
+                          {item.subtitle}
                         </div>
                       </Link>
                     </ScrollReveal>

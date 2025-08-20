@@ -546,7 +546,7 @@ const handleContributorClick = (bookId) => {
                     <>
                       OTROS BICHOS
                       <p className="subtitle" style={{  fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic' }}>
-                      Ensayo, entrevistas y homenajes      
+                      Ensayo, entrevistas y traducciones      
                       </p>
                     </>
                   )
