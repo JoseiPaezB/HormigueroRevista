@@ -891,21 +891,32 @@ useEffect(() => {
 
         {/* Green gradient cover image */}
        <div 
-        ref={coverImageRef}
-        className="cover-image" 
-        id="main-content" 
-        style={{
-          backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
-          position: 'relative',
-          overflow: 'hidden',
-          minHeight: isDesktop ? '190vh': '800px',
-          display: 'flex',
-          flexDirection: 'column',
-        
-
-  }}
->
-    
+          ref={coverImageRef}
+          className="cover-image animated-bg" 
+          id="main-content" 
+          style={{
+            backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
+            position: 'relative',
+            overflow: 'hidden',
+            minHeight: isDesktop ? '190vh': '800px',
+            display: 'flex',
+            flexDirection: 'column',
+            animation: 'pulse 4s ease-in-out infinite',
+          }}
+        >
+          <style jsx>{`
+            @keyframes pulse {
+              0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+              }
+              50% {
+                transform: scale(1.02);
+                opacity: 0.95;
+              }
+            }
+          `}</style>
+        </div>
 
    <div style={{ 
         position: 'absolute', 
@@ -1135,7 +1146,6 @@ useEffect(() => {
         </div>
       </ScrollReveal>
       <div id="contacto"></div>
-    </div>
     </div>
     
     </>
