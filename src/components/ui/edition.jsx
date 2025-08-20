@@ -509,11 +509,10 @@ const renderEspiritusTitle = () => {
       margin: '0 0 15px 0',
       lineHeight: '1.1',
       textShadow: '2px 2px 2px rgba(0, 0, 0, 0.5)' // More subtle
-
     }}>
       {words.map((word, index) => {
-        const fontWeights = ['300', '900', '300', '300', '900']; // LOS(light), ESPÍRITUS(bold), DE(light), LO(light), MÍNIMO(bold)
-        const fontWeight = fontWeights[index] || '400';
+        // Positions: 0=FORMAS(bold), 1=DE(light), 2=HABITAR(bold), 3=EL(light), 4=MUNDO(bold)
+        const fontWeight = (index === 0 || index === 2 || index === 4) ? '900' : '300';
         const directions = ['left', 'up', 'right', 'left', 'up'];
         const direction = directions[index] || 'up';
         
@@ -960,7 +959,7 @@ useEffect(() => {
         letterSpacing: '1px',
         opacity: '0.8',
         margin: isDesktop ? '0 auto' : 'none',
-        textShadow: '2px 2px 2px rgba(0, 0, 0, 0.5)' // More subtle
+        textShadow: '2px 2px 2px rgba(0, 0, 0, 1)' // More subtle
 
       }}>
         REVISTA DE LITERATURA<br/>
@@ -1004,6 +1003,8 @@ useEffect(() => {
           letterSpacing: '1px',
           textDecoration: 'none',
           paddingBottom: '2px',
+          textShadow: '2px 2px 2px rgba(0, 0, 0, 1)' // More subtle
+
         }}
       >
         HAZ CLIC PARA VER MÁS
@@ -1017,7 +1018,9 @@ useEffect(() => {
       fontWeight: '300',
       letterSpacing: '1px',
       width:'95%',
-      marginTop:'2rem'
+      marginTop:'2rem',
+      textShadow: '2px 2px 2px rgba(0, 0, 0, 1)', // More subtle
+
     }}>
       24.08.25 SEGUNDO NÚMERO
     </div>
@@ -1031,10 +1034,10 @@ useEffect(() => {
       <div style={{
         fontSize: 'clamp(0.6rem, 1.2vw, 0.9rem)',
         lineHeight: '1.4',
-        fontWeight: '300',
+        fontWeight: '500',
         letterSpacing: '0.5px', 
         width:'95%',
-        textShadow: '2px 2px 2px rgba(0, 0, 0, 0.5)' // More subtle
+        textShadow: '2px 2px 2px rgba(0, 0, 0, 1)', // More subtle
 
       }}>
       {autores.length > 0 ? autores.join(' · ') : 'Cargando autores...'}
