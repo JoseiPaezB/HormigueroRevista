@@ -272,7 +272,7 @@ const Contenido = () => {
               <div >
                   <RotatingBackground 
                     changeInterval={850}
-                    opacity={0.6}
+                    opacity={0.525}
                     zIndex={-1}
                     supabase={supabase}
 
