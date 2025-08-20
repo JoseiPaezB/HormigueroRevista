@@ -37,7 +37,7 @@ const Footer = () => {
         const { data, error } = await supabase
           .from('revista')
           .select('contribuyentes')
-          .eq('id', 1)
+          .eq('id', 2)
           .single();
         
         if (error) throw error;
