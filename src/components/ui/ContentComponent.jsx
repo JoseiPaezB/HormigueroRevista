@@ -643,7 +643,7 @@ boxShadow: isDesktop
         {/* Book covers grid - No modificado según instrucciones */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
+          gridTemplateColumns: 'repeat(3, 1fr)', // Fixed to exactly 2 columns
           gap: '20px',
           marginBottom: '40px'
         }}>

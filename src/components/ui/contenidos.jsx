@@ -382,19 +382,18 @@ const Contenido = () => {
                         to={item.path} 
                         className="menu-item" 
                         style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          textDecoration: 'none',
-                          color: 'black',
-                          justifyContent: 'center',
-                          textAlign: 'center',
-                          padding: '20px',
-                          position: 'relative',
-                          zIndex: 2,
-                          
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        textDecoration: 'underline',
+                        color: 'black',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        padding: '20px',
+                        position: 'relative',
+                        zIndex: 2,
 
-                        }}
+                      }}
                       >
                         <div 
                           className="menu-text pulsing-text" 
@@ -404,13 +403,12 @@ const Contenido = () => {
                             animationDelay: `${item.delay}s`,
                             position: 'relative',
                             zIndex: 1,
-                            fontWeight: 'normal',
-                          //   textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
+                            fontWeight: '800',
                           //   background: `
-                          //   rgb(0,0,0,0.5)
+                          //   rgba(110, 11, 11, 0.7)
                           // `, 
                           // borderRadius:'3px',
-                          // boxShadow: '0 4px 8px rgba(0, 0, 0, 0.7)',
+                          // boxShadow: '0 4px 8px rgba(110, 11, 11, 0.7)',
                           // backgroundSize: 'cover',
                           // backgroundPosition: 'center',
                           // backgroundRepeat: 'no-repeat',
