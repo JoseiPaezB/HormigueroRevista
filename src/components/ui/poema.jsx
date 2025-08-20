@@ -512,7 +512,7 @@ useEffect(() => {
     
     {/* Article preview section */}
     <div className="article-preview" style={{
-      paddingLeft: '20px',
+      paddingLeft: '75px',
       paddingRight: '20px'
     }}>
       <ScrollReveal direction="left" delay={400}>
