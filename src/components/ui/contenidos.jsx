@@ -280,12 +280,12 @@ const Contenido = () => {
               </div>
 
                 {/* Optional: Add overlay for better text readability */}
-                <RainDrops 
+                {/* <RainDrops 
                 count={75}
                 speed="fast"
                 intensity="heavy"
                 svgName="gota"
-              />
+              /> */}
 
                 <div className="vertical-menu" style={{
                 display: 'grid',

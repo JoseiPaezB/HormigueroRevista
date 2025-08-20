@@ -108,9 +108,9 @@ const Critica = () => {
       <div style={{ 
         position: 'relative', 
         zIndex: 1, 
-        color: 'black',
+        color: 'white',
         minHeight: '100vh',
-        backgroundColor: 'rgba(255, 255, 255, 0.5)'
+        backgroundColor: 'rgba(46, 45, 45, 0.2)'
 
       }}>
         <ContentComponent contentType="critica" />

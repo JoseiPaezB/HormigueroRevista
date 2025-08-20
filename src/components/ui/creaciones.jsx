@@ -71,7 +71,7 @@ const Creaciones = () => {
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
         zIndex: -1, 
-        opacity: 0.5
+        opacity: 1
       }} />
 
       {/* Loading state */}
@@ -100,7 +100,7 @@ const Creaciones = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(50, 50, 50, 0.9)',
+          backgroundColor: 'rgba(2, 2, 2, 0.9)',
           zIndex: -1
         }} />
       )}
@@ -109,7 +109,7 @@ const Creaciones = () => {
       <div style={{ 
         position: 'relative', 
         zIndex: 1, 
-        color: 'black',
+        color: 'white',
         minHeight: '100vh'
       }}>
         <ContentComponent contentType="creaciones" />

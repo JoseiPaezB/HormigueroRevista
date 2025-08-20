@@ -519,7 +519,7 @@ const handleContributorClick = (bookId) => {
       {/* Cover image */}
       
       {/* Article preview section */}
-      <div className="article-preview">
+      <div className="article-preview" style={{background:'rgba(0, 0, 0, 0.25)'}}>
         {/* Título principal con ScrollReveal */}
         <ScrollReveal direction="up">
           <h2 
