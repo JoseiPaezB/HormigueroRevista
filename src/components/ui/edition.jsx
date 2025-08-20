@@ -1080,7 +1080,7 @@ useEffect(() => {
       }}>  <RotatingMani
           supabase={supabase}
           changeInterval={4000}
-          opacity={0.28}
+          opacity={0.18}
           zIndex={-1}
         />
           <div style={{
