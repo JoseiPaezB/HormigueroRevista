@@ -262,10 +262,10 @@ const Contenido = () => {
               className="menu-background-section"
               style={{
                 position: 'relative',
-                padding: isMobile ? '0' : '400px 20px',
+                padding: isMobile ? '0' : '375px 10px',
                 margin: isMobile ? '30px 0' :'0px 0',
                 overflow: 'hidden',
-                marginRight: isMobile ? '0' : '2rem'
+                marginRight: isMobile ? '0' : '0'
               }}
             >
               {/* Background Image */}
