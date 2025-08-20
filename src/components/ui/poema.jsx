@@ -39,6 +39,9 @@ const Poema = () => {
   const masPoemasSectionRef = useRef(null);
   const articleContainerRef = useRef(null);
 
+  // Define isMobile based on windowWidth
+  const isMobile = windowWidth <= 768;
+
   
   // Fetch data on component mount
   useEffect(() => {
@@ -512,7 +515,7 @@ useEffect(() => {
     
     {/* Article preview section */}
     <div className="article-preview" style={{
-      paddingLeft: '75px',
+      paddingLeft: isMobile ? '20px' : '30rem',
       paddingRight: '20px'
     }}>
       <ScrollReveal direction="left" delay={400}>
