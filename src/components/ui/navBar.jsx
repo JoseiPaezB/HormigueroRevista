@@ -91,18 +91,20 @@ const Navbar = () => {
   };
   useEffect(() => {
     const fetchLogo = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('caras')
-          .select('url')
-          .single();
+  try {
+    const { data, error } = await supabase
+      .from('caras2')
+      .select('url')
 
-        if (error) throw error;
-        setHormigueroLogoUrl(data.url);
-      } catch (err) {
-        console.error('Error fetching logo:', err);
-      }
-    };
+    if (error) throw error;
+    
+    if (data && data.length > 0) {
+      setHormigueroLogoUrl(data[0].url); // Access first element
+    }
+  } catch (err) {
+    console.error('Error fetching logo:', err);
+  }
+};
 
     fetchLogo();
   }, []);

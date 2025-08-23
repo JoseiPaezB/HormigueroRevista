@@ -4,7 +4,7 @@ import portada from '/assets/edicion1.png';
 
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
-import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
+import InsectColony from './MovingSvgBackground2'; // Adjust the path as needed
 import mosquito from '/assets/mosquito.svg';
 // import ant from '/assets/images/ant.svg';
 import bee from '/assets/bee.svg';
@@ -475,16 +475,21 @@ return (
               const firstPart = fullSemblanza.substring(0, breakIndex);
               const secondPart = fullSemblanza.substring(breakIndex).trim();
               
-              return (
+             return (
                 <>
-                  {/* Author name and first part of semblanza */}
-                  <ScrollReveal direction="left" delay={400}>
+                  {/* Author name and full semblanza text first */}
+                  <ScrollReveal direction="up" delay={400}>
                     <div style={{ 
                       fontSize: isDesktop ? '1rem' : '14px',
-                      display:'flex',
-                      justifyContent:'center'
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginBottom: isDesktop ? '30px' : '20px'
                     }}>
-                      <p style={{ marginBottom: '15px', width: isDesktop ? 'auto' : '90%' }}>
+                      <p style={{ 
+                        marginBottom: '15px', 
+                        width: isDesktop ? 'auto' : '90%',
+                        textAlign: 'justify'
+                      }}>
                         <span style={{ 
                           fontSize: isDesktop ? '2rem' : '28px', 
                           fontWeight: 'bold',
@@ -495,41 +500,30 @@ return (
                           {firstLetter}
                         </span>
                         {restOfName}, {/* Author name with comma */}
-                        {firstPart}
+                        {fullSemblanza}
                       </p>
                     </div>
                   </ScrollReveal>
                   
-                  {/* Author image between text parts - LARGER SIZE */}
+                  {/* Author image comes after the text */}
                   <ScrollReveal direction="scale" delay={600}>
                     <div style={{
                       width: '100%',
                       display: 'flex',
                       justifyContent: 'center',
-                      margin: isDesktop ? '40px 0' : '30px 0' // Increased margins
+                      margin: isDesktop ? '40px 0' : '30px 0'
                     }}>
                       <img 
                         src={autor?.imagen || eventImage} 
                         alt={autor?.nombre || "Author"} 
                         style={{
-                          height: isDesktop ? '410px' : '200px', // Increased height
-                          width: isDesktop ? '50%':'75%',
+                          height: isDesktop ? '410px' : '200px',
+                          width: isDesktop ? '50%' : '75%',
                           objectFit: 'cover',
                           border: '1px solid #eee',
-                          boxShadow: '0 4px 10px rgba(0,0,0,0.1)' // Added shadow for emphasis
+                          boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
                         }}
                       />
-                    </div>
-                  </ScrollReveal>
-                  
-                  {/* Second part of semblanza */}
-                  <ScrollReveal direction="right" delay={800}>
-                    <div style={{ 
-                      fontSize: isDesktop ? '1rem' : '14px',
-                      display:'flex',
-                      justifyContent:'center'
-                    }}>
-                      <p style={{ marginBottom: '15px',width: isDesktop ? 'auto' : '90%'}}>{secondPart}</p>
                     </div>
                   </ScrollReveal>
                 </>
@@ -678,7 +672,6 @@ return (
             pointerEvents: 'none' // Para que no interfiera con clics
           }}>
             <InsectColony 
-              insects={insects}
               count={35}
             />
           </div>
