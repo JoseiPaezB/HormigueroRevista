@@ -347,11 +347,11 @@ useEffect(() => {
       transform: 'translate(-50%, -50%)',
       textAlign: 'center',
       color: isHighlighted ? 'white' : 'white',
-      fontSize: isDesktop ? '1.5rem' : '16px',
+      fontSize: isDesktop ? '1.5rem' : '9px',
       fontWeight: 'bold',
       letterSpacing: '1px',
       textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-      width: '80%',
+      width: '100%',
       textTransform: 'uppercase',
       textDecoration: isHighlighted ? 'underline' : 'none', // Agregar subrayado
       textDecorationColor: 'white', // Color del subrayado
