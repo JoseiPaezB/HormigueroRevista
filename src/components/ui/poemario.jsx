@@ -4,7 +4,7 @@ import portada from '/assets/edicion1.png';
 
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
-import InsectColony from './MovingSvgBackground2'; // Adjust the path as needed
+import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
 import mosquito from '/assets/mosquito.svg';
 // import ant from '/assets/images/ant.svg';
 import bee from '/assets/bee.svg';
@@ -673,6 +673,7 @@ return (
           }}>
             <InsectColony 
               count={35}
+              insects={insects}
             />
           </div>
 
