@@ -112,12 +112,7 @@ const menuItems = [
     subtitle: "Ensayos, entrevistas y traducciones",
     delay: 0.3 
   },
-  { 
-    path: "/visuales", 
-    title: "A OJO DE HORMIGA", 
-    subtitle: "Visuales",
-    delay: 1.2 
-  },
+ 
   //{ path: "/entrevista", title: "ENTREVISTAS", subtitle: "Conversaciones", delay: 1.5 }
 ];
 
