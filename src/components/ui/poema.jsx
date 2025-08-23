@@ -515,7 +515,7 @@ useEffect(() => {
     
     {/* Article preview section */}
     <div className="article-preview" style={{
-      paddingLeft: isMobile ? '20px' : '30rem',
+      
       paddingRight: '20px'
     }}>
       <div className="res" style={{paddingLeft: isMobile ? '20px' : '30rem'}}>
