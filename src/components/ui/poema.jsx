@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import portada from '../../assets/images/edicion1.png';
+import portada from '/assets/edicion1.png';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
-import hormigueroLogo from '../../assets/anticon.svg';
+import hormigueroLogo from '/assets/anticon.svg';
 import FloatingHormiguearButton from './hormiguearButton'; // Import our new component
-import hormigueroLogo2 from '../../assets/anticon2.svg'; // Make sure path is correct
+import hormigueroLogo2 from '/assets/anticon2.svg'; // Make sure path is correct
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground';
@@ -38,6 +38,9 @@ const Poema = () => {
   
   const masPoemasSectionRef = useRef(null);
   const articleContainerRef = useRef(null);
+
+  // Define isMobile based on windowWidth
+  const isMobile = windowWidth <= 768;
 
   
   // Fetch data on component mount
@@ -512,16 +515,17 @@ useEffect(() => {
     
     {/* Article preview section */}
     <div className="article-preview" style={{
-      paddingLeft: '20px',
+      
       paddingRight: '20px'
     }}>
-      <ScrollReveal direction="left" delay={400}>
+      <div className="res" style={{paddingLeft: isMobile ? '20px' : '30rem'}}>
+        <ScrollReveal direction="left" delay={400}>
         <div style={{ textAlign: 'left', marginTop: '10px', marginBottom: '5px' }}>
           {autor?.nombre || fallbackPoem.author}
         </div>
-      </ScrollReveal>
+        </ScrollReveal>
       
-      <ScrollReveal direction="up" delay={500}>
+        <ScrollReveal direction="up" delay={500}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',  
@@ -538,13 +542,13 @@ useEffect(() => {
           </h2>
           
         </div>
-      </ScrollReveal>
+        </ScrollReveal>
      
-      <div style={{
+        <div style={{
         marginBottom: '3rem',
         textAlign: 'left',
         padding: 0
-      }}>
+        }}>
         {poema?.mencion && (
           <ScrollReveal direction="up" delay={600}>
             <div style={{
@@ -563,7 +567,7 @@ useEffect(() => {
         )}
         
         {/* Poem section - cada sección con su propia animación */}
-        <div style={{
+       <div style={{
           fontSize: isDesktop ? '0.9rem':'11px',
           lineHeight: '1.8',
           textAlign: 'left',
@@ -606,7 +610,36 @@ useEffect(() => {
                 <div style={{ 
                   textAlign: 'left'
                 }}>
-                  {poema.id === 50 ? (
+                  {poema.id === 165 || poema.id === 61 ? (
+                    // Special handling for poem ID 165 and 61 - render image instead of text
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginBottom: '20px'
+                    }}>
+                      <img 
+                        src={section.content} // Assuming section.content contains the image URL
+                        alt="Poem visual content"
+                        style={{
+                          maxWidth: '100%',
+                          height: 'auto',
+                          border: '1px solid #eee',
+                          borderRadius: '4px',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                        }}
+                        onError={(e) => {
+                          // Fallback if image fails to load
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'block';
+                        }}
+                      />
+                      {/* Fallback text if image fails */}
+                      <div style={{ display: 'none', fontStyle: 'italic', color: '#666' }}>
+                        Image could not be loaded: {section.content}
+                      </div>
+                    </div>
+                  ) : poema.id === 50 || poema.id === 167 ? (
                     (() => {
                       const lines = section.content.split('\n');
                       let currentQuestion = null;
@@ -680,6 +713,7 @@ useEffect(() => {
             );
           })}
         </div>
+        </div>
       </div>
       
       {/* Section for other poems by the author */}
@@ -691,7 +725,7 @@ useEffect(() => {
               fontWeight: 'bold',
               marginBottom: '30px',
               textTransform: 'uppercase',
-              fontSize: isDesktop ? '1.7rem':'18px'
+              fontSize: isDesktop ? '1.7rem':'18px',
             }}>
               MÁS POEMAS DE {autor?.nombre?.toUpperCase() || 'ALEJANDRA'}
             </h3>

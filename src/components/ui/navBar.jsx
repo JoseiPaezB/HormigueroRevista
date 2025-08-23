@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import hormigueroLogo from '../../assets/anticon.svg'; // Adjust the path as necessary
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -15,7 +14,8 @@ const Navbar = () => {
   const [revista, setRevista] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [hormigueroLogoUrl, setHormigueroLogoUrl] = useState('');
+
   // Check screen size and update state when it changes
   useEffect(() => {
     const checkScreenSize = () => {
@@ -69,7 +69,7 @@ const Navbar = () => {
         const { data, error } = await supabase
           .from('revista')
           .select('*')
-          .eq('id', 1)
+          .eq('id', 2)
           .single();
 
         if (error) throw error;
@@ -89,7 +89,25 @@ const Navbar = () => {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+  useEffect(() => {
+    const fetchLogo = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('caras2')
+      .select('url')
 
+    if (error) throw error;
+    
+    if (data && data.length > 0) {
+      setHormigueroLogoUrl(data[0].url); // Access first element
+    }
+  } catch (err) {
+    console.error('Error fetching logo:', err);
+  }
+};
+
+    fetchLogo();
+  }, []);
   // Logo and brand size based on screen size
   const getLogoSize = () => {
     if (isMobile) {
@@ -152,7 +170,7 @@ const Navbar = () => {
 
           }}>
             <img
-              src={hormigueroLogo}
+              src={hormigueroLogoUrl} // fallback al logo local si no carga desde DB
               alt="Hormiga"
               style={getLogoSize()}
             />

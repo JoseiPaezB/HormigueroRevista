@@ -22,6 +22,7 @@ const Critica = () => {
           .from('creaciones')
           .select('imagen')
           .eq('tipo', 'critica')
+          .eq('id_revista', 2)
           .single();
         
         if (error) {
@@ -69,7 +70,7 @@ const Critica = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
-        zIndex: -1
+        zIndex: -1, 
       }} />
 
       {/* Loading state */}
@@ -80,7 +81,7 @@ const Critica = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.8)',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -98,7 +99,7 @@ const Critica = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(50, 50, 50, 0.9)',
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
           zIndex: -1
         }} />
       )}
@@ -108,7 +109,9 @@ const Critica = () => {
         position: 'relative', 
         zIndex: 1, 
         color: 'white',
-        minHeight: '100vh'
+        minHeight: '100vh',
+        backgroundColor: 'rgba(46, 45, 45, 0.2)'
+
       }}>
         <ContentComponent contentType="critica" />
       </div>

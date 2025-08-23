@@ -33,7 +33,6 @@ body, html {
 /* Cover image styling */
   .cover-image {
     position: relative;
-    background-image: url('../../assets/images/edicion1.png');
     height: 100vh; /* Adjust this value as needed */
     width: 100%;
     background-size: cover;
@@ -48,7 +47,6 @@ body, html {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('../../assets/images/edicion1.png');
   opacity: 0.3;
 }
 

@@ -1,59 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import portada from '../../assets/images/edicion1.png';
 import HormigueadosSection from './hormigueados';
-import EventosSection from './eventos';
 import {Link} from 'react-router-dom';
-import hormigueroLogo from '../../assets/anticon.svg';
-import homrigueroLogo1 from '../../assets/uno.svg';
-import homrigueroLogo2 from '../../assets/dos.svg';
-import homrigueroLogo3 from '../../assets/cinco2.svg';
-import homrigueroLogo4 from '../../assets/cuatro.svg';
-import homrigueroLogo5 from '../../assets/tres2.svg';
-import homrigueroLogo6 from '../../assets/seis.svg';
+import hormigueroLogo from '/assets/anticon.svg';
+import RainDrops from './rainDrop';
 import { createClient } from '@supabase/supabase-js';
-import mosquito from '../../assets/images/mosquito.svg';
-import bee from '../../assets/images/bee.svg';
-import fly from '../../assets/images/roach.svg';
-import ant from '../../assets/images/libelula.svg';
-import FlyingInsectsSwarm from './FlyingMosquito';
-import InsectColony from './MovingSvgBackground';
+
 // Importar ScrollReveal
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según donde hayas guardado el componente
 import './ScrollReveal.css'; // Ajusta la ruta según donde hayas guardado los estilos
 import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según donde hayas guardado las utilidades
 import { Helmet } from 'react-helmet';
 
+import RotatingBackground from './rotatingBg';
+
+
+
 // Initialize Supabase client
-const insects = [
-    {
-      src: mosquito,
-      type: 'mosquito',
-      size: 30,
-      // Optional: customize further
-      // speed: 2.5,
-      // initialPosition: { x: 100, y: 100 }
-    },
-    {
-      src: ant,
-      type: 'ant',
-      size: 25
-    },
-    {
-      src: bee,
-      type: 'bee',
-      size: 35
-    },
-    {
-      src: fly,
-      type: 'fly',
-      size: 28
-    },
-    {
-      src: mosquito, // You can reuse the same SVG with different behavior
-      type: 'default',
-      size: 32
-    }
-  ];
+
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -100,7 +63,7 @@ const Contenido = () => {
         const { data, error } = await supabase
           .from('revista')
           .select('*')
-          .eq('id', 1)
+          .eq('id', 2)
           .single();
 
         if (error) throw error;
@@ -136,15 +99,31 @@ const Contenido = () => {
   };
 
   // Array of menu items for the grid
-  const menuItems = [
-    { path: "/creaciones", title: "EL HORMIGUERO", delay: 0 },
-    { path: "/critica", title: "OTROS BICHOS", delay: 0.3 },
-    { path: "/visuales", title: "A OJO DE HORMIGA", delay: 1.2 },
-    //{ path: "/entrevista", title: "ENTREVISTAS", delay: 1.5 }
-  ];
+const menuItems = [
+  { 
+    path: "/creaciones", 
+    title: "EL HORMIGUERO", 
+    subtitle: "Poemas en verso y prosa",
+    delay: 0 
+  },
+  { 
+    path: "/critica", 
+    title: "OTROS BICHOS", 
+    subtitle: "Ensayos, entrevistas y traducciones",
+    delay: 0.3 
+  },
+  { 
+    path: "/visuales", 
+    title: "A OJO DE HORMIGA", 
+    subtitle: "Visuales",
+    delay: 1.2 
+  },
+  //{ path: "/entrevista", title: "ENTREVISTAS", subtitle: "Conversaciones", delay: 1.5 }
+];
 
   // Determine grid layout based on screen width
   const isDesktop = windowWidth > 840;
+  const isMobile = windowWidth <= 840;
   const gridColumns = isDesktop ? 3 : 1; // 3 columns for desktop, 1 for mobile
   
   // Renderizar título con animación
@@ -222,6 +201,9 @@ const Contenido = () => {
     );
   };
 
+
+
+
   return (
     <>
    <Helmet>
@@ -256,7 +238,7 @@ const Contenido = () => {
       <meta name="twitter:image" content={revista?.portada || '/default-cover.jpg'} />
       <meta name="twitter:site" content="@hormiguerodepoemas" />
     </Helmet>
-    <div className="edition-container scroll-reveal-container">
+     <div className="edition-container scroll-reveal-container">
       {/* Include custom styles */}
       <CustomStyles />
       
@@ -267,148 +249,205 @@ const Contenido = () => {
         marginTop: isDesktop ? '60px':'none' // Space for navbar
       }}>
         
-      </div>
-      
+     </div>
       {/* Article preview section - aquí empiezan las animaciones */}
+      
+        
+    
       <ScrollReveal direction="up">
         <div className="res" >
           {/* Usa el título con animación que creamos */}
           {renderTitle()}
           
           <ScrollReveal delay={300} direction="up">
-            <div className="article-content" >
-              <p id="sintesis" style={{whiteSpace:'pre-line'}}>
-                {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
-              </p>
-            </div>
-          </ScrollReveal>
-
-          {/* Menu Grid with Numbered Ants */}
-          <ScrollReveal direction="scale" delay={400}>
-            <div className="vertical-menu" style={{
-              display: 'grid',
-              gap: '30px',
-              padding: '8px',
-              width: '100%',
-              margin: '30px 0',
-              fontSize: '1.3rem',
-              position: 'relative' // Asegura que los insectos se posicionen relativos a este contenedor
-            }}>
-              {/* Define the keyframes animation for pulsing effect */}
-              <style>
-                {`
-                  @keyframes pulse {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.1); }
-                    100% { transform: scale(1); }
-                  }
-                  
-                  @keyframes textPulse {
-                    0% { opacity: 0.75; }
-                    50% { opacity: 1; }
-                    100% { opacity: 0.75; }
-                  }
-                  
-                  .pulsing-ant {
-                    animation: pulse 2s infinite ease-in-out;
-                  }
-                  
-                  .pulsing-text {
-                    animation: textPulse 2s infinite ease-in-out;
-                  }
-                  
-                  .menu-item:hover .pulsing-ant {
-                    animation: pulse 1s infinite ease-in-out;
-                  }
-                  
-                  .menu-item:hover .pulsing-text {
-                    animation: textPulse 0.5s infinite ease-in-out;
-                  }
-
-                  .menu-item:hover .index-number {
-                    opacity: 1;
-                    transform: translate(-50%, -50%) scale(1.2);
-                  }
-                `}
-              </style>
+            
+              <div className="article-content" >
               
-              {/* Contenedor de insectos */}
-              <div style={{ 
-                position: 'absolute', 
-                top: 0, 
-                left: 0, 
-                width: '100%', 
-                height: '100%', 
-                zIndex: 0 // Para estar detrás de los elementos del menú
-              }}>
-                <InsectColony 
-                  insects={insects}
-                  count={25}
-                />
+                <p id="sintesis" style={{whiteSpace:'pre-line'}}>
+                  {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
+                </p>
+              </div>
+              
+          </ScrollReveal>
+          
+
+          {/* Menu Grid with Background Image */}
+          <ScrollReveal direction="scale" delay={400}>
+            <div 
+              className="menu-background-section"
+              style={{
+                position: 'relative',
+                padding: isMobile ? '0' : '375px 10px',
+                margin: isMobile ? '30px 0' :'0px 0',
+                overflow: 'hidden',
+                marginRight: isMobile ? '0' : '0'
+              }}
+            >
+              {/* Background Image */}
+              <div >
+                  <RotatingBackground 
+                    changeInterval={850}
+                    opacity={0.525}
+                    zIndex={-1}
+                    supabase={supabase}
+
+                  />
               </div>
 
-              {/* Map through menu items con animaciones secuenciales */}
-              {menuItems.map((item, index) => {
-                // Determine which SVG to use based on index
-                let antIcon;
-                switch(index) {
-                  case 0: antIcon = homrigueroLogo1; break;
-                  case 1: antIcon = homrigueroLogo2; break;
-                  case 2: antIcon = homrigueroLogo3; break;
-                  case 3: antIcon = homrigueroLogo4; break;
-                  case 4: antIcon = homrigueroLogo5; break;
-                  case 5: antIcon = homrigueroLogo6; break;
-                  default: antIcon = hormigueroLogo;
-                }
+                {/* Optional: Add overlay for better text readability */}
+                {/* <RainDrops 
+                count={75}
+                speed="fast"
+                intensity="heavy"
+                svgName="gota"
+              /> */}
+
+                <div className="vertical-menu" style={{
+                display: 'grid',
+                gap: '30px',
+                padding: '8px',
+                width: '100%',
+                fontSize: '1.3rem',
+                position: 'relative',
+                zIndex: 1
+                }}>
+                {/* Define the keyframes animation for pulsing effect */}
+                <style>
+                  {`
+                    @keyframes pulse {
+                      0% { transform: scale(1); }
+                      50% { transform: scale(1.1); }
+                      100% { transform: scale(1); }
+                    }
+                    
+                    @keyframes textPulse {
+                      0% { opacity: 0.75; }
+                      50% { opacity: 1; }
+                      100% { opacity: 0.75; }
+                    }
+                    
+                    .pulsing-ant {
+                      animation: pulse 2s infinite ease-in-out;
+                    }
+                    
+                    .pulsing-text {
+                      animation: textPulse 2s infinite ease-in-out;
+                    }
+                    
+                    .menu-item:hover .pulsing-ant {
+                      animation: pulse 1s infinite ease-in-out;
+                    }
+                    
+                    .menu-item:hover .pulsing-text {
+                      animation: textPulse 0.5s infinite ease-in-out;
+                    }
+
+                    .menu-item:hover .index-number {
+                      opacity: 1;
+                      transform: translate(-50%, -50%) scale(1.2);
+                    }
+
+                    /* Enhanced menu item styling for better visibility on background */
+                    .menu-item {
+                      transition: all 0.3s ease;
+                    }
+
+                    .menu-item:hover {
+                      transform: translateY(-5px);
+                    }
+                  `}
+                </style>
                 
-                // Elegir una dirección diferente para cada elemento del menú
-                const directions = ['left', 'right', 'up'];
-                const direction = directions[index % directions.length];
-                
-                return (
-                  <ScrollReveal key={index} delay={index * 200} direction={direction}>
-                    <Link 
-                      to={item.path} 
-                      className="menu-item" 
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textDecoration: 'none',
-                        color: 'black',
-                        transition: 'transform 0.2s',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        padding: '15px',
-                        position: 'relative',
-                        zIndex: 1 // Para estar por encima de los insectos
-                      }}
-                    >
-                      <div 
-                        className="menu-text pulsing-text" 
+                {/* Contenedor de insectos */}
+                <div style={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  left: 0, 
+                  width: '100%', 
+                  height: '100%', 
+                  zIndex: 0
+                }}>
+                  
+                </div>
+                  
+                  
+                {/* Map through menu items con animaciones secuenciales */}
+                {menuItems.map((item, index) => {
+                  // Array of background images
+                  
+                  // Determine which SVG to use based on index
+                  let antIcon;
+                  switch(index) {
+                    case 0: antIcon = hormigueroLogo; break;
+                    case 1: antIcon = hormigueroLogo; break;
+                    case 2: antIcon = hormigueroLogo; break;
+                    case 3: antIcon = hormigueroLogo; break;
+                    case 4: antIcon = hormigueroLogo; break;
+                    case 5: antIcon = hormigueroLogo; break;
+                    default: antIcon = hormigueroLogo;
+                  }
+                  
+                  const directions = ['left', 'right', 'up'];
+                  const direction = directions[index % directions.length];
+                  
+                  return (
+                    <ScrollReveal key={index} delay={index * 200} direction={direction}>
+                      <Link 
+                        to={item.path} 
+                        className="menu-item" 
                         style={{
-                          fontSize: windowWidth > 728 ? '1.7rem' : '18px',
-                          letterSpacing: '1px',
-                          animationDelay: `${item.delay}s`,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          textDecoration: 'none',
+                          color: 'black',
+                          justifyContent: 'center',
+                          textAlign: 'center',
+                          padding: '20px',
                           position: 'relative',
-                          zIndex: 1,
-                          fontWeight: 'bold',
+                          zIndex: 2,
                         }}
                       >
-                        {item.title}
-                      </div>
-                    </Link>
-                  </ScrollReveal>
-                );
-              })}
+                        <div 
+                          className="menu-text pulsing-text" 
+                          style={{
+                            fontSize: windowWidth > 728 ? '1.7rem' : '18px',
+                            letterSpacing: '1px',
+                            animationDelay: `${item.delay}s`,
+                            position: 'relative',
+                            zIndex: 1,
+                            fontWeight: '800',
+                            padding: '5px'
+                          }}
+                        >
+                          {item.title}
+                        </div>
+                        
+                        {/* Nuevo subtítulo */}
+                        <div 
+                          className="menu-subtitle"
+                          style={{
+                            fontSize: windowWidth > 728 ? '0.9rem' : '0.5rem',
+                            letterSpacing: '0.5px',
+                            fontWeight: '300',
+                            color: 'rgba(0, 0, 0, 0.7)',
+                            fontStyle: 'italic'
+                          }}
+                        >
+                          {item.subtitle}
+                        </div>
+                      </Link>
+                    </ScrollReveal>
+                  );
+                })}
+              </div>
             </div>
           </ScrollReveal>
         </div>
       </ScrollReveal>
     </div>
   </>
-
-  );
+);
 };
 
 export default Contenido;

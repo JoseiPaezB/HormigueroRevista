@@ -7,11 +7,7 @@ import { Helmet } from 'react-helmet';
 
 
 // Import your book cover images
-import bookCover1 from '../../assets/images/1res.png';
-import bookCover2 from '../../assets/images/2res.png';
-import bookCover3 from '../../assets/images/3res.png';
-import bookCover4 from '../../assets/images/4res.png';
-import bookCover5 from '../../assets/images/5res.png';
+
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 
 // Initialize Supabase client
@@ -34,13 +30,7 @@ const ContentComponent = ({ contentType }) => {
   const [highlightedAuthorId, setHighlightedAuthorId] = useState(null);
 
   // Default book covers mapping
-  const defaultCovers = {
-    1: bookCover1,
-    2: bookCover2,
-    3: bookCover3,
-    4: bookCover4,
-    5: bookCover5
-  };
+  
 
   // Capitalize first letter for display purposes
   const displayTitle = contentType.charAt(0).toUpperCase() + contentType.slice(1);
@@ -65,7 +55,7 @@ const ContentComponent = ({ contentType }) => {
         const { data: revistaData, error: revistaError } = await supabase
           .from('revista')
           .select('*')
-          .eq('id', 1)
+          .eq('id', 2)
           .single();
   
         if (revistaError) throw revistaError;
@@ -75,7 +65,7 @@ const ContentComponent = ({ contentType }) => {
         const { data: contentData, error: contentError } = await supabase
           .from('creaciones') // This table holds all content types (both creaciones and traducciones)
           .select('*')
-          .eq('id_revista', 1)
+          .eq('id_revista', 2)
           .eq('tipo', contentType) // Use the contentType prop to differentiate
           .single();
   
@@ -357,11 +347,11 @@ useEffect(() => {
       transform: 'translate(-50%, -50%)',
       textAlign: 'center',
       color: isHighlighted ? 'white' : 'white',
-      fontSize: isDesktop ? '1.5rem' : '16px',
+      fontSize: isDesktop ? '1.5rem' : '9px',
       fontWeight: 'bold',
       letterSpacing: '1px',
       textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-      width: '80%',
+      width: '100%',
       textTransform: 'uppercase',
       textDecoration: isHighlighted ? 'underline' : 'none', // Agregar subrayado
       textDecorationColor: 'white', // Color del subrayado
@@ -417,6 +407,7 @@ const handleContributorClick = (bookId) => {
     const getSectionTitle = () => {
     switch(contentType.toLowerCase()) {
       case 'creaciones':
+      case 'creaciones2':
         return 'El Hormiguero';
       case 'critica':
       case 'crítica':
@@ -432,6 +423,7 @@ const handleContributorClick = (bookId) => {
    const getSectionSubtitle = () => {
     switch(contentType.toLowerCase()) {
       case 'creaciones':
+      case 'creaciones2':
         return 'Poemas en verso y prosa';
       case 'critica':
       case 'crítica':
@@ -527,7 +519,7 @@ const handleContributorClick = (bookId) => {
       {/* Cover image */}
       
       {/* Article preview section */}
-      <div className="article-preview">
+      <div className="article-preview" style={{background:'rgba(0, 0, 0, 0.25)'}}>
         {/* Título principal con ScrollReveal */}
         <ScrollReveal direction="up">
           <h2 
@@ -554,7 +546,7 @@ const handleContributorClick = (bookId) => {
                     <>
                       OTROS BICHOS
                       <p className="subtitle" style={{  fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold',marginTop:'-0.5rem',marginBottom:'2.5rem',fontStyle:'italic' }}>
-                      Ensayo, entrevistas y homenajes      
+                      Ensayo, entrevistas y traducciones      
                       </p>
                     </>
                   )
@@ -651,7 +643,7 @@ boxShadow: isDesktop
         {/* Book covers grid - No modificado según instrucciones */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
+          gridTemplateColumns: 'repeat(3, 1fr)', // Fixed to exactly 2 columns
           gap: '20px',
           marginBottom: '40px'
         }}>

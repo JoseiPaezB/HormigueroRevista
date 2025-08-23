@@ -19,10 +19,11 @@ const Creaciones = () => {
         setImageError(false);
         
         const { data, error } = await supabase
-          .from('creaciones')
-          .select('imagen')
-          .eq('tipo', 'creaciones')
-          .single();
+        .from('creaciones')
+        .select('imagen')
+        .eq('tipo', 'creaciones')
+        .eq('id_revista', 2)
+        .single();
         
         if (error) {
           console.error('Error fetching image URL:', error);
@@ -56,7 +57,7 @@ const Creaciones = () => {
     <div style={{
       position: 'relative',
       minHeight: '100vh',
-      color: '#fff'
+      color: '#000'
     }}>
       {/* Background image overlay - same as visuales */}
       <div style={{
@@ -69,7 +70,8 @@ const Creaciones = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
-        zIndex: -1
+        zIndex: -1, 
+        opacity: 1
       }} />
 
       {/* Loading state */}
@@ -80,7 +82,7 @@ const Creaciones = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.8)',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -98,7 +100,7 @@ const Creaciones = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(50, 50, 50, 0.9)',
+          backgroundColor: 'rgba(2, 2, 2, 0.9)',
           zIndex: -1
         }} />
       )}

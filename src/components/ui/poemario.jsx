@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import eventImage from '../../assets/images/evento1.png';
-import portada from '../../assets/images/edicion1.png';
-import bookCover1 from '../../assets/images/1res.png';
-import bookCover2 from '../../assets/images/2res.png';
-import bookCover3 from '../../assets/images/3res.png';
-import bookCover4 from '../../assets/images/4res.png';
-import bookCover5 from '../../assets/images/5res.png';
+import eventImage from '/assets/evento1.png';
+import portada from '/assets/edicion1.png';
+
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import InsectColony from './MovingSvgBackground'; // Adjust the path as needed
-import mosquito from '../../assets/images/mosquito.svg';
-// import ant from '../../assets/images/ant.svg';
-import bee from '../../assets/images/bee.svg';
-import fly from '../../assets/images/roach.svg';
-import ant from '../../assets/images/libelula.svg';
+import mosquito from '/assets/mosquito.svg';
+// import ant from '/assets/images/ant.svg';
+import bee from '/assets/bee.svg';
+import fly from '/assets/roach.svg';
+import ant from '/assets/libelula.svg';
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import { Helmet } from 'react-helmet';
 
@@ -72,13 +68,7 @@ const AuthorBio = () => {
     
 
     // Default book covers mapping
-    const defaultCovers = {
-      1: bookCover1,
-      2: bookCover2,
-      3: bookCover3,
-      4: bookCover4,
-      5: bookCover5
-    };
+   
 
     // Count words in a text
     const countWords = (text) => {
@@ -195,7 +185,7 @@ useEffect(() => {
             id: poema.id,
             title: poema.titulo,
             author: autorData.nombre,
-            cover: poema.portada || defaultCovers[(index % 5) + 1], // Cycle through available covers
+            cover: poema.portada, // Cycle through available covers
             link: `/poema/${encodeURIComponent(poema.titulo.toLowerCase())}`, // Convert to lowercase
             wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
           };
@@ -485,16 +475,21 @@ return (
               const firstPart = fullSemblanza.substring(0, breakIndex);
               const secondPart = fullSemblanza.substring(breakIndex).trim();
               
-              return (
+             return (
                 <>
-                  {/* Author name and first part of semblanza */}
-                  <ScrollReveal direction="left" delay={400}>
+                  {/* Author name and full semblanza text first */}
+                  <ScrollReveal direction="up" delay={400}>
                     <div style={{ 
                       fontSize: isDesktop ? '1rem' : '14px',
-                      display:'flex',
-                      justifyContent:'center'
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginBottom: isDesktop ? '30px' : '20px'
                     }}>
-                      <p style={{ marginBottom: '15px', width: isDesktop ? 'auto' : '90%' }}>
+                      <p style={{ 
+                        marginBottom: '15px', 
+                        width: isDesktop ? 'auto' : '90%',
+                        textAlign: 'justify'
+                      }}>
                         <span style={{ 
                           fontSize: isDesktop ? '2rem' : '28px', 
                           fontWeight: 'bold',
@@ -505,41 +500,30 @@ return (
                           {firstLetter}
                         </span>
                         {restOfName}, {/* Author name with comma */}
-                        {firstPart}
+                        {fullSemblanza}
                       </p>
                     </div>
                   </ScrollReveal>
                   
-                  {/* Author image between text parts - LARGER SIZE */}
+                  {/* Author image comes after the text */}
                   <ScrollReveal direction="scale" delay={600}>
                     <div style={{
                       width: '100%',
                       display: 'flex',
                       justifyContent: 'center',
-                      margin: isDesktop ? '40px 0' : '30px 0' // Increased margins
+                      margin: isDesktop ? '40px 0' : '30px 0'
                     }}>
                       <img 
                         src={autor?.imagen || eventImage} 
                         alt={autor?.nombre || "Author"} 
                         style={{
-                          height: isDesktop ? '410px' : '200px', // Increased height
-                          width: isDesktop ? '50%':'75%',
+                          height: isDesktop ? '410px' : '200px',
+                          width: isDesktop ? '50%' : '75%',
                           objectFit: 'cover',
                           border: '1px solid #eee',
-                          boxShadow: '0 4px 10px rgba(0,0,0,0.1)' // Added shadow for emphasis
+                          boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
                         }}
                       />
-                    </div>
-                  </ScrollReveal>
-                  
-                  {/* Second part of semblanza */}
-                  <ScrollReveal direction="right" delay={800}>
-                    <div style={{ 
-                      fontSize: isDesktop ? '1rem' : '14px',
-                      display:'flex',
-                      justifyContent:'center'
-                    }}>
-                      <p style={{ marginBottom: '15px',width: isDesktop ? 'auto' : '90%'}}>{secondPart}</p>
                     </div>
                   </ScrollReveal>
                 </>
@@ -688,8 +672,8 @@ return (
             pointerEvents: 'none' // Para que no interfiera con clics
           }}>
             <InsectColony 
-              insects={insects}
               count={35}
+              insects={insects}
             />
           </div>
 
