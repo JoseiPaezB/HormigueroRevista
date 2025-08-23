@@ -19,7 +19,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const Visuales = () => {
   const [revista, setRevista] = useState(null);
   const [visuales, setVisuales] = useState([]);
-  const [allVisualPieces, setAllVisualPieces] = useState([]); // Store all visual pieces
+  const [allVisualPieces, setAllVisualPieces] = useState([]);
   const [visualesSection, setVisualesSection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,6 +34,10 @@ const Visuales = () => {
   // New state for authors and selected author - initialize as null
   const [authors, setAuthors] = useState([]);
   const [selectedAuthor, setSelectedAuthor] = useState(null);
+  // New state for revista 2 visual pieces and authors
+  const [revista2Visuales, setRevista2Visuales] = useState([]);
+  const [revista2Authors, setRevista2Authors] = useState([]);
+  
   const getFirstName = (fullName) => {
   // Split the name by spaces
   const nameParts = fullName.split(' ');
@@ -78,7 +82,7 @@ const Visuales = () => {
         const { data: visualesSectionData, error: sectionError } = await supabase
           .from('creaciones')
           .select('*')
-          .eq('id_revista', 1)
+          .eq('id_revista', 2)
           .eq('tipo', 'visuales')
           .single();
   
@@ -93,20 +97,17 @@ const Visuales = () => {
           setContributors(colaboradoresList);
         }
   
-        // 3. Fetch all authors who have visual pieces
+        // 3. Fetch all authors who have visual pieces - NOW INCLUDING DESCRIPCION COLUMNS
         const { data: authorsData, error: authorsError } = await supabase
-          .from('autor')
-          .select('id, nombre, semblanza, imagen')
-          .order('nombre')
-          .eq('tipo_creacion', 'visuales');
+        .from('revista_autor')
+        .select('autor(id, nombre, semblanza, imagen, descripcion1, descripcion2, descripcion3)')
+        .eq('id_revista', 2)
+        .eq('autor.tipo_creacion', 'visuales');
   
         if (authorsError) throw authorsError;
         setAuthors(authorsData);
-        
-        // Do NOT set default author
-        // Remove the code that sets the first author as default
   
-        // 4. Fetch all visual pieces with author info
+        // 4. Fetch all visual pieces with author info from revista 1
         const { data: visualPieces, error: visualesError } = await supabase
           .from('visuales')
           .select('*, autor(id, nombre)')
@@ -116,9 +117,25 @@ const Visuales = () => {
         
         // Store all visual pieces
         setAllVisualPieces(visualPieces);
-        
-        // Don't process any pieces initially, leave visuales as empty array
-        // This will ensure no content appears until an author is selected
+
+        // 5. Fetch visual pieces from revista 2 for the descriptions
+        const { data: revista2Pieces, error: revista2Error } = await supabase
+          .from('visuales')
+          .select('*')
+          .eq('id_revista', 2)
+          .order('id'); // Order by id to maintain linear sequence
+  
+        if (revista2Error) throw revista2Error;
+        setRevista2Visuales(revista2Pieces);
+
+        // 6. Fetch authors from revista 2 for semblanzas
+        const { data: revista2AuthorsData, error: revista2AuthorsError } = await supabase
+          .from('autor')
+          .select('id, nombre, semblanza')
+          .eq('id_revista', 2);
+  
+        if (revista2AuthorsError) throw revista2AuthorsError;
+        setRevista2Authors(revista2AuthorsData);
         
         setLoading(false);
       } catch (err) {
@@ -371,6 +388,25 @@ useEffect(() => {
     setUserName('');
   };
 
+  // Function to render description text only
+  const renderDescription = (description, isDesktop, delay = 300) => {
+    if (!description) return null;
+    
+    return (
+      <ScrollReveal direction="down" delay={delay}>
+        <p style={{
+          width: isDesktop ? '70%' : '100%',
+          textAlign: 'justify',
+          fontSize: '14px',
+          margin: isDesktop ? '0 auto 30px auto' : '10px 0 30px 0',
+          lineHeight: '1.6'
+        }}>
+          {description}
+        </p>
+      </ScrollReveal>
+    );
+  };
+
   if (loading) return <div>Loading visual pieces...</div>;
   if (error) return <div>{error}</div>;
   const isDesktop = window.innerWidth > 768;
@@ -523,23 +559,25 @@ useEffect(() => {
         count={80}
       />
 
-      {/* Show all authors with their works */}
-      {authors.map(author => {
-        // Filter visual pieces for this specific author
-        const authorPieces = allVisualPieces.filter(
-          piece => piece.id_autor === author.id
-        );
-        
-        // Process the pieces for this author
-        const processedPieces = authorPieces.map((piece, index) => {
-          const gridProps = getRandomGridProperties(index, authorPieces.length);
-          return {
-            ...piece,
-            ...gridProps,
-            margin: `${Math.floor(Math.random() * 15)}px`,
-            order: index
-          };
-        });
+      {/* Show all authors with their content */}
+      {authors.map((author, authorIndex) => {
+        // Find corresponding semblanza from revista 2 authors
+        const revista2Author = revista2Authors.find(r2Author => r2Author.nombre === author.nombre);
+        const semblanza = revista2Author?.semblanza || author.semblanza;
+        // Calculate starting image index for this author's descriptions
+        // This ensures each author gets different images from revista 2
+        let imageStartIndex = 0;
+        for (let i = 0; i < authorIndex; i++) {
+          // Count how many images the previous authors used
+          const prevAuthor = authors[i];
+          const prevDescriptions = [prevAuthor.descripcion1, prevAuthor.descripcion2, prevAuthor.descripcion3];
+          prevDescriptions.forEach(desc => {
+            if (desc) {
+              const paragraphCount = desc.split('\n').filter(p => p.trim()).length;
+              imageStartIndex += Math.max(0, paragraphCount - 1); // -1 because no image after last paragraph
+            }
+          });
+        }
 
         return (
           <div key={author.id} style={{ 
@@ -558,105 +596,54 @@ useEffect(() => {
               margin: '40px 0',
               padding: '20px',
             }}>
-              {/* Author name */}
-            
 
-              {/* Split semblanza with image in between */}
-              {(() => {
-                // Split the semblanza text in half
-                const words = author.semblanza ? author.semblanza.split(' ') : [];
-                const midPoint = Math.floor(words.length / 2);
-                const firstHalf = words.slice(0, midPoint).join(' ');
-                const secondHalf = words.slice(midPoint).join(' ');
-
-                return (
-                  <>
-                    {/* First half of semblanza */}
-                    {firstHalf && (
-                      <ScrollReveal direction="down" delay={500}>
-                        <p style={{
-                          width: isDesktop ? '70%' : '100%',
-                          textAlign: 'justify',
-                          fontSize: '14px',
-                          margin: isDesktop ? '0 auto 20px auto' : '10px 0 20px 0',
-                          lineHeight: '1.6'
-                        }}>
-                          {firstHalf}
-                        </p>
-                      </ScrollReveal>
-                    )}
-                    
-                    {/* Author image section */}
-                    {author.imagen && (
-                      <ScrollReveal direction="up" delay={700}>
-                        <div style={{
-                          margin: '30px 0',
-                          display: 'flex',
-                          justifyContent: 'center'
-                        }}>
-                          <img 
-                            src={author.imagen} 
-                            alt={author.nombre} 
-                            style={{
-                              height: isDesktop ? '200px' : '150px',
-                              width: 'auto',
-                              maxWidth: isDesktop ? '100%' : '100%',
-                              objectFit: 'cover',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                            }}
-                          />
-                        </div>
-                      </ScrollReveal>
-                    )}
-
-                    {/* Second half of semblanza */}
-                    {secondHalf && (
-                      <ScrollReveal direction="down" delay={900}>
-                        <p style={{
-                          width: isDesktop ? '70%' : '100%',
-                          textAlign: 'justify',
-                          fontSize: '14px',
-                          margin: isDesktop ? '20px auto 0 auto' : '20px 0 0 0',
-                          lineHeight: '1.6'
-                        }}>
-                          {secondHalf}
-                        </p>
-                      </ScrollReveal>
-                    )}
-                  </>
-                );
-              })()}
-            </div>
-
-              {/* Author's visual works */}
-              <div className="angled-grid-container" style={{
-                maxWidth: '1000px',
-                margin: '0 auto',
-                padding: '20px',
-                position: 'relative'
-              }}>
-                {/* Rest of your existing code continues unchanged... */}
-                {processedPieces.length > 0 ? (
-                  processedPieces.map((piece, index) => (
-                    <ScrollRevealItem 
-                      key={piece.id || index}
-                      index={index}
-                      piece={piece}
-                      handlePieceClick={handlePieceClick}
-                      totalPieces={processedPieces.length}
-                    />
-                  ))
-                ) : (
-                  <p style={{ 
-                    textAlign: 'center', 
-                    padding: '20px 0',
-                    fontStyle: 'italic',
+              {/* Render semblanza first */}
+              {semblanza && (
+                <ScrollReveal direction="down" delay={200}>
+                  <p style={{
+                    width: isDesktop ? '70%' : '100%',
+                    textAlign: 'justify',
+                    fontSize: '14px',
+                    margin: isDesktop ? '0 auto 30px auto' : '10px 0 30px 0',
+                    lineHeight: '1.6'
                   }}>
-                    No hay obras visuales disponibles para este artista.
+                    {semblanza}
                   </p>
-                )}
-              </div>
+                </ScrollReveal>
+              )}
+
+              {/* Render descripcion1 with images */}
+              {renderDescriptionWithImages(author.descripcion1, imageStartIndex, isDesktop)}
+
+              {/* Render descripcion2 with images */}
+              {(() => {
+                let currentImageIndex = imageStartIndex;
+                if (author.descripcion1) {
+                  const paragraphCount = author.descripcion1.split('\n').filter(p => p.trim()).length;
+                  currentImageIndex += Math.max(0, paragraphCount - 1);
+                }
+                return renderDescriptionWithImages(author.descripcion2, currentImageIndex, isDesktop);
+              })()}
+
+              {/* Render descripcion3 with images */}
+              {(() => {
+                let currentImageIndex = imageStartIndex;
+                if (author.descripcion1) {
+                  const paragraphCount1 = author.descripcion1.split('\n').filter(p => p.trim()).length;
+                  currentImageIndex += Math.max(0, paragraphCount1 - 1);
+                }
+                if (author.descripcion2) {
+                  const paragraphCount2 = author.descripcion2.split('\n').filter(p => p.trim()).length;
+                  currentImageIndex += Math.max(0, paragraphCount2 - 1);
+                }
+                return renderDescriptionWithImages(author.descripcion3, currentImageIndex, isDesktop);
+              })()}
+
             </div>
+
+            {/* Remove the clickable visual works section - no longer needed */}
+            
+          </div>
           );
         })}
       </div>

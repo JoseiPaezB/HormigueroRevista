@@ -892,7 +892,7 @@ useEffect(() => {
         {/* Green gradient cover image */}
        <div 
           ref={coverImageRef}
-          className="cover-image animated-bg" 
+          className="cover-image" 
           id="main-content" 
           style={{
             backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
@@ -901,7 +901,6 @@ useEffect(() => {
             minHeight: isDesktop ? '190vh': '800px',
             display: 'flex',
             flexDirection: 'column',
-            animation: 'pulse 4s ease-in-out infinite',
           }}
         >
           <style jsx>{`
