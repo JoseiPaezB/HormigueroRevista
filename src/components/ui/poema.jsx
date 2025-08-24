@@ -518,7 +518,7 @@ useEffect(() => {
       
       paddingRight: '20px'
     }}>
-      <div className="res" style={{paddingLeft: isMobile ? '20px' : '30rem'}}>
+      <div className="res" style={{paddingLeft: isMobile ? '20px' : '10rem'}}>
         <ScrollReveal direction="left" delay={400}>
         <div style={{ textAlign: 'left', marginTop: '10px', marginBottom: '5px' }}>
           {autor?.nombre || fallbackPoem.author}
