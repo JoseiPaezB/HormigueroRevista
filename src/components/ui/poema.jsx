@@ -580,11 +580,11 @@ useEffect(() => {
             const processTextWithItalics = (text) => {
               if (!text) return text;
               
-              // Split text by the pattern 0text0
-              const parts = text.split(/0([^0]+)0/);
+              // Split text by the pattern $text$ 
+              const parts = text.split(/\$([^$]+)\$/);    
               
               return parts.map((part, index) => {
-                // Every odd index (1, 3, 5...) is text that was between 0s
+                // Every odd index (1, 3, 5...) is text that was between $s
                 if (index % 2 === 1) {
                   return <em key={index}>{part}</em>;
                 }
