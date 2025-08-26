@@ -639,7 +639,7 @@ useEffect(() => {
                         Image could not be loaded: {section.content}
                       </div>
                     </div>
-                  ) : poema.id === 50 || poema.id === 167 ? (
+                  ) : poema.id === 50 || poema.id === 184 ? (
                     (() => {
                       const lines = section.content.split('\n');
                       let currentQuestion = null;
