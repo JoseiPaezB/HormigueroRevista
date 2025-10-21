@@ -1,23 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import HormigueadosSection from './hormigueados';
-import {Link} from 'react-router-dom';
+import {Link, useSearchParams} from 'react-router-dom';
 import hormigueroLogo from '/assets/anticon.svg';
 import RainDrops from './rainDrop';
 import { createClient } from '@supabase/supabase-js';
 
-// Importar ScrollReveal
-import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según donde hayas guardado el componente
-import './ScrollReveal.css'; // Ajusta la ruta según donde hayas guardado los estilos
-import { setupHashNavigation } from './scrollUtils'; // Ajusta la ruta según donde hayas guardado las utilidades
+import ScrollReveal from './ScrollReveal';
+import './ScrollReveal.css';
+import { setupHashNavigation } from './scrollUtils';
 import { Helmet } from 'react-helmet';
 
 import RotatingBackground from './rotatingBg';
+import mosquito from '/assets/mosquito.svg';
+import bee from '/assets/bee.svg'; 
+import fly from '/assets/roach.svg';
+import ant from '/assets/libelula.svg';
+import InsectColony from './MovingSvgBackground';
 
 
+
+const insects = [
+    {
+      src: mosquito,
+      type: 'mosquito',
+      size: 30,
+      // Optional: customize further
+      // speed: 2.5,
+      // initialPosition: { x: 100, y: 100 }
+    },
+    {
+      src: ant,
+      type: 'ant',
+      size: 25
+    },
+    {
+      src: bee,
+      type: 'bee',
+      size: 35
+    },
+    {
+      src: fly,
+      type: 'fly',
+      size: 28
+    },
+    {
+      src: mosquito, // You can reuse the same SVG with different behavior
+      type: 'default',
+      size: 32
+    }
+  ];
 
 // Initialize Supabase client
-
-
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
@@ -31,6 +64,9 @@ const CustomStyles = () => (
 );
 
 const Contenido = () => {
+  const [searchParams] = useSearchParams();
+  const edicionId = searchParams.get('edicion'); // Get edition ID from URL
+  
   // State for revista data
   const [revista, setRevista] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -49,30 +85,46 @@ const Contenido = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Configurar navegación por hash
+  // Setup hash navigation
   useEffect(() => {
     const cleanup = setupHashNavigation(setActiveHash);
     return cleanup;
   }, []);
 
-  // Fetch revista data on component mount
+  // Fetch revista data - DYNAMIC based on URL param or latest edition
   useEffect(() => {
     const fetchRevista = async () => {
       try {
-        // Fetch the revista with ID 1
-        const { data, error } = await supabase
-          .from('revista')
-          .select('*')
-          .eq('id', 2)
-          .single();
-
-        if (error) throw error;
+        let revistaData;
         
-        setRevista(data);
+        if (edicionId) {
+          // If edition ID is provided in URL, fetch that specific edition
+          const { data, error } = await supabase
+            .from('revista')
+            .select('*')
+            .eq('id', edicionId)
+            .single();
+
+          if (error) throw error;
+          revistaData = data;
+        } else {
+          // Otherwise, fetch the latest edition (highest numero)
+          const { data, error } = await supabase
+            .from('revista')
+            .select('*')
+            .order('numero', { ascending: false })
+            .limit(1)
+            .single();
+
+          if (error) throw error;
+          revistaData = data;
+        }
+        
+        setRevista(revistaData);
         
         // Parse contributors string into array
-        if (data.contribuyentes) {
-          const contributorsList = data.contribuyentes.split(',').map(name => name.trim());
+        if (revistaData.contribuyentes) {
+          const contributorsList = revistaData.contribuyentes.split(',').map(name => name.trim());
           setContributors(contributorsList);
         }
         
@@ -85,7 +137,7 @@ const Contenido = () => {
     };
 
     fetchRevista();
-  }, []);
+  }, [edicionId]); // Re-fetch when edicionId changes
 
   // Format date for display (YYYY-MM-DD to DD/MM/YY)
   const formatDate = (dateString) => {
@@ -98,56 +150,55 @@ const Contenido = () => {
     });
   };
 
-  // Array of menu items for the grid
-const menuItems = [
-  { 
-    path: "/creaciones", 
-    title: "EL HORMIGUERO", 
-    subtitle: "Poemas en verso y prosa",
-    delay: 0 
-  },
-  { 
-    path: "/critica", 
-    title: "OTROS BICHOS", 
-    subtitle: "Ensayos, entrevistas y traducciones",
-    delay: 0.3 
-  },
- 
-  //{ path: "/entrevista", title: "ENTREVISTAS", subtitle: "Conversaciones", delay: 1.5 }
-];
+  // Array of menu items for the grid - NOW DYNAMIC with edicionId
+  // Conditionally include "A Ojo de Hormiga" only for edition 1
+  const menuItems = [
+    { 
+      path: `/creaciones?edicion=${revista?.id || edicionId || ''}`, 
+      title: "EL HORMIGUERO", 
+      subtitle: "Poemas en verso y prosa",
+      delay: 0 
+    },
+    { 
+      path: `/critica?edicion=${revista?.id || edicionId || ''}`, 
+      title: "OTROS BICHOS", 
+      subtitle: "Ensayos, entrevistas y traducciones",
+      delay: 0.3 
+    },
+    // Only show "A Ojo de Hormiga" for edition 1 (id = 1)
+    ...(revista?.id === 1 || revista?.numero === 1 ? [{
+      path: `/visuales?edicion=${revista?.id || edicionId || ''}`,
+      title: "A OJO DE HORMIGA",
+      subtitle: "Artista visual",
+      delay: 0.6
+    }] : [])
+  ];
 
   // Determine grid layout based on screen width
   const isDesktop = windowWidth > 840;
   const isMobile = windowWidth <= 840;
-  const gridColumns = isDesktop ? 3 : 1; // 3 columns for desktop, 1 for mobile
+  const gridColumns = isDesktop ? 3 : 1;
   
-  // Renderizar título con animación
+  // Render title with animation
   const renderTitle = () => {
-    const title = revista?.nombre?.toUpperCase() || 'LOS INSECTOS TAMBIEN SON PARTE DE LO MINIMO';
+    const title = revista?.nombre?.toUpperCase() || 'CARGANDO...';
     const words = title.split(' ');
     
-    // Orden alternativo para las animaciones, creando un patrón más interesante
-    // Primero aparecen las palabras del centro, luego se expanden hacia afuera
     const getAnimationOrder = (totalWords) => {
       const order = [];
       let middle = Math.floor(totalWords / 2);
       
-      // Comienza desde el medio
       order.push(middle);
       
-      // Alterna entre añadir palabras a la izquierda y derecha del centro
       for (let i = 1; i <= Math.max(middle, totalWords - middle - 1); i++) {
-        if (middle - i >= 0) order.push(middle - i); // Palabra a la izquierda
-        if (middle + i < totalWords) order.push(middle + i); // Palabra a la derecha
+        if (middle - i >= 0) order.push(middle - i);
+        if (middle + i < totalWords) order.push(middle + i);
       }
       
       return order;
     };
     
-    // Obtener el orden de animación
     const animationOrder = getAnimationOrder(words.length);
-    
-    // Obtener el índice de animación (posición en la secuencia) para cada palabra
     const getAnimationIndex = (wordIndex) => animationOrder.indexOf(wordIndex);
     
     return (
@@ -158,16 +209,13 @@ const menuItems = [
         justifyContent: 'center' 
       }}>
         {words.map((word, index) => {
-          // Determinar estilo para palabras específicas (segunda y última)
           const isSecondWord = index === 1;
           const isLastWord = index === words.length - 1;
           const fontWeight = (isSecondWord || isLastWord) ? '1000' : '300';
           
-          // Calcular el retraso basado en el orden de animación
           const animIndex = getAnimationIndex(index);
-          const delay = animIndex * 150; // 150ms entre cada palabra
+          const delay = animIndex * 150;
           
-          // Direcciones variadas basadas en la posición
           let direction;
           if (index < words.length / 3) direction = 'up';
           else if (index < 2 * words.length / 3) direction = index % 2 === 0 ? 'left' : 'right';
@@ -196,253 +244,257 @@ const menuItems = [
     );
   };
 
+  if (loading) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        marginTop: '80px'
+      }}>
+        Cargando contenido...
+      </div>
+    );
+  }
 
-
+  if (error) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        marginTop: '80px'
+      }}>
+        Error: {error}
+      </div>
+    );
+  }
 
   return (
     <>
-   <Helmet>
-      <title>{revista?.nombre ? `${revista.nombre} - Contenidos | Hormiguero de Poemas` : 'Los Espíritus de lo Mínimo - Contenidos'}</title>
-      <meta name="description" content={
-        revista?.nombre && revista?.sintesis 
-          ? `${revista.nombre}. ${revista.sintesis} Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga.`
-          : "Los Espíritus de lo Mínimo. Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga. Hormiguero de Poemas."
-      } />
-      <meta name="keywords" content="poesía, literatura, revista, hormiguero, poemas, verso, prosa, el hormiguero, otros bichos, a ojo de hormiga" />
-      
-      {/* Open Graph */}
-      <meta property="og:title" content={`${revista?.nombre || 'Los Espíritus de lo Mínimo'} - Contenidos`} />
-      <meta property="og:description" content={
-        revista?.sintesis 
-          ? `${revista.sintesis} Descubre nuestras secciones: El Hormiguero, Otros Bichos y A Ojo de Hormiga.`
-          : "Primera edición de Hormiguero de Poemas. Secciones: El Hormiguero, Otros Bichos y A Ojo de Hormiga."
-      } />
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://hormiguerodepoemas.com/contenidos" />
-      <meta property="og:image" content={revista?.portada || '/default-cover.jpg'} />
-      <meta property="og:image:alt" content={`Portada de ${revista?.nombre || 'Hormiguero de Poemas'}`} />
-      
-      {/* Twitter Cards */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={`${revista?.nombre || 'Los Espíritus de lo Mínimo'} - Contenidos`} />
-      <meta name="twitter:description" content={
-        revista?.sintesis 
-          ? `${revista.sintesis} Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga.`
-          : "Contenidos de Hormiguero de Poemas: El Hormiguero, Otros Bichos, A Ojo de Hormiga."
-      } />
-      <meta name="twitter:image" content={revista?.portada || '/default-cover.jpg'} />
-      <meta name="twitter:site" content="@hormiguerodepoemas" />
-    </Helmet>
-     <div className="edition-container scroll-reveal-container">
-      {/* Include custom styles */}
-      <CustomStyles />
-      
-      {/* Cover image with title - esta no tiene animación */}
-      <div className="cover-image image_2" style={{
-        backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
-        position: 'relative',
-        marginTop: isDesktop ? '60px':'none' // Space for navbar
-      }}>
+      <Helmet>
+        <title>{revista?.nombre ? `${revista.nombre} - Contenidos | Hormiguero de Poemas` : 'Contenidos | Hormiguero de Poemas'}</title>
+        <meta name="description" content={
+          revista?.nombre && revista?.sintesis 
+            ? `${revista.nombre}. ${revista.sintesis} Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga.`
+            : "Hormiguero de Poemas. Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga."
+        } />
+        <meta name="keywords" content="poesía, literatura, revista, hormiguero, poemas, verso, prosa, el hormiguero, otros bichos, a ojo de hormiga" />
         
-     </div>
-      {/* Article preview section - aquí empiezan las animaciones */}
-      
+        {/* Open Graph */}
+        <meta property="og:title" content={`${revista?.nombre || 'Hormiguero de Poemas'} - Contenidos`} />
+        <meta property="og:description" content={
+          revista?.sintesis 
+            ? `${revista.sintesis} Descubre nuestras secciones: El Hormiguero, Otros Bichos y A Ojo de Hormiga.`
+            : "Edición de Hormiguero de Poemas. Secciones: El Hormiguero, Otros Bichos y A Ojo de Hormiga."
+        } />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://hormiguerodepoemas.com/contenidos" />
+        <meta property="og:image" content={revista?.portada || '/default-cover.jpg'} />
+        <meta property="og:image:alt" content={`Portada de ${revista?.nombre || 'Hormiguero de Poemas'}`} />
         
-    
-      <ScrollReveal direction="up">
-        <div className="res" >
-          {/* Usa el título con animación que creamos */}
-          {renderTitle()}
-          
-          <ScrollReveal delay={300} direction="up">
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${revista?.nombre || 'Hormiguero de Poemas'} - Contenidos`} />
+        <meta name="twitter:description" content={
+          revista?.sintesis 
+            ? `${revista.sintesis} Secciones: El Hormiguero, Otros Bichos, A Ojo de Hormiga.`
+            : "Contenidos de Hormiguero de Poemas: El Hormiguero, Otros Bichos, A Ojo de Hormiga."
+        } />
+        <meta name="twitter:image" content={revista?.portada || '/default-cover.jpg'} />
+        <meta name="twitter:site" content="@hormiguerodepoemas" />
+      </Helmet>
+      
+      <div className="edition-container scroll-reveal-container">
+        {/* Include custom styles */}
+        <CustomStyles />
+        
+        {/* Cover image with title */}
+        <div className="cover-image image_2" style={{
+          backgroundImage: revista?.portada ? `url(${revista.portada})` : 'none',
+          position: 'relative',
+          marginTop: isDesktop ? '60px':'none'
+        }}>
+        </div>
+        
+        {/* Article preview section */}
+        <ScrollReveal direction="up">
+          <div className="res">
+            {/* Use animated title */}
+            {renderTitle()}
             
-              <div className="article-content" >
-              
+            <ScrollReveal delay={300} direction="up">
+              <div className="article-content">
                 <p id="sintesis" style={{whiteSpace:'pre-line'}}>
-                  {revista?.sintesis || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto consectetur vitae possimus eos. Vel impedit sapiente, aliquam blanditiis accusamus ea modi veniam esse quod atque in sed quidem placeat! Ipsam neque dicta repellat nesciunt, quisquam amet quidem magni provident mollitia laudantium assumenda porro esse soluta praesentium consequuntur nemo nulla repudiandae fugit quis quasi iusto ut at deserunt itaque! Minus tenetur culpa atque ullam quibusdam eaque. Quia nostrum eligendi magni placeat velit vitae! Veniam dolor porro sed aut tempora, repellat nisi officiis omnis molestias recusandae obcaecati, sapiente placeat neque unde, quasi illo inventore in quis iusto optio cupiditate! Perspiciatis culpa pariatur recusandae, totam, omnis aperiam aliquam, veniam accusamus tempora blanditiis impedit.'}
+                  {revista?.sintesis || 'Cargando contenido...'}
                 </p>
               </div>
-              
-          </ScrollReveal>
-          
+            </ScrollReveal>
 
-          {/* Menu Grid with Background Image */}
-          <ScrollReveal direction="scale" delay={400}>
-            <div 
-              className="menu-background-section"
-              style={{
-                position: 'relative',
-                padding: isMobile ? '0' : '375px 10px',
-                margin: isMobile ? '30px 0' :'0px 0',
-                overflow: 'hidden',
-                marginRight: isMobile ? '0' : '0'
-              }}
-            >
-              {/* Background Image */}
-              <div >
+            {/* Menu Grid with Background Image */}
+            <ScrollReveal direction="scale" delay={400}>
+              <div 
+                className="menu-background-section"
+                style={{
+                  position: 'relative',
+                  padding: isMobile ? '0' : '375px 10px',
+                  margin: isMobile ? '30px 0' :'0px 0',
+                  overflow: 'hidden',
+                  marginRight: isMobile ? '0' : '0'
+                }}
+              >
+                {/* Background Image */}
+               {revista?.numero === 2 ? (
+                <div>
                   <RotatingBackground 
                     changeInterval={850}
                     opacity={0.525}
                     zIndex={-1}
                     supabase={supabase}
-
                   />
-              </div>
+                </div>
+              ) : revista?.numero === 1 ? (
+                <div 
+                  style={{ 
+                    position: 'absolute', 
+                    top: 0, 
+                    left: 0, 
+                    width: '100%', 
+                    height: '100%', 
+                    zIndex: 0 // Para estar detrás de los elementos del menú
+                  }}
+                >
+                  <InsectColony 
+                    insects={insects}
+                    count={25}
+                  />
+                </div>
+              ) : null}
 
-                {/* Optional: Add overlay for better text readability */}
-                {/* <RainDrops 
-                count={75}
-                speed="fast"
-                intensity="heavy"
-                svgName="gota"
-              /> */}
+
 
                 <div className="vertical-menu" style={{
-                display: 'grid',
-                gap: '30px',
-                padding: '8px',
-                width: '100%',
-                fontSize: '1.3rem',
-                position: 'relative',
-                zIndex: 1
+                  display: 'grid',
+                  gap: '30px',
+                  padding: '8px',
+                  width: '100%',
+                  fontSize: '1.3rem',
+                  position: 'relative',
+                  zIndex: 1
                 }}>
-                {/* Define the keyframes animation for pulsing effect */}
-                <style>
-                  {`
-                    @keyframes pulse {
-                      0% { transform: scale(1); }
-                      50% { transform: scale(1.1); }
-                      100% { transform: scale(1); }
-                    }
-                    
-                    @keyframes textPulse {
-                      0% { opacity: 0.75; }
-                      50% { opacity: 1; }
-                      100% { opacity: 0.75; }
-                    }
-                    
-                    .pulsing-ant {
-                      animation: pulse 2s infinite ease-in-out;
-                    }
-                    
-                    .pulsing-text {
-                      animation: textPulse 2s infinite ease-in-out;
-                    }
-                    
-                    .menu-item:hover .pulsing-ant {
-                      animation: pulse 1s infinite ease-in-out;
-                    }
-                    
-                    .menu-item:hover .pulsing-text {
-                      animation: textPulse 0.5s infinite ease-in-out;
-                    }
+                  {/* Define the keyframes animation for pulsing effect */}
+                  <style>
+                    {`
+                      @keyframes pulse {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.1); }
+                        100% { transform: scale(1); }
+                      }
+                      
+                      @keyframes textPulse {
+                        0% { opacity: 0.75; }
+                        50% { opacity: 1; }
+                        100% { opacity: 0.75; }
+                      }
+                      
+                      .pulsing-ant {
+                        animation: pulse 2s infinite ease-in-out;
+                      }
+                      
+                      .pulsing-text {
+                        animation: textPulse 2s infinite ease-in-out;
+                      }
+                      
+                      .menu-item:hover .pulsing-ant {
+                        animation: pulse 1s infinite ease-in-out;
+                      }
+                      
+                      .menu-item:hover .pulsing-text {
+                        animation: textPulse 0.5s infinite ease-in-out;
+                      }
 
-                    .menu-item:hover .index-number {
-                      opacity: 1;
-                      transform: translate(-50%, -50%) scale(1.2);
-                    }
+                      .menu-item:hover .index-number {
+                        opacity: 1;
+                        transform: translate(-50%, -50%) scale(1.2);
+                      }
 
-                    /* Enhanced menu item styling for better visibility on background */
-                    .menu-item {
-                      transition: all 0.3s ease;
-                    }
+                      .menu-item {
+                        transition: all 0.3s ease;
+                      }
 
-                    .menu-item:hover {
-                      transform: translateY(-5px);
-                    }
-                  `}
-                </style>
-                
-                {/* Contenedor de insectos */}
-                <div style={{ 
-                  position: 'absolute', 
-                  top: 0, 
-                  left: 0, 
-                  width: '100%', 
-                  height: '100%', 
-                  zIndex: 0
-                }}>
+                      .menu-item:hover {
+                        transform: translateY(-5px);
+                      }
+                    `}
+                  </style>
                   
-                </div>
-                  
-                  
-                {/* Map through menu items con animaciones secuenciales */}
-                {menuItems.map((item, index) => {
-                  // Array of background images
-                  
-                  // Determine which SVG to use based on index
-                  let antIcon;
-                  switch(index) {
-                    case 0: antIcon = hormigueroLogo; break;
-                    case 1: antIcon = hormigueroLogo; break;
-                    case 2: antIcon = hormigueroLogo; break;
-                    case 3: antIcon = hormigueroLogo; break;
-                    case 4: antIcon = hormigueroLogo; break;
-                    case 5: antIcon = hormigueroLogo; break;
-                    default: antIcon = hormigueroLogo;
-                  }
-                  
-                  const directions = ['left', 'right', 'up'];
-                  const direction = directions[index % directions.length];
-                  
-                  return (
-                    <ScrollReveal key={index} delay={index * 200} direction={direction}>
-                      <Link 
-                        to={item.path} 
-                        className="menu-item" 
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          textDecoration: 'none',
-                          color: 'black',
-                          justifyContent: 'center',
-                          textAlign: 'center',
-                          padding: '20px',
-                          position: 'relative',
-                          zIndex: 2,
-                        }}
-                      >
-                        <div 
-                          className="menu-text pulsing-text" 
+                  {/* Map through menu items with sequential animations */}
+                  {menuItems.map((item, index) => {
+                    let antIcon = hormigueroLogo;
+                    
+                    const directions = ['left', 'right', 'up'];
+                    const direction = directions[index % directions.length];
+                    
+                    return (
+                      <ScrollReveal key={index} delay={index * 200} direction={direction}>
+                        <Link 
+                          to={item.path} 
+                          className="menu-item" 
                           style={{
-                            fontSize: windowWidth > 728 ? '1.7rem' : '18px',
-                            letterSpacing: '1px',
-                            animationDelay: `${item.delay}s`,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textDecoration: 'none',
+                            color: 'black',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            padding: '20px',
                             position: 'relative',
-                            zIndex: 1,
-                            fontWeight: '800',
-                            padding: '5px'
+                            zIndex: 2,
                           }}
                         >
-                          {item.title}
-                        </div>
-                        
-                        {/* Nuevo subtítulo */}
-                        <div 
-                          className="menu-subtitle"
-                          style={{
-                            fontSize: windowWidth > 728 ? '0.9rem' : '0.5rem',
-                            letterSpacing: '0.5px',
-                            fontWeight: '300',
-                            color: 'rgba(0, 0, 0, 0.7)',
-                            fontStyle: 'italic'
-                          }}
-                        >
-                          {item.subtitle}
-                        </div>
-                      </Link>
-                    </ScrollReveal>
-                  );
-                })}
+                          <div 
+                            className="menu-text pulsing-text" 
+                            style={{
+                              fontSize: windowWidth > 728 ? '1.7rem' : '18px',
+                              letterSpacing: '1px',
+                              animationDelay: `${item.delay}s`,
+                              position: 'relative',
+                              zIndex: 1,
+                              fontWeight: '800',
+                              padding: '5px'
+                            }}
+                          >
+                            {item.title}
+                          </div>
+                          
+                          {/* Subtitle */}
+                          <div 
+                            className="menu-subtitle"
+                            style={{
+                              fontSize: windowWidth > 728 ? '0.9rem' : '0.5rem',
+                              letterSpacing: '0.5px',
+                              fontWeight: '300',
+                              color: 'rgba(0, 0, 0, 0.7)',
+                              fontStyle: 'italic'
+                            }}
+                          >
+                            {item.subtitle}
+                          </div>
+                        </Link>
+                      </ScrollReveal>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </ScrollReveal>
-    </div>
-  </>
-);
+            </ScrollReveal>
+          </div>
+        </ScrollReveal>
+      </div>
+    </>
+  );
 };
 
 export default Contenido;

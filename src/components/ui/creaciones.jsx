@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ContentComponent from './ContentComponent';
 import { createClient } from '@supabase/supabase-js';
+import { useSearchParams } from 'react-router-dom';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -8,6 +9,10 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Creaciones = () => {
+  const [searchParams] = useSearchParams();
+  const edicionFromUrl = searchParams.get('edicion');
+  const edicion = edicionFromUrl ? parseInt(edicionFromUrl) : 2; // Default to 2 if no param
+  
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
@@ -19,11 +24,11 @@ const Creaciones = () => {
         setImageError(false);
         
         const { data, error } = await supabase
-        .from('creaciones')
-        .select('imagen')
-        .eq('tipo', 'creaciones')
-        .eq('id_revista', 2)
-        .single();
+          .from('creaciones')
+          .select('imagen')
+          .eq('tipo', 'creaciones')
+          .eq('id_revista', edicion)
+          .single();
         
         if (error) {
           console.error('Error fetching image URL:', error);
@@ -51,15 +56,14 @@ const Creaciones = () => {
     };
 
     fetchImageUrl();
-  }, []);
-
+  }, [edicion]);
   return (
     <div style={{
       position: 'relative',
       minHeight: '100vh',
       color: '#000'
     }}>
-      {/* Background image overlay - same as visuales */}
+      {/* Imagen de fondo */}
       <div style={{
         position: 'fixed',
         top: 0,
@@ -74,7 +78,7 @@ const Creaciones = () => {
         opacity: 1
       }} />
 
-      {/* Loading state */}
+      {/* Estado de carga */}
       {loading && (
         <div style={{
           position: 'fixed',
@@ -92,7 +96,7 @@ const Creaciones = () => {
         </div>
       )}
 
-      {/* Error state fallback */}
+      {/* Estado de error */}
       {imageError && !loading && (
         <div style={{
           position: 'fixed',
@@ -105,7 +109,7 @@ const Creaciones = () => {
         }} />
       )}
       
-      {/* Content overlay with higher z-index */}
+      {/* Contenido */}
       <div style={{ 
         position: 'relative', 
         zIndex: 1, 

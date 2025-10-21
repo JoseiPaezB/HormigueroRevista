@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ContentComponent from './ContentComponent';
 import { createClient } from '@supabase/supabase-js';
+import { useSearchParams } from 'react-router-dom';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
@@ -8,6 +9,9 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Critica = () => {
+  const [searchParams] = useSearchParams();
+  const edicionFromUrl = searchParams.get('edicion');
+  const edicion = edicionFromUrl ? parseInt(edicionFromUrl) : 2; // Default to 2 if no param
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
@@ -22,7 +26,7 @@ const Critica = () => {
           .from('creaciones')
           .select('imagen')
           .eq('tipo', 'critica')
-          .eq('id_revista', 2)
+          .eq('id_revista', edicion)
           .single();
         
         if (error) {
