@@ -262,7 +262,7 @@ const Navbar = () => {
                           border: 'none',
                           borderBottom: index < allEditions.length - 1 ? '1px solid #eee' : 'none',
                           cursor: 'pointer',
-                          fontSize: '14px',
+                          fontSize: '15px',
                           color: '#000',
                           transition: 'background-color 0.2s ease'
                         }}
