@@ -316,9 +316,6 @@ const HormigueadosSection = ({ edicionId = null }) => {
                     <div className="carousel-text" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                       <p>{item.titulo}</p>
                       <small>{item.autor}</small>
-                      <small style={{ display: 'block', marginTop: '5px' }}>
-                        ❤️ {item.hormigueos} hormigueos
-                      </small>
                     </div>
                   </div>
                 </Link>
