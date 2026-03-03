@@ -786,58 +786,107 @@ useEffect(() => {
       )}
       
       {/* Back button */}
-      <ScrollReveal direction="up" delay={200}>
-        <div 
-        onClick={() => {
-          // Clear the poem navigation history since we're explicitly going back to author
-          sessionStorage.removeItem('poemHistory');
-          sessionStorage.removeItem('poemPageAuthor');
-          
-          // Set the correct referrer based on author type before navigating
-          if (autor.tipo_creacion === 'creaciones') {
-            sessionStorage.setItem('authorPageReferrer', 'creaciones');
-          } else if (autor.tipo_creacion === 'critica' || autor.tipo_creacion === 'crítica') {
-            sessionStorage.setItem('authorPageReferrer', 'critica');
-          } else {
-            // For other types like traducciones, rescates, etc.
-            sessionStorage.setItem('authorPageReferrer', 'creaciones');
-          }
-
-           history.replaceState(null, '', window.location.href);
-  
-  // Navigate with a small delay
-          setTimeout(() => {
-            navigate(`/autor/${encodeURIComponent(autor.nombre)}`, { replace: true });
-          }, 10);
+        {!isMobile &&(
+          <div
+          onClick={() => navigate(-1)}
+          style={{
+          position: 'absolute',
+          bottom: '60px',
+          left: '20px',
+          zIndex: 999,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          cursor: 'pointer',
+          opacity: 0.6,
+          transition: 'opacity 0.2s ease',
         }}
-        style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginTop: '30px',
-            marginBottom: '30px',
-            cursor: 'pointer'
-          }}
-        >
-          <img 
-            src={hormigueroLogo} 
-            alt="Siguiente" 
-            style={{
-              width: '40px',
-              transform: 'rotate(270deg)', // Start at 270 degrees
-              transition: 'transform 0.3s ease',
-              background: 'none'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'rotate(90deg)'; // Rotate to 90 degrees on hover
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'rotate(270deg)'; // Return to 270 degrees when not hovering
-            }}
-          />
-          <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px' }}>
+        onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+        onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.6')}
+       >
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '2px' }}>
             Regresar
           </span>
+        </div>)}
+
+      {/* ── Bottom center buttons ── */}
+      <ScrollReveal direction="up" delay={200}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: isDesktop ? '80px' : '40px',
+          marginTop: '30px',
+          marginBottom: '30px',
+          marginRight: isMobile ? '1.5rem' : '0'
+        }}>
+
+          {/* Regresar a (autor) */}
+          <div
+            onClick={() => {
+              sessionStorage.removeItem('poemHistory');
+              sessionStorage.removeItem('poemPageAuthor');
+              if (autor.tipo_creacion === 'creaciones') {
+                sessionStorage.setItem('authorPageReferrer', 'creaciones');
+              } else if (autor.tipo_creacion === 'critica' || autor.tipo_creacion === 'crítica') {
+                sessionStorage.setItem('authorPageReferrer', 'critica');
+              } else {
+                sessionStorage.setItem('authorPageReferrer', 'creaciones');
+              }
+              history.replaceState(null, '', window.location.href);
+              setTimeout(() => {
+                navigate(`/autor/${encodeURIComponent(autor.nombre)}`, { replace: true });
+              }, 10);
+            }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
+          >
+            <img
+              src={hormigueroLogo}
+              alt="Regresar al autor"
+              style={{ width: isMobile ? '30px' : '35px', transform: 'rotate(0deg)', transition: 'transform 0.3s ease' }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'rotate(90deg)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'rotate(0deg)')}
+            />
+            <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: isMobile ? '8px' : '12px', textAlign: 'center' }}>
+              Mas de <br /><strong>{autor?.nombre?.split(' ')[0]}</strong>
+            </span>
+          </div>
+
+          {/* Ver más autores */}
+          <div
+            onClick={() => {
+              sessionStorage.removeItem('poemHistory');
+              sessionStorage.removeItem('poemPageAuthor');
+              const referrer = autor?.tipo_creacion === 'critica' || autor?.tipo_creacion === 'crítica'
+                ? `/critica?edicion=${revista?.id}`
+                : `/creaciones?edicion=${revista?.id}`;
+              navigate(referrer, { replace: true });
+            }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
+          >
+            <img
+              src={hormigueroLogo2}
+              alt="Ver más autores"
+              style={{ width: isMobile ? '30px' : '35px', transform: 'rotate(0deg)', transition: 'transform 0.3s ease' }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'rotate(-90deg)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'rotate(0deg)')}
+            />
+            <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: isMobile ? '8px' : '12px', textAlign: 'center' }}>
+              Ver otros<br />autores
+            </span>
+          </div>
+
         </div>
       </ScrollReveal>
     </div>

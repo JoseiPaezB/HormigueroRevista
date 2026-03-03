@@ -12,6 +12,8 @@ import fly from '/assets/roach.svg';
 import ant from '/assets/libelula.svg';
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import { Helmet } from 'react-helmet';
+import hormigueroLogo from '/assets/anticon2.svg'; // Make sure path is correct
+
 
 // Initialize Supabase client
 const insects = [
@@ -775,10 +777,49 @@ return (
                      </div>
                     </Link>
                   </ScrollReveal>
+                  
                 </div>
               );
             })}
           </div>
+          <ScrollReveal direction="up" delay={200}>
+                          <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            gap: isDesktop ? '80px' : '40px',
+                            marginTop: '30px',
+                            marginBottom: '30px',
+                          }}>
+                  
+                            {/* Regresar a (autor) */}
+                            
+                  
+                            {/* Ver más autores */}
+                            <div
+                              onClick={() => {
+                                sessionStorage.removeItem('poemHistory');
+                                sessionStorage.removeItem('poemPageAuthor');
+                                const referrer = autor?.tipo_creacion === 'critica' || autor?.tipo_creacion === 'crítica'
+                                  ? `/critica?edicion=${revista?.id}`
+                                  : `/creaciones?edicion=${revista?.id}`;
+                                  navigate(referrer, { replace: true });
+                              }}
+                              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
+                              >
+                              <img
+                                src={hormigueroLogo}
+                                alt="Ver más autores"
+                                style={{ width: '40px', transform: 'rotate(0deg)', transition: 'transform 0.3s ease' }}
+                                onMouseEnter={(e) => (e.currentTarget.style.transform = 'rotate(90deg)')}
+                                onMouseLeave={(e) => (e.currentTarget.style.transform = 'rotate(0deg)')}
+                              />
+                              <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px', textAlign: 'center' }}>
+                                Ver otros<br />autores
+                              </span>
+                            </div>
+                  
+                          </div>
+                        </ScrollReveal>
         </div>
       </>
     )}

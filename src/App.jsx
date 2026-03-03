@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Navbar from './components/ui/navBar.jsx';
 import Edicion from './components/ui/edition.jsx';
+import Default from './components/ui/deafult.jsx';
 import Contenido from './components/ui/contenidos.jsx';
 import Creaciones from './components/ui/creaciones.jsx';
 import Traducciones from './components/ui/traducciones.jsx';
@@ -14,13 +15,15 @@ import NotFound from './components/ui/notFound.jsx';
 import Critica from './components/ui/critica.jsx';
 import VisualesWrapper from './components/ui/visuales_wrapper.jsx';
 
+
 function App() {
   return (
       <BrowserRouter>
         <ScrollToHashElement />
         <Navbar />
         <Routes>
-          <Route path="/" element={<Edicion />} />
+          <Route path="/" element={<Default />} />
+          <Route path="/edicion" element={<Edicion />} />
           <Route path="/contenidos" element={<Contenido />} />
           <Route path="/creaciones" element={<Creaciones />} />
           <Route path="/critica" element={<Critica />} />
