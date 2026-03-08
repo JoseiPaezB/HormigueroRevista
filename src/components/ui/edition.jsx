@@ -136,7 +136,9 @@ const Edicion = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
+useEffect(() => {
+  if (revista) console.log('revista data:', revista);
+}, [revista]);
   // Hash navigation
   useEffect(() => {
     const cleanup = setupHashNavigation(setActiveHash);
@@ -435,20 +437,21 @@ const Edicion = () => {
               <ScrollReveal delay={300} direction="up">
                 <div
                   className="article-content"
-                  style={revista?.numero === 3 ? {
-                    backgroundImage: `url('/src/components/ui/contents/images/bebebien.gif')`,                    
+                  style={revista?.numero === 3 && revista?.bg_sintesis ? {
+                    backgroundImage: `url(${revista.bg_sintesis})`,
                     backgroundPosition: 'center',
+                    backgroundSize: '75%',
                     borderRadius: '8px',
                     padding: '40px 30px',
                     position: 'relative',
                     backgroundRepeat: 'no-repeat',
-                    backgroundSize: '85%',
                   } : {}}
                 >
-                  {revista?.numero === 3 && (
+                  {revista?.numero === 3 && revista?.bg_sintesis && (
                     <div style={{
                       position: 'absolute', inset: 0, borderRadius: '8px',
-                      background: 'rgba(255, 255, 255, 0.67)', zIndex: 0,
+                      background: 'rgba(255,255,255,0.6)',
+                      zIndex: 0,
                     }} />
                   )}
                   <p id="sintesis" style={{
@@ -481,10 +484,10 @@ const Edicion = () => {
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
                       <InsectColony insects={localInsects} count={25} />
                     </div>
-                  ) : revista?.numero === 3 ? (
+                  ) : revista?.numero === 3 && revista?.bg_menu ? (
                     <div style={{
                       position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0,
-                      backgroundImage: `url('/src/components/ui/contents/images/ojojo.gif')`,                    
+                      backgroundImage: `url(${revista.bg_menu})`,
                       backgroundSize: isDesktop ?  '40%' : '65%',
                       backgroundRepeat: 'no-repeat',
                       backgroundPosition: 'center',
