@@ -440,7 +440,7 @@ useEffect(() => {
                   style={revista?.numero === 3 && revista?.bg_sintesis ? {
                     backgroundImage: `url(${revista.bg_sintesis})`,
                     backgroundPosition: 'center',
-                    backgroundSize: '75%',
+                    backgroundSize: isDesktop ?  '85%' : '100%',
                     borderRadius: '8px',
                     padding: '40px 30px',
                     position: 'relative',
@@ -531,11 +531,13 @@ useEffect(() => {
           <br />
 
           {/* ── Hormigueados de esta edición ── */}
-          <ScrollReveal direction="right">
-            <div id="hormigueados">
-              <HormigueadosSection edicionId={revista?.id} />
-            </div>
-          </ScrollReveal>
+          {revista?.id !== 3 && (
+            <ScrollReveal direction="right">
+              <div id="hormigueados">
+                <HormigueadosSection edicionId={revista?.id} />
+              </div>
+            </ScrollReveal>
+          )}
 
           <br />
           <div id="contacto" />
