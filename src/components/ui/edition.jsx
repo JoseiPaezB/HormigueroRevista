@@ -433,8 +433,29 @@ const Edicion = () => {
 
               {/* ── Descripción del número (revista.sintesis) ── */}
               <ScrollReveal delay={300} direction="up">
-                <div className="article-content">
-                  <p id="sintesis" style={{ whiteSpace: 'pre-line', fontSize: isDesktop ? 'auto' : '11px' }}>
+                <div
+                  className="article-content"
+                  style={revista?.numero === 3 ? {
+                    backgroundImage: `url('/src/components/ui/contents/images/bebebien.gif')`,                    
+                    backgroundPosition: 'center',
+                    borderRadius: '8px',
+                    padding: '40px 30px',
+                    position: 'relative',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: '85%',
+                  } : {}}
+                >
+                  {revista?.numero === 3 && (
+                    <div style={{
+                      position: 'absolute', inset: 0, borderRadius: '8px',
+                      background: 'rgba(255, 255, 255, 0.67)', zIndex: 0,
+                    }} />
+                  )}
+                  <p id="sintesis" style={{
+                    whiteSpace: 'pre-line',
+                    fontSize: isDesktop ? 'auto' : '11px',
+                    position: 'relative', zIndex: 1,
+                  }}>
                     {revista?.sintesis || revista?.general || 'Cargando contenido...'}
                   </p>
                 </div>
@@ -454,12 +475,20 @@ const Edicion = () => {
                   {/* Per-edition background inside menu */}
                   {revista?.numero === 2 ? (
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
-                        <RotatingBackground changeInterval={850} opacity={0.65} zIndex={-1} supabase={supabase} />
+                      <RotatingBackground changeInterval={850} opacity={0.65} zIndex={-1} supabase={supabase} />
                     </div>
                   ) : revista?.numero === 1 ? (
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
                       <InsectColony insects={localInsects} count={25} />
                     </div>
+                  ) : revista?.numero === 3 ? (
+                    <div style={{
+                      position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0,
+                      backgroundImage: `url('/src/components/ui/contents/images/ojojo.gif')`,                    
+                      backgroundSize: isDesktop ?  '40%' : '65%',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                    }} />
                   ) : null}
 
                   <div className="vertical-menu" style={{ display: 'grid', gap: '30px', padding: '8px', width: '100%', fontSize: '1.3rem', position: 'relative', zIndex: 1 }}>
@@ -491,6 +520,8 @@ const Edicion = () => {
                   </div>
                 </div>
               </ScrollReveal>
+             
+
             </div>
           </ScrollReveal>
 
