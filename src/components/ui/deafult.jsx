@@ -119,7 +119,7 @@ const EditionCards = ({ isDesktop }) => {
         gap: isDesktop ? '20px' : '10px',
         justifyContent: 'center',
       }}>
-        {editions.map((edition, i) => (
+        {editions.filter(edition => edition.id !== 3).map((edition, i) => (
           <ScrollReveal key={edition.id} direction="up" delay={700 + i * 110}>
             <Link
               to={`/edicion?edicion=${edition.id}`}
