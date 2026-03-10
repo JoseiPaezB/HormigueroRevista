@@ -108,6 +108,7 @@ const Edicion = () => {
   const [windowWidth,        setWindowWidth]        = useState(window.innerWidth);
   const [viewportHeight,     setViewportHeight]     = useState(window.innerHeight);
   const [activeHash,         setActiveHash]         = useState('');
+  const [autorEspecial, setAutorEspecial] = useState(null);
 
   const coverImageRef      = useRef(null);
   const editionLinkRef     = useRef(null);
@@ -174,6 +175,12 @@ useEffect(() => {
           setAutores(names);
           if (!revistaData.contribuyentes?.trim()) setContributors(names);
         }
+         const { data: autorData, error: autorError } = await supabase
+          .from('autor')
+          .select('nombre')
+          .eq('id', 63)
+          .single();
+        if (!autorError && autorData) setAutorEspecial(autorData.nombre);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -226,25 +233,27 @@ useEffect(() => {
   const isMobile  = !isDesktop;
 
   const menuItems = [
-    {
-      path: `/creaciones?edicion=${revista?.id || edicionId || ''}`,
-      title: 'EL HORMIGUERO',
-      subtitle: 'Poemas en verso y prosa',
-      delay: 0,
-    },
-    {
-      path: `/critica?edicion=${revista?.id || edicionId || ''}`,
-      title: 'OTROS BICHOS',
-      subtitle: 'Ensayos, entrevistas y traducciones',
-      delay: 0.3,
-    },
-    ...(revista?.id === 1 || revista?.numero === 1 ? [{
-      path: `/visuales?edicion=${revista?.id || edicionId || ''}`,
-      title: 'A OJO DE HORMIGA',
-      subtitle: 'Artista visual',
-      delay: 0.6,
-    }] : []),
-  ];
+   {
+    path: revista?.id === 3 
+       ? `/autor/${autorEspecial}` 
+      : `/creaciones?edicion=${revista?.id || edicionId || ''}`,
+    title: revista?.id === 3 ? (autorEspecial?.toUpperCase() || 'Cargando...') : 'EL HORMIGUERO',
+    subtitle: revista?.id === 3 ? 'Obra poética' : 'Poemas en verso y prosa',
+    delay: 0,
+  },
+  {
+    path: `/critica?edicion=${revista?.id || edicionId || ''}`,
+    title: revista?.id === 3 ? 'TEJER LUZ A PERPETUIDAD' : 'OTROS BICHOS',
+    subtitle: revista?.id === 3 ? 'Ensayos, entrevistas y traducciones' : 'Ensayos, entrevistas y traducciones',
+    delay: 0.3,
+  },
+  ...(revista?.id === 1 || revista?.numero === 1 ? [{
+    path: `/visuales?edicion=${revista?.id || edicionId || ''}`,
+    title: 'A OJO DE HORMIGA',
+    subtitle: 'Artista visual',
+    delay: 0.6,
+  }] : []),
+];
 
   // ── Render helpers ──
   const renderHormigueroTitle = () => (
@@ -377,9 +386,11 @@ useEffect(() => {
           <div className="texture-overlay" />
 
           {/* Insect colony background */}
-          <div style={{ position: 'absolute', top: '80px', left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }}>
-            <InsectColony insects={insects.filter(i => i.type === 'mosquito')} count={10} />
-          </div>
+          {revista?.id !== 3 && (
+            <div style={{ position: 'absolute', top: '80px', left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }}>
+              <InsectColony insects={insects.filter(i => i.type === 'mosquito')} count={10} />
+            </div>
+          )}
           <div className="texture-overlay" />
 
           {/* Top left — magazine identity */}
@@ -442,7 +453,6 @@ useEffect(() => {
                     backgroundPosition: 'center',
                     backgroundSize: isDesktop ?  '85%' : '100%',
                     borderRadius: '8px',
-                    padding: '40px 30px',
                     position: 'relative',
                     backgroundRepeat: 'no-repeat',
                   } : {}}
@@ -470,7 +480,7 @@ useEffect(() => {
                   className="menu-background-section"
                   style={{
                     position: 'relative',
-                    padding: isMobile ? '0' : revista?.numero === 1 ? '100px 10px' : revista?.numero === 2 ? '400px 10px' : '500px 10px',                    
+                    padding: isMobile ? '0' : revista?.numero === 1 ? '100px 10px' : revista?.numero === 2 ? '400px 10px' : '250px 10px',                    
                     margin: isMobile ? '30px 0' : '0px 0',
                     overflow: 'hidden',
                   }}

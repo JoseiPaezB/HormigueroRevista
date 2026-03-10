@@ -449,9 +449,11 @@ const ContentComponent = ({ contentType }) => {
             >
               {displayTitle.toLowerCase() === 'creaciones'
                 ? (<>EL HORMIGUERO<p className="subtitle" style={{ fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold', marginTop: '-0.5rem', marginBottom: '2.5rem', fontStyle: 'italic' }}>POEMAS EN VERSO Y PROSA</p></>)
-                : displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica'
-                  ? (<>OTROS BICHOS<p className="subtitle" style={{ fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold', marginTop: '-0.5rem', marginBottom: '2.5rem', fontStyle: 'italic' }}>Ensayo, entrevistas y traducciones</p></>)
-                  : displayTitle.toUpperCase()
+                : (displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica') && revista?.id === 3
+                  ? (<>TEJER LUZ A PERPETUIDAD<p className="subtitle" style={{ fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold', marginTop: '-0.5rem', marginBottom: '2.5rem', fontStyle: 'italic' }}>Ensayo, entrevistas y traducciones</p></>)
+                  : displayTitle.toLowerCase() === 'critica' || displayTitle.toLowerCase() === 'crítica'
+                    ? (<>OTROS BICHOS<p className="subtitle" style={{ fontSize: isDesktop ? '1.5rem' : '1rem', fontWeight: 'bold', marginTop: '-0.5rem', marginBottom: '2.5rem', fontStyle: 'italic' }}>Ensayo, entrevistas y traducciones</p></>)
+                    : displayTitle.toUpperCase()
               }
             </h2>
           </ScrollReveal>

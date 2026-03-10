@@ -123,6 +123,7 @@ useEffect(() => {
     }
   };
 }, []);
+
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -139,6 +140,7 @@ useEffect(() => {
 
       if (autorError) throw autorError;
       setAutor(autorData);
+      
 
        
       // Get the actual author ID from the database
@@ -203,7 +205,7 @@ useEffect(() => {
       setLoading(false);
     }
   };
-
+  
   fetchData();
 }, [nombre]);
 
@@ -365,14 +367,25 @@ return (
         } />
         <meta name="twitter:image" content={autor?.imagen || '/default-author.jpg'} />
       </Helmet>
-  <div className="bio-container scroll-reveal-container">
-    {/* Cover image con ScrollReveal */}
+<div 
+  className="bio-container scroll-reveal-container" 
+  style={{ 
+  backgroundImage: autor?.id === 63 && autor?.background 
+    ? `linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url(${autor.background})`
+    : 'none',
+  backgroundSize: 'cover',
+  backgroundRepeat: 'no-repeat',
+  minHeight: '100vh',
+}}
+>
+  {/* Cover image con ScrollReveal */}
     <ScrollReveal direction="up">
       <div style={{margin:isDesktop ? '0 auto':'normal',width:isDesktop ? '30%':'normal',display: isDesktop? 'flex':'normal', justifyContent: isDesktop ?  'center' : 'normal'}}>
         <div className="cover-image image_2" style={{
           backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
           height: '30vh',
-        
+          backgroundSize: '45%',
+          backgroundRepeat: 'no-repeat',
         }}>
         </div>
       </div>
@@ -391,7 +404,7 @@ return (
         {/* Content section */}
         <div style={{
           padding: isDesktop ? '20px' : '8px',
-          backgroundColor: 'white',
+          backgroundColor: autor?.id === 63 ? 'transparent' : 'white',          
           position: 'relative'
         }}>
           {(() => {
