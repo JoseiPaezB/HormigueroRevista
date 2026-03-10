@@ -65,7 +65,7 @@ const Creaciones = () => {
     }}>
       {/* Imagen de fondo */}
       <div style={{
-        position: 'fixed',
+        position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
@@ -81,7 +81,7 @@ const Creaciones = () => {
       {/* Estado de carga */}
       {loading && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
@@ -99,7 +99,7 @@ const Creaciones = () => {
       {/* Estado de error */}
       {imageError && !loading && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
