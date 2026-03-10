@@ -65,7 +65,7 @@ const Critica = () => {
     }}>
       {/* Background image overlay - same as visuales */}
       <div style={{
-        position: 'fixed',
+        position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
@@ -80,7 +80,7 @@ const Critica = () => {
       {/* Loading state */}
       {loading && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
@@ -98,7 +98,7 @@ const Critica = () => {
       {/* Error state fallback */}
       {imageError && !loading && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
