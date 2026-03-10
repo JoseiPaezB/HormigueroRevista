@@ -11,11 +11,12 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const Creaciones = () => {
   const [searchParams] = useSearchParams();
   const edicionFromUrl = searchParams.get('edicion');
-  const edicion = edicionFromUrl ? parseInt(edicionFromUrl) : 2; // Default to 2 if no param
+  const edicion = edicionFromUrl ? parseInt(edicionFromUrl) : 2;
   
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const fetchImageUrl = async () => {
@@ -41,7 +42,6 @@ const Creaciones = () => {
             const { data: urlData } = supabase.storage
               .from('portadas')
               .getPublicUrl(data.imagen.replace('portadas/', ''));
-            
             setImageUrl(urlData.publicUrl);
           } else {
             setImageUrl(data.imagen);
@@ -57,46 +57,37 @@ const Creaciones = () => {
 
     fetchImageUrl();
   }, [edicion]);
+
   return (
     <div style={{
       position: 'relative',
       minHeight: '100vh',
       color: '#000'
     }}>
-      {/* Imagen de fondo */}
+      {/* Hidden img to preload and detect when image is loaded */}
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          onLoad={() => setImageLoaded(true)}
+          style={{ display: 'none' }}
+        />
+      )}
+
+      {/* Background image */}
       <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
+        backgroundImage: imageUrl && imageLoaded ? `url(${imageUrl})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
-        zIndex: -1, 
-        opacity: 1
+        zIndex: -1,
       }} />
 
-      {/* Estado de carga */}
-      {loading && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10
-        }}>
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-        </div>
-      )}
-
-      {/* Estado de error */}
+      {/* Error state fallback */}
       {imageError && !loading && (
         <div style={{
           position: 'absolute',
@@ -108,13 +99,16 @@ const Creaciones = () => {
           zIndex: -1
         }} />
       )}
-      
-      {/* Contenido */}
-      <div style={{ 
-        position: 'relative', 
-        zIndex: 1, 
+
+      {/* Content */}
+      <div style={{
+        position: 'relative',
+        zIndex: 1,
         color: 'white',
-        minHeight: '100vh'
+        minHeight: '100vh',
+        backgroundColor: 'rgba(46, 45, 45, 0.2)',
+        opacity: imageLoaded || imageError ? 1 : 0,
+        transition: 'opacity 1.2s ease 0.3s', // 👈 1.2s duration, 0.3s delay
       }}>
         <ContentComponent contentType="creaciones" />
       </div>
