@@ -130,7 +130,7 @@ const Navbar = () => {
     const { data, error } = await supabase
       .from('revista').select('id, numero').order('numero', { ascending: false });
     if (error) throw error;
-    setAllEditions((data || []));
+    setAllEditions((data || []).filter(e => e.id !== 3));
   } catch (err) { console.error('Error fetching editions:', err); }
 };
     fetchEditions();
