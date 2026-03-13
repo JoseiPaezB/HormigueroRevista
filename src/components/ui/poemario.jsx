@@ -363,7 +363,7 @@ return (
         /* Background image */
         backgroundImage: autor?.id === 63 && revistas.find(r => r.numero === 3)?.bg_sintesis ? `url(${revistas.find(r => r.numero === 3).bg_sintesis})` : 'none',
         backgroundPosition:isDesktop ? 'top': ' 50%',      
-        backgroundSize: isDesktop ? '75%' : '120%',
+        backgroundSize: isDesktop ? '75%' : '80%',
         backgroundRepeat: 'no-repeat',
         borderRadius: '8px',
         position: 'relative',
