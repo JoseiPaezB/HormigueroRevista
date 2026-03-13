@@ -21,9 +21,6 @@ const insects = [
       src: mosquito,
       type: 'mosquito',
       size: 30,
-      // Optional: customize further
-      // speed: 2.5,
-      // initialPosition: { x: 100, y: 100 }
     },
     {
       src: ant,
@@ -41,7 +38,7 @@ const insects = [
       size: 28
     },
     {
-      src: mosquito, // You can reuse the same SVG with different behavior
+      src: mosquito,
       type: 'default',
       size: 32
     }
@@ -56,29 +53,26 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 const AuthorBio = () => {
-    const { nombre } = useParams(); // Get author ID from URL if available
-    const navigate = useNavigate(); // Initialize navigate function
+    const { nombre } = useParams();
+    const navigate = useNavigate();
     const location = useLocation();
     const [autor, setAutor] = useState(null);
     const [poemas, setPoemas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [revista, setRevista] = useState(null);
+    const [revista, setRevista] = useState(null);       // latest edition (for nav)
+    const [revistas, setRevistas] = useState([]);        // all editions
     const [poemario, setPoemario] = useState(null);
     const [isVisualArtist, setIsVisualArtist] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     
 
-    // Default book covers mapping
-   
-
-    // Count words in a text
     const countWords = (text) => {
       if (!text) return 0;
       return text.split(/\s+/).filter(word => word.length > 0).length;
     };
+
 useEffect(() => {
-    // Only store the referrer if we don't already have one stored
      if (!sessionStorage.getItem('authorPageReferrer') && !location.state?.fromRegresar) {
         const referrer = document.referrer;
         if (referrer.includes('/creaciones')) {
@@ -93,7 +87,7 @@ useEffect(() => {
     const handlePopState = () => {
       const referrer = sessionStorage.getItem('authorPageReferrer');
       if (referrer) {
-        sessionStorage.removeItem('authorPageReferrer'); // Clean up
+        sessionStorage.removeItem('authorPageReferrer');
         navigate(`/${referrer}`, { replace: true });
       }
     };
@@ -104,20 +98,15 @@ useEffect(() => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [navigate]);
-    // Fetch data on component mount
-    // Fetch data on component mount
-// Add this useEffect in your ContentComponent
+
 useEffect(() => {
-  // Always scroll to top when the component mounts
   window.scrollTo(0, 0);
   
-  // Disable scroll restoration temporarily
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
   
   return () => {
-    // Re-enable scroll restoration when component unmounts
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'auto';
     }
@@ -131,7 +120,6 @@ useEffect(() => {
       console.log('Decoded:', decodeURIComponent(nombre));
       const decodedNombre = decodeURIComponent(nombre);
 
-      // 1. Fetch autor (author) data by name
       const { data: autorData, error: autorError } = await supabase
         .from('autor')
         .select('*')
@@ -141,56 +129,47 @@ useEffect(() => {
       if (autorError) throw autorError;
       setAutor(autorData);
       
-
-       
-      // Get the actual author ID from the database
-      const authorId = autorData.id; // This is the actual ID we need
+      const authorId = autorData.id;
       
-      // Check if author is visual artist
       setIsVisualArtist(autorData.tipo_creacion === 'visuales' || autorData.tipo_creacion === 'entrevista');
 
-      // 2. Fetch revista for the header background
       const { data: revistaData, error: revistaError } = await supabase
         .from('revista')
         .select('*')
-        .eq('id', 1)
-        .single();
+        .order('id', { ascending: false });
 
       if (revistaError) throw revistaError;
-      setRevista(revistaData);
+      setRevistas(revistaData);
+      setRevista(revistaData?.[0]); // latest edition for nav
+ 
 
-      // Only fetch poems if the author is not a visual artist
       if (autorData.tipo_creacion !== 'visuales') {
-        // 3. Fetch poems by this author using the actual ID
         const { data: poemasData, error: poemasError } = await supabase
           .from('poema')
           .select('*')
-          .eq('id_autor', authorId); // Use the actual ID, not the name
+          .eq('id_autor', authorId);
 
         if (poemasError) throw poemasError;
         
-        // 4. Fetch poemario info using the actual ID
         const { data: poemarioData, error: poemarioError } = await supabase
           .from('poemario')
           .select('*')
-          .eq('id_autor', authorId) // Use the actual ID, not the name
+          .eq('id_autor', authorId)
           .single();
         
         if (!poemarioError) {
           setPoemario(poemarioData);
         }
         
-        // Transform poemas to match the books format and count words
         const transformedPoemas = poemasData.map((poema, index) => {
-          // Count words in the poem text
           const wordCount = countWords(poema.texto);
           
           return {
             id: poema.id,
             title: poema.titulo,
             author: autorData.nombre,
-            cover: poema.portada, // Cycle through available covers
-            link: `/poema/${encodeURIComponent(poema.titulo.toLowerCase())}`, // Convert to lowercase
+            cover: poema.portada,
+            link: `/poema/${encodeURIComponent(poema.titulo.toLowerCase())}`,
             wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
           };
         });
@@ -209,7 +188,6 @@ useEffect(() => {
   fetchData();
 }, [nombre]);
 
-    // Function to categorize books by size based on word count
     const categorizeBooks = (books) => {
       const small = books.filter(book => book.wordCount < 100);
       const medium = books.filter(book => book.wordCount >= 100 && book.wordCount <= 200);
@@ -218,41 +196,33 @@ useEffect(() => {
       return { small, medium, large };
     };
 
-    // Function to arrange books in the pattern: small, large, medium, small, large, medium...
     const arrangeBooks = (books) => {
       const { small, medium, large } = categorizeBooks(books);
       const result = [];
       
-      // Calculate how many complete sets we can create
       const maxSets = Math.max(
         Math.ceil(small.length / 2),
         Math.ceil(large.length),
         Math.ceil(medium.length / 2)
       );
       
-      // Create the pattern: small, small, large, medium, medium
       for (let i = 0; i < maxSets; i++) {
-        // Add first small book if available
         if (i * 2 < small.length) {
           result.push({...small[i * 2], sizeCategory: 'medium'});
         }
         
-        // Add second small book if available
         if (i * 2 + 1 < small.length) {
           result.push({...small[i * 2 + 1], sizeCategory: 'medium'});
         }
         
-        // Add large book if available
         if (i < large.length) {
           result.push({...large[i], sizeCategory: 'large'});
         }
         
-        // Add first medium book if available
         if (i * 2 < medium.length) {
           result.push({...medium[i * 2], sizeCategory: 'medium'});
         }
         
-        // Add second medium book if available
         if (i * 2 + 1 < medium.length) {
           result.push({...medium[i * 2 + 1], sizeCategory: 'medium'});
         }
@@ -261,12 +231,9 @@ useEffect(() => {
       return result;
     };
     
-    // Arrange books in the desired pattern
     const arrangedBooks = arrangeBooks(poemas);
 
-    // Function to determine book size based on word count
     const getBookSize = (wordCount, sizeCategory) => {
-      // Use the explicit size category for consistent sizing
       if (sizeCategory === 'large') {
         return { 
           height: '280px', 
@@ -294,7 +261,6 @@ useEffect(() => {
       }
     };
 
-    // Function to get title styling based on book size
     const getTitleStyles = (sizeInfo) => {
       if (sizeInfo.isLarge) {
         return {
@@ -318,20 +284,17 @@ useEffect(() => {
         fontSize: isDesktop ? '1.5rem':'14px',
         fontWeight: 'bold',
         letterSpacing: '0.5px',
-
       };
     };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
-    // Format author name for display
     const authorName = autor?.nombre?.toUpperCase() || "AUTOR";
     
-    // Generate first letter for emphasized display
     const firstLetter = authorName.charAt(0);
     const restOfName = authorName.substring(1);
-    const isDesktop = windowWidth > 840; // Define el umbral para desktop igual que en getTitleStyles
+    const isDesktop = windowWidth > 840;
 
 
 return (
@@ -367,18 +330,15 @@ return (
         } />
         <meta name="twitter:image" content={autor?.imagen || '/default-author.jpg'} />
       </Helmet>
+
+{/* ── Outer container: no background ── */}
 <div 
   className="bio-container scroll-reveal-container" 
   style={{ 
-  backgroundImage: autor?.id === 63 && autor?.background 
-    ? `linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url(${autor.background})`
-    : 'none',
-  backgroundSize: 'cover',
-  backgroundRepeat: 'no-repeat',
-  minHeight: '100vh',
-}}
+    minHeight: '100vh',
+  }}
 >
-  {/* Cover image con ScrollReveal */}
+  {/* Cover image */}
     <ScrollReveal direction="up">
       <div style={{margin:isDesktop ? '0 auto':'normal',width:isDesktop ? '30%':'normal',display: isDesktop? 'flex':'normal', justifyContent: isDesktop ?  'center' : 'normal'}}>
         <div className="cover-image image_2" style={{
@@ -392,37 +352,53 @@ return (
     </ScrollReveal>
     
     <ScrollReveal direction="up" delay={300}>
+      {/* ── Semblanza wrapper: background image lives here ── */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         maxWidth: isDesktop ? 'none' : '400px',
         width: isDesktop ? '75%' : 'auto',
         overflow: 'hidden',
-        margin: '20px auto'
+        margin: '10px auto',
+        /* Background image */
+        backgroundImage: autor?.id === 63 && revistas.find(r => r.numero === 3)?.bg_sintesis ? `url(${revistas.find(r => r.numero === 3).bg_sintesis})` : 'none',
+        backgroundPosition:isDesktop ? 'top': ' 50%',      
+        backgroundSize: isDesktop ? '75%' : '120%',
+        backgroundRepeat: 'no-repeat',
+        borderRadius: '8px',
+        position: 'relative',
       }}>
+
+        {/* Semi-transparent overlay so text stays readable */}
+        {autor?.id === 63 && revistas.find(r => r.numero === 3)?.bg_sintesis && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '8px',
+            background: 'rgba(255,255,255,0.6)',
+            zIndex: 0,
+          }} />
+        )}
         
-        {/* Content section */}
+        {/* Content section — sits above the overlay */}
         <div style={{
           padding: isDesktop ? '20px' : '8px',
-          backgroundColor: autor?.id === 63 ? 'transparent' : 'white',          
-          position: 'relative'
+          backgroundColor: 'transparent',
+          position: 'relative',
+          zIndex: 1,
         }}>
           {(() => {
-            // Get the semblanza text
             const fullSemblanza = autor?.semblanza || '';
             
-            // Check if we need to split the text (if longer than 100 chars)
             if (fullSemblanza.length > 100) {
-              // Find all the periods in the text
               const periods = [];
               let dotIndex = fullSemblanza.indexOf('. ');
               
               while (dotIndex !== -1) {
-                periods.push(dotIndex + 1); // Include the period
+                periods.push(dotIndex + 1);
                 dotIndex = fullSemblanza.indexOf('. ', dotIndex + 1);
               }
               
-              // If no periods found, don't split the text
               if (periods.length === 0) {
                 return (
                   <ScrollReveal direction="up" delay={400}>
@@ -430,7 +406,6 @@ return (
                       fontSize: isDesktop ? '1rem' : '14px',
                       lineHeight: '1.5'
                     }}>
-                      {/* Author image floating right since no good breaking point */}
                       <img 
                         src={autor?.imagen || eventImage} 
                         alt={autor?.nombre || "Author"} 
@@ -443,7 +418,6 @@ return (
                         }}
                       />
                       
-                      {/* Author name and full semblanza */}
                       <p style={{ marginBottom: '15px' }}>
                         <span style={{ 
                           fontSize: isDesktop ? '2rem' : '28px', 
@@ -462,37 +436,30 @@ return (
                 );
               }
               
-              // Find the period closest to the middle of the text
               const middle = fullSemblanza.length / 2;
-              let breakIndex = periods[0]; // Default to first period
+              let breakIndex = periods[0];
               let closestDistance = Math.abs(periods[0] - middle);
               
-              // Find the period closest to the middle
               for (let i = 1; i < periods.length; i++) {
                 const distance = Math.abs(periods[i] - middle);
-                // If this period is closer to the middle than our current best
                 if (distance < closestDistance) {
                   breakIndex = periods[i];
                   closestDistance = distance;
                 }
-                // If we've passed the middle, we can stop looking
                 if (periods[i] > middle) {
                   break;
                 }
               }
               
-              // Make sure we have a minimum first part length (at least 50 chars)
               if (breakIndex < 50 && periods.length > 1) {
-                breakIndex = periods[1]; // Use the second period instead
+                breakIndex = periods[1];
               }
               
-              // Split the semblanza at the chosen period
               const firstPart = fullSemblanza.substring(0, breakIndex);
               const secondPart = fullSemblanza.substring(breakIndex).trim();
               
              return (
                 <>
-                  {/* Author name and full semblanza text first */}
                   <ScrollReveal direction="up" delay={400}>
                     <div style={{ 
                       fontSize: isDesktop ? '1rem' : '14px',
@@ -520,7 +487,6 @@ return (
                     </div>
                   </ScrollReveal>
                   
-                  {/* Author image comes after the text */}
                   <ScrollReveal direction="scale" delay={600}>
                     <div style={{
                       width: '100%',
@@ -544,7 +510,6 @@ return (
                 </>
               );
             } 
-            // For short semblanzas, keep image on the right (smaller size)
             else {
               return (
                 <ScrollReveal direction="up" delay={400}>
@@ -552,7 +517,6 @@ return (
                     fontSize: isDesktop ? '1rem' : '14px',
                     lineHeight: '1.5'
                   }}>
-                    {/* Author image floating right */}
                     <img 
                       src={autor?.imagen || eventImage} 
                       alt={autor?.nombre || "Author"} 
@@ -565,7 +529,6 @@ return (
                       }}
                     />
                     
-                    {/* First paragraph with author name and semblanza */}
                     <p style={{ marginBottom: '15px' }}>
                       <span style={{ 
                         fontSize: isDesktop ? '2rem' : '28px', 
@@ -579,8 +542,6 @@ return (
                       {restOfName}, {/* Author name with comma */}
                       {fullSemblanza}
                     </p>
-                    {/* Author link section - NEW */}
-                    
                   </div>
                 </ScrollReveal>
               );
@@ -675,7 +636,7 @@ return (
         <div style={{ 
           position: 'relative', 
           marginBottom: '40px',
-          paddingTop: '30px' // Espacio para el título
+          paddingTop: '30px'
         }}>
           <div style={{ 
             position: 'absolute', 
@@ -683,8 +644,8 @@ return (
             left: 0, 
             width: '100%', 
             height: '100%', 
-            zIndex: 0, // Para estar detrás de los elementos
-            pointerEvents: 'none' // Para que no interfiera con clics
+            zIndex: 0,
+            pointerEvents: 'none'
           }}>
             <InsectColony 
               count={35}
@@ -692,17 +653,15 @@ return (
             />
           </div>
 
-          
-          
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)', // Fixed to exactly 2 columns
+            gridTemplateColumns: 'repeat(2, 1fr)',
             gap: '20px',
             marginBottom: '40px',
-            padding: '0 20px', // Add horizontal padding
-            maxWidth: '800px', // Set a maximum width
-            margin: '20px auto', // Center the grid with automatic horizontal margins
-            position: 'relative', // Para estar encima de los insectos
+            padding: '0 20px',
+            maxWidth: '800px',
+            margin: '20px auto',
+            position: 'relative',
             zIndex: 1
           }}>
             {arrangedBooks.map((book, index) => {
@@ -710,11 +669,9 @@ return (
               const titleStyles = getTitleStyles(sizeStyles);
               const isLargeBook = sizeStyles.isLarge;
               
-              // For large books, ensure they start at the beginning of a row
-              // by placing them in positions that align with the grid
               const gridPosition = {};
               if (isLargeBook) {
-                gridPosition.gridColumn = '1 / span 2'; // Always span full width
+                gridPosition.gridColumn = '1 / span 2';
               }
               
               return (
@@ -722,7 +679,6 @@ return (
         key={book.id}
         style={{
           ...gridPosition,
-          // Esta es la clave: aplicar la posición del grid al contenedor externo
           gridColumn: isLargeBook ? '1 / span 2' : 'auto'
         }}
       >
@@ -732,7 +688,7 @@ return (
             style={{
               textDecoration: 'none', 
               color: 'inherit',
-              display: 'block', // Asegura que el Link ocupe todo el espacio disponible
+              display: 'block',
               height: '100%'
             }}
           >
@@ -742,7 +698,7 @@ return (
               boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
               transition: 'transform 0.3s ease',
               height: sizeStyles.height,
-              width: '100%', // Always use full width of grid cell
+              width: '100%',
             }}>
               <img 
                 src={book.cover} 
@@ -755,12 +711,10 @@ return (
               />
                       
                       {isLargeBook ? (
-                        // Centered title for large books
                         <div style={titleStyles}>
                           <h3>{book.title}</h3>
                         </div>
                       ) : (
-                        // Standard top-aligned title for small/medium books
                         <div style={{
                           position: 'absolute',
                           top: 0,
@@ -804,10 +758,6 @@ return (
                             marginBottom: '30px',
                           }}>
                   
-                            {/* Regresar a (autor) */}
-                            
-                  
-                            {/* Ver más autores */}
                             <div
                               onClick={() => {
                                 sessionStorage.removeItem('poemHistory');
@@ -837,10 +787,9 @@ return (
       </>
     )}
     
-    {/* CSS necesario para las animaciones */}
     <style jsx>{`
       .scroll-reveal-container {
-        overflow-x: hidden; /* Evitar desbordamiento horizontal durante animaciones */
+        overflow-x: hidden;
       }
     `}</style>
   </div>

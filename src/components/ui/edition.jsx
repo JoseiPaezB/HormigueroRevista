@@ -447,22 +447,12 @@ useEffect(() => {
               {/* ── Descripción del número (revista.sintesis) ── */}
               <ScrollReveal delay={300} direction="up">
                 <div
-                  className="article-content"
-                  style={revista?.numero === 3 && revista?.bg_sintesis ? {
-                    backgroundImage: `url(${revista.bg_sintesis})`,
-                    backgroundPosition: 'center',
-                    backgroundSize: isDesktop ?  '85%' : '100%',
-                    borderRadius: '8px',
-                    position: 'relative',
-                    backgroundRepeat: 'no-repeat',
-                  } : {}}
-                >
-                  {revista?.numero === 3 && revista?.bg_sintesis && (
-                    <div style={{
-                      position: 'absolute', inset: 0, borderRadius: '8px',
-                      background: 'rgba(255,255,255,0.6)',
-                      zIndex: 0,
-                    }} />
+                  className="article-content">
+                   
+                  {revista?.id === 3 && (
+                    <div style={{ position: 'absolute', left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }}>
+                      <InsectColony insects={insects.filter(i => i.type === 'mosquito')} count={10} />
+                    </div>
                   )}
                   <p id="sintesis" style={{
                     whiteSpace: 'pre-line',
