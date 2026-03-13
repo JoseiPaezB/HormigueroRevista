@@ -89,14 +89,26 @@ const Poema = () => {
           }
 
           // 4. Fetch revista for header background
-          const { data: revistaData, error: revistaError } = await supabase
-            .from('revista')
-            .select('*')
-            .eq('id', 1)
-            .single();
+          const { data: revistaAutorData, error: revistaAutorError } = await supabase
+  .from('revista_autor')
+  .select('id_revista')
+  .eq('id_autor', poemaData.id_autor)
+  .single();
 
-          if (revistaError) throw revistaError;
-          setRevista(revistaData);
+    if (!revistaAutorError && revistaAutorData) {
+      const { data: revistaData, error: revistaError } = await supabase
+        .from('revista')
+        .select('*')
+        .eq('id', revistaAutorData.id_revista)
+        .single();
+      if (!revistaError) setRevista(revistaData);
+    } else {
+      // fallback
+      const { data: revistaData } = await supabase.from('revista').select('*').eq('id', 1).single();
+      setRevista(revistaData);
+    }
+
+          
           
           setLoading(false);
         } catch (err) {
@@ -885,16 +897,22 @@ useEffect(() => {
 
           {/* Ver más autores */}
           <div
-            onClick={() => {
-              sessionStorage.removeItem('poemHistory');
-              sessionStorage.removeItem('poemPageAuthor');
-              const referrer = autor?.tipo_creacion === 'critica' || autor?.tipo_creacion === 'crítica'
-                ? `/critica?edicion=${revista?.id}`
-                : `/creaciones?edicion=${revista?.id}`;
-              navigate(referrer, { replace: true });
-            }}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
-          >
+              onClick={() => {
+                sessionStorage.removeItem('poemHistory');
+                sessionStorage.removeItem('poemPageAuthor');
+                if (autor?.id === 63) return;
+                const referrer = autor?.tipo_creacion === 'critica' || autor?.tipo_creacion === 'crítica'
+                  ? `/critica?edicion=${revista?.id}`
+                  : `/creaciones?edicion=${revista?.id}`;
+                navigate(referrer, { replace: true });
+              }}
+              style={{ 
+                display: autor?.id === 63 ? 'none' : 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                cursor: 'pointer' 
+              }}
+            >
             <img
               src={hormigueroLogo2}
               alt="Ver más autores"

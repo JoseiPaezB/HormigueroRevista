@@ -86,6 +86,11 @@ useEffect(() => {
   useEffect(() => {
     const handlePopState = () => {
       const referrer = sessionStorage.getItem('authorPageReferrer');
+      if (autor?.id === 63) {
+        sessionStorage.removeItem('authorPageReferrer');
+        navigate('/edicion?edicion=3', { replace: true });
+        return;
+      }
       if (referrer) {
         sessionStorage.removeItem('authorPageReferrer');
         navigate(`/${referrer}`, { replace: true });
@@ -97,7 +102,7 @@ useEffect(() => {
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [navigate]);
+  }, [navigate, autor]);
 
 useEffect(() => {
   window.scrollTo(0, 0);
@@ -283,7 +288,7 @@ useEffect(() => {
           transform: 'translate(-50%, -50%)',
           textAlign: 'center',
           color: 'white',
-          fontSize: '20px',
+          fontSize: '16px',
           fontWeight: 'bold',
           letterSpacing: '1px',
           textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
