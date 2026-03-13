@@ -140,7 +140,20 @@ useEffect(() => {
 
       if (revistaError) throw revistaError;
       setRevistas(revistaData);
-      setRevista(revistaData?.[0]); // latest edition for nav
+
+      // Find which edition this author belongs to
+      const { data: revistaAutorData, error: revistaAutorError } = await supabase
+        .from('revista_autor')
+        .select('id_revista')
+        .eq('id_autor', authorId)
+        .single();
+
+      if (!revistaAutorError && revistaAutorData) {
+        const autorRevista = revistaData?.find(r => r.id === revistaAutorData.id_revista);
+        setRevista(autorRevista || revistaData?.[0]);
+      } else {
+        setRevista(revistaData?.[0]); // fallback to latest
+      }
  
 
       if (autorData.tipo_creacion !== 'visuales') {
@@ -762,22 +775,26 @@ return (
                               onClick={() => {
                                 sessionStorage.removeItem('poemHistory');
                                 sessionStorage.removeItem('poemPageAuthor');
-                                const referrer = autor?.tipo_creacion === 'critica' || autor?.tipo_creacion === 'crítica'
-                                  ? `/critica?edicion=${revista?.id}`
-                                  : `/creaciones?edicion=${revista?.id}`;
+                                if (autor?.id === 63) {
+                                  navigate(-1);
+                                } else {
+                                  const referrer = autor?.tipo_creacion === 'critica' || autor?.tipo_creacion === 'crítica'
+                                    ? `/critica?edicion=${revista?.id}`
+                                    : `/creaciones?edicion=${revista?.id}`;
                                   navigate(referrer, { replace: true });
+                                }
                               }}
                               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
-                              >
+                            >
                               <img
                                 src={hormigueroLogo}
-                                alt="Ver más autores"
+                                alt={autor?.id === 63 ? 'Regresar' : 'Ver más autores'}
                                 style={{ width: '40px', transform: 'rotate(0deg)', transition: 'transform 0.3s ease' }}
                                 onMouseEnter={(e) => (e.currentTarget.style.transform = 'rotate(90deg)')}
                                 onMouseLeave={(e) => (e.currentTarget.style.transform = 'rotate(0deg)')}
                               />
                               <span style={{ marginTop: '5px', textTransform: 'uppercase', fontSize: '12px', textAlign: 'center' }}>
-                                Ver otros<br />autores
+                                {autor?.id === 63 ? 'Regresar' : <>Ver otros<br />autores</>}
                               </span>
                             </div>
                   
