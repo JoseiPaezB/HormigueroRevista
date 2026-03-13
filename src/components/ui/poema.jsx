@@ -506,10 +506,12 @@ useEffect(() => {
   <div className="edition-container scroll-reveal-container" ref={articleContainerRef}>
     {/* Green gradient cover image */}
     <ScrollReveal direction="up">
-      <div className="cover-image image_2" style={{
-        backgroundImage: `url(${poema?.portada || portada})`,
-        height: '30vh'
-      }}>
+      <div className="cover-image image_2" style={{ height: '30vh', overflow: 'hidden' }}>
+        <img 
+          src={poema?.portada || portada}
+          alt={poema?.titulo}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
       </div>
     </ScrollReveal>
     
@@ -579,18 +581,36 @@ useEffect(() => {
             // Add this function to process italics
             const processTextWithItalics = (text) => {
               if (!text) return text;
+
+              if (autor?.id === 63) {
+              const blocks = text.split('~').filter(Boolean);
               
-              // Split text by the pattern $text$ 
-              const parts = text.split(/\$([^$]+)\$/);    
-              
-              return parts.map((part, index) => {
-                // Every odd index (1, 3, 5...) is text that was between $s
-                if (index % 2 === 1) {
-                  return <em key={index}>{part}</em>;
-                }
-                // Even indices are regular text
-                return part;
+              return blocks.map((block, blockIndex) => {
+                // Process @bold@, then $italic$
+                const processBlock = (str) =>
+                  str.split(/@([^@]+)@/).map((part, i) => {
+                    if (i % 2 === 1) return <strong key={i}>{part}</strong>;
+                    return str.split(/\$([^$]+)\$/).length > 1
+                      ? part.split(/\$([^$]+)\$/).map((p, j) =>
+                          j % 2 === 1 ? <em key={j}>{p}</em> : p
+                        )
+                      : part;
+                  });
+
+                return (
+                  <ScrollReveal key={blockIndex} direction="up" delay={100}>
+                    <div style={{ marginBottom: '20px', whiteSpace: 'pre-wrap' }}>
+                      {processBlock(block)}
+                    </div>
+                  </ScrollReveal>
+                );
               });
+            }
+
+              const parts = text.split(/\$([^$]+)\$/);
+              return parts.map((part, index) =>
+                index % 2 === 1 ? <em key={index}>{part}</em> : part
+              );
             };
 
             return (
