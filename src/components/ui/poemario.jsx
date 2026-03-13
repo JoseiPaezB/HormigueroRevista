@@ -217,7 +217,9 @@ useEffect(() => {
     const arrangeBooks = (books) => {
       const { small, medium, large } = categorizeBooks(books);
       const result = [];
-      
+        if (autor?.id === 63) {
+          return books.map(book => ({ ...book, sizeCategory: 'small' }));
+        }
       const maxSets = Math.max(
         Math.ceil(small.length / 2),
         Math.ceil(large.length),

@@ -930,11 +930,13 @@ useEffect(() => {
     </div>
     
     {/* Add the floating Hormiguear button */}
-    <FloatingHormiguearButton 
-      handleHormiguear={handleHormiguear}
-      stopAtElement={masPoemasSectionRef}
-      offsetBeforeStop={150} // You can adjust this value to control how far before the section it stops
-    />
+    {![63, 64, 65, 69].includes(autor?.id) && (
+      <FloatingHormiguearButton 
+        handleHormiguear={handleHormiguear}
+        stopAtElement={masPoemasSectionRef}
+        offsetBeforeStop={150}
+      />
+    )}
 
     {/* Modal code - sin ScrollReveal ya que es una superposición */}
     {showHormiguearModal && (
