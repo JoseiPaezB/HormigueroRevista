@@ -757,15 +757,19 @@ useEffect(() => {
                                     return acc;
                                   }, 0);
                                   const rawText = line.replace(/^[>%*]+/, '');
-                                  const processLine = (str) =>
-                                    str.split(/@([^@]+)@/).map((part, j) =>
-                                      j % 2 === 1 ? <strong key={j}>{part}</strong> : part
-                                    );
+                                  const processLine = (str) => {
+                                    return str.split(/@([^@]+)@/).flatMap((part, j) => {
+                                      if (j % 2 === 1) return [<strong key={`b${j}`}>{part}</strong>];
+                                      return part.split(/\$([^$]+)\$/).map((p, k) =>
+                                        k % 2 === 1 ? <em key={`i${j}${k}`}>{p}</em> : p
+                                      );
+                                    });
+                                  };
                                   return (
                                     <div key={i} style={{
                                       paddingLeft: `${indent}rem`,
                                       lineHeight: '1.8',
-                                      fontSize: isDesktop ? '0.9rem' : '7.5px',
+                                      fontSize: isDesktop ? '0.9rem' : '8px',
                                       whiteSpace: 'pre-wrap',
                                       minHeight: rawText.trim() === '' ? '1.8em' : 'auto'
                                     }}>
