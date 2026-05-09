@@ -765,7 +765,7 @@ useEffect(() => {
                                     <div key={i} style={{
                                       paddingLeft: `${indent}rem`,
                                       lineHeight: '1.8',
-                                      fontSize: isDesktop ? '0.9rem' : '11px',
+                                      fontSize: isDesktop ? '0.9rem' : '7.5px',
                                       whiteSpace: 'pre-wrap',
                                       minHeight: rawText.trim() === '' ? '1.8em' : 'auto'
                                     }}>
