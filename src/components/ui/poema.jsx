@@ -748,15 +748,17 @@ useEffect(() => {
                             <ScrollReveal key={blockIndex} direction="up" delay={100}>
                               <div style={{ marginBottom: '0px', overflowX: 'auto', maxWidth: '100%' }}>
                                 {lines.map((line, i) => {
-                                  const prefixMatch = line.match(/^([>%*]+)/);
+                                  const prefixMatch = line.match(/^([>%*°]+)/);
                                   const prefix = prefixMatch ? prefixMatch[1] : '';
+                                  const remUnit = isMobile ? 1 : 2;
                                   const indent = prefix.split('').reduce((acc, char) => {
-                                    if (char === '>') return acc + 2;
-                                    if (char === '%') return acc + 1;
-                                    if (char === '*') return acc + 0.5;
+                                    if (char === '>') return acc + remUnit;
+                                    if (char === '%') return acc + (remUnit / 2);
+                                    if (char === '*') return acc + (remUnit / 4);
+                                    if (char === '°') return acc + (remUnit / 8);
                                     return acc;
                                   }, 0);
-                                  const rawText = line.replace(/^[>%*]+/, '');
+                                  const rawText = line.replace(/^[>%*°]+/, '');
                                   const processLine = (str) => {
                                     return str.split(/@([^@]+)@/).flatMap((part, j) => {
                                       if (j % 2 === 1) return [<strong key={`b${j}`}>{part}</strong>];
