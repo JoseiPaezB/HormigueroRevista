@@ -567,15 +567,20 @@ useEffect(() => {
           <ScrollReveal direction="up" delay={600}>
             <div style={{
               fontSize: isDesktop ? '0.85rem' : '10px',
-              fontStyle: 'italic',
               color: '#666',
               marginBottom: '30px',
               lineHeight: '1.6',
               textAlign: 'left',
               width: '96%',
-              whiteSpace: 'pre-line'
+              whiteSpace: 'pre-wrap'
             }}>
-              {poema.mencion}
+              {(() => {
+                if (!poema.mencion) return null;
+                const parts = poema.mencion.split(/\$([^$]+)\$/);
+                return parts.map((part, index) =>
+                  index % 2 === 1 ? <em key={index}>{part}</em> : part
+                );
+              })()}
             </div>
           </ScrollReveal>
         )}
@@ -734,12 +739,51 @@ useEffect(() => {
                         </div>
                       ));
                     })()
-                  ) : (
-                    // For all other poems, apply the italic processing
-                    <div style={{ whiteSpace: 'pre-wrap' }}>
-                      {processTextWithItalics(section.content)}
-                    </div>
-                  )}
+                  ) : poema.id === 206 ? (
+                      <div>
+                        {section.content.split('~').map((block, blockIndex) => {
+                          if (!block.trim()) return null;
+                          const lines = block.split('\n');
+                          return (
+                            <ScrollReveal key={blockIndex} direction="up" delay={100}>
+                              <div style={{ marginBottom: '0px' }}>
+                                {lines.map((line, i) => {
+                                  const prefixMatch = line.match(/^([>%*]+)/);
+                                  const prefix = prefixMatch ? prefixMatch[1] : '';
+                                  const indent = prefix.split('').reduce((acc, char) => {
+                                    if (char === '>') return acc + 2;
+                                    if (char === '%') return acc + 1;
+                                    if (char === '*') return acc + 0.5;
+                                    return acc;
+                                  }, 0);
+                                  const rawText = line.replace(/^[>%*]+/, '');
+                                  const processLine = (str) =>
+                                    str.split(/@([^@]+)@/).map((part, j) =>
+                                      j % 2 === 1 ? <strong key={j}>{part}</strong> : part
+                                    );
+                                  return (
+                                    <div key={i} style={{
+                                      paddingLeft: `${indent}rem`,
+                                      lineHeight: '1.8',
+                                      fontSize: isDesktop ? '0.9rem' : '11px',
+                                      whiteSpace: 'pre',
+                                      minHeight: rawText.trim() === '' ? '1.8em' : 'auto'
+                                    }}>
+                                      {rawText.trim() === '' ? '\u00A0' : processLine(rawText)}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </ScrollReveal>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      // For all other poems, apply the italic processing
+                      <div style={{ whiteSpace: 'pre-wrap' }}>
+                        {processTextWithItalics(section.content)}
+                      </div>
+                    )}
                 </div>
               </div>
             );
