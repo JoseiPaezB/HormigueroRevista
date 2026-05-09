@@ -315,7 +315,13 @@ useEffect(() => {
     const firstLetter = authorName.charAt(0);
     const restOfName = authorName.substring(1);
     const isDesktop = windowWidth > 840;
-
+    const processItalics = (text) => {
+      if (!text) return text;
+      const parts = text.split(/\$([^$]+)\$/);
+      return parts.map((part, index) =>
+        index % 2 === 1 ? <em key={index}>{part}</em> : part
+      );
+    };
 
 return (
   <>
@@ -449,7 +455,7 @@ return (
                           {firstLetter}
                         </span>
                         {restOfName}, {/* Author name with comma */}
-                        {fullSemblanza}
+                        {processItalics(fullSemblanza)}
                       </p>
                     </div>
                   </ScrollReveal>
@@ -502,7 +508,7 @@ return (
                           {firstLetter}
                         </span>
                         {restOfName}, {/* Author name with comma */}
-                        {fullSemblanza}
+                        {processItalics(fullSemblanza)}
                       </p>
                     </div>
                   </ScrollReveal>
@@ -560,7 +566,7 @@ return (
                         {firstLetter}
                       </span>
                       {restOfName}, {/* Author name with comma */}
-                      {fullSemblanza}
+                      {processItalics(fullSemblanza)}
                     </p>
                   </div>
                 </ScrollReveal>

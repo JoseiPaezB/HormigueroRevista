@@ -739,7 +739,7 @@ useEffect(() => {
                         </div>
                       ));
                     })()
-                  ) : poema.id === 206 ? (
+                  ) : poema.id === 206 || poema.id === 197 ? (
                       <div>
                         {section.content.split('~').map((block, blockIndex) => {
                           if (!block.trim()) return null;
