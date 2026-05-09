@@ -746,7 +746,7 @@ useEffect(() => {
                           const lines = block.split('\n');
                           return (
                             <ScrollReveal key={blockIndex} direction="up" delay={100}>
-                              <div style={{ marginBottom: '0px' }}>
+                              <div style={{ marginBottom: '0px', overflowX: 'auto', maxWidth: '100%' }}>
                                 {lines.map((line, i) => {
                                   const prefixMatch = line.match(/^([>%*]+)/);
                                   const prefix = prefixMatch ? prefixMatch[1] : '';
@@ -766,7 +766,7 @@ useEffect(() => {
                                       paddingLeft: `${indent}rem`,
                                       lineHeight: '1.8',
                                       fontSize: isDesktop ? '0.9rem' : '11px',
-                                      whiteSpace: 'pre',
+                                      whiteSpace: 'pre-wrap',
                                       minHeight: rawText.trim() === '' ? '1.8em' : 'auto'
                                     }}>
                                       {rawText.trim() === '' ? '\u00A0' : processLine(rawText)}
