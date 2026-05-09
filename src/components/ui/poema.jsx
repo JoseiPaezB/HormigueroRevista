@@ -566,7 +566,9 @@ useEffect(() => {
         {poema?.mencion && (
           <ScrollReveal direction="up" delay={600}>
             <div style={{
-              fontSize: isDesktop ? '0.85rem' : '10px',
+              fontSize: [206, 197, 196].includes(poema?.id) 
+                ? (isDesktop ? '0.9rem' : '8.5px')
+                : (isDesktop ? '0.85rem' : '10px'),
               color: '#666',
               marginBottom: '30px',
               lineHeight: '1.6',
@@ -771,7 +773,7 @@ useEffect(() => {
                                     <div key={i} style={{
                                       paddingLeft: `${indent}rem`,
                                       lineHeight: '1.8',
-                                      fontSize: isDesktop ? '0.9rem' : '8px',
+                                      fontSize: isDesktop ? '0.9rem' : '8.5px',
                                       whiteSpace: 'pre-wrap',
                                       minHeight: rawText.trim() === '' ? '1.8em' : 'auto'
                                     }}>
