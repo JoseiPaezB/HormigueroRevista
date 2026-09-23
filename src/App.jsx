@@ -16,6 +16,7 @@ import ScrollToHashElement from './components/ui/ScrollToHashElement';
 import NotFound from './components/ui/notFound.jsx';
 import Critica from './components/ui/critica.jsx';
 import VisualesWrapper from './components/ui/visuales_wrapper.jsx';
+import Eventos from './components/ui/eventos.jsx';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/creaciones" element={<Creaciones />} />
           <Route path="/critica" element={<Critica />} />
           <Route path="/visuales" element={<VisualesWrapper />} />
+          <Route path="/eventos" element={<Eventos />} />
           <Route path="/autor/:nombre" element={<AuthorBio />} />
           <Route path="/poema/:titulo" element={<Poema />} />
           <Route path="*" element={<NotFound />} />
