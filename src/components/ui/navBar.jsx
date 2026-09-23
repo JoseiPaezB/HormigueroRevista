@@ -12,6 +12,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [edicionesDropdownOpen, setEdicionesDropdownOpen] = useState(false);
   const [hormigueadosDropdownOpen, setHormigueadosDropdownOpen] = useState(false);
+  const [eventosDropdownOpen, setEventosDropdownOpen] = useState(false);
   const [allEditions, setAllEditions] = useState([]);
   const [hormigueroLogoUrl, setHormigueroLogoUrl] = useState('');
 
@@ -22,6 +23,7 @@ const Navbar = () => {
 
   const dropdownRef = useRef(null);
   const hormigueadosRef = useRef(null);
+  const eventosRef = useRef(null);
   const searchRef = useRef(null);
   const searchDebounceRef = useRef(null);
   const navigate = useNavigate();
@@ -87,6 +89,15 @@ const Navbar = () => {
     if (hormigueadosDropdownOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [hormigueadosDropdownOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (eventosRef.current && !eventosRef.current.contains(event.target))
+        setEventosDropdownOpen(false);
+    };
+    if (eventosDropdownOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [eventosDropdownOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -175,6 +186,12 @@ const Navbar = () => {
         }, 600);
       }
     }, 300);
+  };
+
+  const handleEventosClick = () => {
+    setEventosDropdownOpen(false);
+    setMenuOpen(false);
+    navigate('/eventos');
   };
 
   const getLogoSize = () => ({ width: isMobile ? '30px' : '25px', height: 'auto' });
@@ -329,6 +346,25 @@ const Navbar = () => {
                 )}
               </div>
 
+              {/* EVENTOS */}
+              <div ref={eventosRef} style={{ position: 'relative' }}>
+                <button onClick={() => setEventosDropdownOpen(!eventosDropdownOpen)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#000', textTransform: 'uppercase', fontSize: navFontSize, fontWeight: '500', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '5px', padding: 0 }}>
+                  EVENTOS
+                  <FaChevronDown size={10} style={{ transform: eventosDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
+                </button>
+                {eventosDropdownOpen && (
+                  <div style={dropdownMenuStyle}>
+                    <button onClick={handleEventosClick}
+                      style={dropdownBtnStyle(0, 1)}
+                      onMouseEnter={(e) => (e.target.style.backgroundColor = '#f5f5f5')}
+                      onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}>
+                      Eventos
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {/* COLABORADORES / CONTACTO / SUSCRÍBETE */}
               {footerLinks.map(({ id, label, page }) => (
                 <button key={id} onClick={() => handleScrollToSection(id, page)}
@@ -354,6 +390,23 @@ const Navbar = () => {
 
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
               <a href="/" style={{ textDecoration: 'none', color: '#000' }} onClick={() => setMenuOpen(false)}>INICIO</a>
+            </li>
+
+            {/* EVENTOS */}
+            <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
+              <div onClick={() => setEventosDropdownOpen(!eventosDropdownOpen)} style={{ color: '#000', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                EVENTOS
+                <FaChevronDown size={10} style={{ transform: eventosDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
+              </div>
+              {eventosDropdownOpen && (
+                <ul style={{ listStyleType: 'none', margin: '10px 0 0 0', padding: '0 0 0 15px' }}>
+                  <li style={{ padding: '8px 0' }}>
+                    <button onClick={handleEventosClick} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', fontSize: '14px' }}>
+                      Eventos
+                    </button>
+                  </li>
+                </ul>
+              )}
             </li>
 
             {/* EDICIONES */}

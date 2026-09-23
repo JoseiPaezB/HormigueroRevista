@@ -384,6 +384,250 @@ body, html {
   padding: 20px;
 }
 
+.eventos-page {
+  position: relative;
+  overflow: hidden;
+  min-height: 70vh;
+  padding: 120px 20px 60px;
+}
+
+.eventos-page__ants {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.eventos-page__header {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  border-bottom: 1px solid #d9d9d9;
+  padding-bottom: 18px;
+}
+
+.eventos-page__eyebrow {
+  margin: 0 0 8px;
+  color: #777;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.eventos-page__header h1 {
+  margin: 0;
+  font-size: clamp(32px, 6vw, 64px);
+  font-weight: 800;
+}
+
+.eventos-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.evento-card {
+  overflow: hidden;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.evento-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.evento-card__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 620px;
+  object-fit: contain;
+  background: #f5f5f5;
+}
+
+.evento-card__content {
+  padding: 20px;
+}
+
+.evento-card__content h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.evento-card__content p {
+  margin: 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.evento-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-top: 18px;
+  color: #555;
+  font-size: 14px;
+}
+
+.evento-card__details span,
+.evento-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.evento-card__link {
+  margin-top: 20px;
+  color: #000;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.evento-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.evento-modal__content {
+  position: relative;
+  width: min(900px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.evento-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  color: #000;
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+.evento-modal__gallery {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  background: #eee;
+}
+
+.evento-modal__gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 620px;
+  object-fit: contain;
+  background: #f5f5f5;
+}
+
+.evento-modal__arrow {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  color: #000;
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.evento-modal__arrow--previous {
+  left: 14px;
+}
+
+.evento-modal__arrow--next {
+  right: 14px;
+}
+
+.evento-modal__counter {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  padding: 4px 9px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  font-size: 12px;
+  transform: translateX(-50%);
+}
+
+.evento-modal__dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  display: flex;
+  gap: 7px;
+  transform: translateX(-50%);
+}
+
+.evento-modal__dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.evento-modal__dots button.is-active {
+  background: #fff;
+}
+
+.evento-modal__body {
+  padding: 24px;
+}
+
+.evento-modal__body h2 {
+  margin: 0 0 14px;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.evento-modal__body p {
+  margin: 0;
+  color: #555;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .evento-modal {
+    padding: 12px;
+  }
+}
+
+
 .eventos-title {
   font-size: clamp(18px, 4vw, 3rem);
   text-transform: uppercase;
