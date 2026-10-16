@@ -248,7 +248,7 @@ const ContentComponent = ({ contentType }) => {
         }
 
         const { data: poemarioRelations, error: relationsError } = await supabase
-          .from('creaciones_poemario').select('id_poemario').eq('id_creacion', contentData.id);
+          .from('creaciones_poemario').select('id_poemario, portada').eq('id_creacion', contentData.id);
         if (relationsError) throw relationsError;
 
         const poemarioIds = poemarioRelations.map(r => r.id_poemario);
@@ -258,16 +258,21 @@ const ContentComponent = ({ contentType }) => {
             .from('poemario').select('*, autor(nombre)').in('id', poemarioIds);
           if (poemarioError) throw poemarioError;
 
+          const portadaPorPoemario = new Map(
+            poemarioRelations.map(rel => [rel.id_poemario, rel.portada])
+          );
+
           const poemariosWithCount = await Promise.all(
             poemarioData.map(async (poemario) => {
               const { count, error: countError } = await supabase
                 .from('poema').select('*', { count: 'exact', head: true }).eq('id_poemario', poemario.id);
+              const portadaEdicion = portadaPorPoemario.get(poemario.id) || poemario.portada;
               return {
                 id: poemario.id,
                 title: poemario.titulo,
                 author: poemario.autor ? poemario.autor.nombre : 'Unknown',
-                cover: poemario.portada,
-                isSVG: isSVG(poemario.portada),
+                cover: portadaEdicion,
+                isSVG: isSVG(portadaEdicion),
                 link: `/autor/${encodeURIComponent(poemario.autor ? poemario.autor.nombre : 'unknown')}?edicion=${revistaData.id}`,
                 poemCount: countError ? Math.floor(Math.random() * 10) + 1 : count,
               };
@@ -505,6 +510,23 @@ const ContentComponent = ({ contentType }) => {
               const isHighlighted = highlightedAuthorId === book.id;
               const titleStyles = getTitleStyles(sizeStyles, isHighlighted);
               const isLargeBook = sizeStyles.isLarge;
+              // Solo Zoológico humano (revista 5): portadas completas sin recortar.
+              const compactCover = revista?.id === 5;
+              const coverStyle = compactCover
+                ? {
+                    width: isDesktop ? '90%' : '100%',
+                    height: isDesktop ? '95%' : '100%',
+                    objectFit: 'contain',
+                    display: 'block',
+                    margin: 'auto',
+                    position: 'absolute',
+                    inset: 0,
+                  }
+                : {
+                    width: isDesktop ? '65%' : '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  };
 
               return (
                 <FadeInElement key={book.id} delay={index * 100}>
@@ -537,7 +559,7 @@ const ContentComponent = ({ contentType }) => {
                       {book.isSVG ? (
                         <SVGRenderer
                           svgString={book.cover}
-                          style={{ width: isDesktop ? '65%' : '100%', height: '100%', objectFit: 'cover' }}
+                          style={coverStyle}
                           isAnimating={animatingBookId === book.id}
                           animationType="pulse"
                         />
@@ -545,7 +567,7 @@ const ContentComponent = ({ contentType }) => {
                         <img
                           src={book.cover}
                           alt={book.author}
-                          style={{ width: isDesktop ? '65%' : '100%', height: '100%', objectFit: 'cover' }}
+                          style={coverStyle}
                         />
                       )}
 

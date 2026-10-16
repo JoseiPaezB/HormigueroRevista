@@ -1,0 +1,39 @@
+.hormiga-recorrido {
+  --caminante-ancho: 205px;
+  position: relative;
+  width: 100%;
+  height: 225px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hormiga-caminando {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: var(--caminante-ancho);
+  height: 215px;
+  object-fit: contain;
+  object-position: bottom center;
+  max-width: none;
+  will-change: left;
+}
+.hormiga-ida { animation: hormiga-ida 16s linear infinite; }
+.hormiga-vuelta { animation: hormiga-vuelta 16s linear infinite; }
+@keyframes hormiga-ida {
+  0% { left: 0; visibility: visible; }
+  49.999% { left: calc(100% - var(--caminante-ancho)); visibility: visible; }
+  50%, 100% { left: calc(100% - var(--caminante-ancho)); visibility: hidden; }
+}
+@keyframes hormiga-vuelta {
+  0%, 49.999% { left: calc(100% - var(--caminante-ancho)); visibility: hidden; }
+  50% { left: calc(100% - var(--caminante-ancho)); visibility: visible; }
+  100% { left: 0; visibility: visible; }
+}
+@media (max-width: 768px) {
+  .hormiga-recorrido { --caminante-ancho: 130px; height: 150px; }
+  .hormiga-caminando { height: 145px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hormiga-caminando { animation: none; }
+  .hormiga-vuelta { display: none; }
+}
