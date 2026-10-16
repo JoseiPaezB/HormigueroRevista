@@ -1,0 +1,12 @@
+.poem-scroll-block {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+.poem-scroll-block--hidden {
+  opacity: 0;
+  transform: translateY(15px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .poem-scroll-block { opacity: 1 !important; transform: none !important; transition: none !important; }
+}

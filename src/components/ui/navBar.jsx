@@ -194,7 +194,7 @@ const Navbar = () => {
     navigate('/eventos');
   };
 
-  const getLogoSize = () => ({ width: isMobile ? '30px' : '25px', height: 'auto' });
+  const getLogoSize = () => ({ width: isMobile ? '60px' : '60px', height: 'auto' });
   const navFontSize = window.innerWidth < 1200 ? '12px' : '14px';
 
   const dropdownMenuStyle = {

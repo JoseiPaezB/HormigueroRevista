@@ -5,6 +5,8 @@ import { createClient } from '@supabase/supabase-js';
 import hormigueroLogo from '/assets/anticon.svg';
 import FloatingHormiguearButton from './hormiguearButton'; // Import our new component
 import hormigueroLogo2 from '/assets/anticon2.svg'; // Make sure path is correct
+import PoemScrollBlocks from './PoemScrollBlocks';
+import PoemaVisual295 from './PoemaVisual295';
 import ScrollReveal from './ScrollReveal'; // Ajusta la ruta según tu estructura
 import {insects} from '../../data/insects'
 import InsectColony from './MovingSvgBackground';
@@ -88,28 +90,22 @@ const Poema = () => {
             }
           }
 
-          // 4. Fetch revista for header background
-          const { data: revistaAutorData, error: revistaAutorError } = await supabase
-  .from('revista_autor')
-  .select('id_revista')
-  .eq('id_autor', poemaData.id_autor)
-  .single();
+          // Edición real del poema; la relación autor-revista no es unívoca.
+          const { data: publicaciones, error: publicacionesError } = await supabase
+            .from('poema_revista').select('id_revista').eq('id_poema', poemaData.id);
+          if (publicacionesError) throw publicacionesError;
+          const edicionParam = new URLSearchParams(location.search).get('edicion');
+          const seleccionada = (publicaciones || []).find(r => String(r.id_revista) === edicionParam)
+            || (publicaciones || [])[0];
+          if (seleccionada) {
+            const { data: revistaData, error: revistaError } = await supabase
+              .from('revista').select('*').eq('id', seleccionada.id_revista).single();
+            if (revistaError) throw revistaError;
+            setRevista(revistaData);
+          } else {
+            setRevista(null);
+          }
 
-    if (!revistaAutorError && revistaAutorData) {
-      const { data: revistaData, error: revistaError } = await supabase
-        .from('revista')
-        .select('*')
-        .eq('id', revistaAutorData.id_revista)
-        .single();
-      if (!revistaError) setRevista(revistaData);
-    } else {
-      // fallback
-      const { data: revistaData } = await supabase.from('revista').select('*').eq('id', 1).single();
-      setRevista(revistaData);
-    }
-
-          
-          
           setLoading(false);
         } catch (err) {
           console.error('Error fetching poem data:', err);
@@ -119,7 +115,7 @@ const Poema = () => {
       };
 
       fetchData();
-    }, [titulo]);
+    }, [titulo, location.search]);
 
   // Add this useEffect after you've fetched the author data
 
@@ -144,7 +140,7 @@ useEffect(() => {
     if (currentIndex <= 0 && autor) {
       sessionStorage.removeItem('poemHistory');
       sessionStorage.removeItem('poemPageAuthor');
-      navigate(`/autor/${encodeURIComponent(autor.nombre)}`, { replace: true });
+      navigate(`/autor/${encodeURIComponent(autor.nombre)}${revista?.id ? `?edicion=${revista.id}` : ''}`, { replace: true });
     }
   };
   
@@ -462,9 +458,9 @@ useEffect(() => {
       : cleanText;
   };
   // Process poem sections
-  const poemSections = poema?.texto 
-    ? processPoemaText(poema.texto) 
-    : fallbackPoem.sections;
+const poemSections = [295, 296, 297].includes(Number(poema?.id))
+  ? []
+  : poema?.texto ? processPoemaText(poema.texto) : fallbackPoem.sections;
 
   // Determine if we have other poems to show
   const hasOtherPoems = otrosPoemas && otrosPoemas.length > 0;
@@ -596,6 +592,9 @@ useEffect(() => {
           marginLeft: 0,
           width:'96%'
         }}>
+          {[295, 296, 297].includes(Number(poema?.id)) && (
+            <PoemaVisual295 texto={poema?.texto} />
+          )}
           {poemSections.map((section, index) => {
             // Add this function to process italics
             const processTextWithItalics = (text) => {
@@ -788,9 +787,7 @@ useEffect(() => {
                       </div>
                     ) : (
                       // For all other poems, apply the italic processing
-                      <div style={{ whiteSpace: 'pre-wrap' }}>
-                        {processTextWithItalics(section.content)}
-                      </div>
+                      <PoemScrollBlocks text={section.content} renderText={processTextWithItalics} />
                     )}
                 </div>
               </div>
@@ -930,7 +927,7 @@ useEffect(() => {
               }
               history.replaceState(null, '', window.location.href);
               setTimeout(() => {
-                navigate(`/autor/${encodeURIComponent(autor.nombre)}`, { replace: true });
+                navigate(`/autor/${encodeURIComponent(autor.nombre)}${revista?.id ? `?edicion=${revista.id}` : ''}`, { replace: true });
               }, 10);
             }}
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}

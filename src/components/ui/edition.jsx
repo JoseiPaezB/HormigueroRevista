@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
 import HormigueadosSection from './hormigueados';
+import HormigaCaminando from './HormigaCaminando';
 import Footer from './footer';
 import ScrollReveal from './ScrollReveal';
 import { setupHashNavigation } from './scrollUtils';
@@ -480,7 +481,7 @@ useEffect(() => {
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
                       <RotatingBackground changeInterval={850} opacity={0.65} zIndex={-1} supabase={supabase} />
                     </div>
-                  ) : revista?.numero === 1 ? (
+                  ) : (revista?.numero === 1 || Number(revista?.id) === 5) ? (
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
                       <InsectColony insects={localInsects} count={25} />
                     </div>
@@ -498,7 +499,8 @@ useEffect(() => {
                     {menuItems.map((item, index) => {
                       const directions = ['left', 'right', 'up'];
                       return (
-                        <ScrollReveal key={index} delay={index * 200} direction={directions[index % directions.length]}>
+                        <React.Fragment key={item.path || index}>
+                        <ScrollReveal delay={index * 200} direction={directions[index % directions.length]}>
                           <Link
                             to={item.path}
                             className="menu-item"
@@ -518,6 +520,12 @@ useEffect(() => {
                             </div>
                           </Link>
                         </ScrollReveal>
+                        {index === 0 && Number(revista?.id) === 5 && (
+                          <div style={{ width: '100%', position: 'relative', zIndex: 2 }}>
+                            <HormigaCaminando />
+                          </div>
+                        )}
+                        </React.Fragment>
                       );
                     })}
                   </div>

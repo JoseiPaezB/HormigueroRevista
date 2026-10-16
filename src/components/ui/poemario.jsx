@@ -58,11 +58,14 @@ const AuthorBio = () => {
     const location = useLocation();
     const [autor, setAutor] = useState(null);
     const [poemas, setPoemas] = useState([]);
+    const [edicionesAutor, setEdicionesAutor] = useState([]);
+    const edicionParam = new URLSearchParams(location.search).get('edicion');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [revista, setRevista] = useState(null);       // latest edition (for nav)
     const [revistas, setRevistas] = useState([]);        // all editions
     const [poemario, setPoemario] = useState(null);
+    const [portadaEdicion, setPortadaEdicion] = useState(null);
     const [isVisualArtist, setIsVisualArtist] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     
@@ -146,20 +149,17 @@ useEffect(() => {
       if (revistaError) throw revistaError;
       setRevistas(revistaData);
 
-      // Find which edition this author belongs to
-      const { data: revistaAutorData, error: revistaAutorError } = await supabase
+      const { data: relaciones, error: relacionesError } = await supabase
         .from('revista_autor')
         .select('id_revista')
-        .eq('id_autor', authorId)
-        .single();
-
-      if (!revistaAutorError && revistaAutorData) {
-        const autorRevista = revistaData?.find(r => r.id === revistaAutorData.id_revista);
-        setRevista(autorRevista || revistaData?.[0]);
-      } else {
-        setRevista(revistaData?.[0]); // fallback to latest
-      }
- 
+        .eq('id_autor', authorId);
+      if (relacionesError) throw relacionesError;
+      const ediciones = (revistaData || []).filter(r =>
+        (relaciones || []).some(rel => rel.id_revista === r.id)
+      ).sort((a, b) => (a.numero || 0) - (b.numero || 0));
+      setEdicionesAutor(ediciones);
+      const seleccionada = ediciones.find(r => String(r.id) === edicionParam);
+      setRevista(seleccionada || ediciones[ediciones.length - 1] || revistaData?.[0]);
 
       if (autorData.tipo_creacion !== 'visuales') {
         const { data: poemasData, error: poemasError } = await supabase
@@ -178,18 +178,52 @@ useEffect(() => {
         if (!poemarioError) {
           setPoemario(poemarioData);
         }
+
+        // La portada contextual solo aplica al entrar desde una edición.
+        // Sin ?edicion= se conserva la portada general del poemario.
+        setPortadaEdicion(null);
+        if (!poemarioError && poemarioData && edicionParam) {
+          const { data: secciones, error: seccionesError } = await supabase
+            .from('creaciones')
+            .select('id')
+            .eq('id_revista', edicionParam)
+            .eq('tipo', 'creaciones');
+          if (seccionesError) throw seccionesError;
+
+          if (secciones?.length) {
+            const { data: portadaRelaciones, error: portadaError } = await supabase
+              .from('creaciones_poemario')
+              .select('portada')
+              .eq('id_creacion', secciones[0].id)
+              .eq('id_poemario', poemarioData.id)
+              .limit(1);
+            if (portadaError) throw portadaError;
+            setPortadaEdicion(portadaRelaciones?.[0]?.portada || null);
+          }
+        }
         
-        const transformedPoemas = poemasData.map((poema, index) => {
-          const wordCount = countWords(poema.texto);
-          
-          return {
-            id: poema.id,
-            title: poema.titulo,
-            author: autorData.nombre,
-            cover: poema.portada,
-            link: `/poema/${encodeURIComponent(poema.titulo.toLowerCase())}`,
-            wordCount: wordCount || Math.floor(Math.random() * 150) + 20, 
-          };
+        // La edición de un poema se obtiene de poema_revista, NO de revista_autor.
+        const ids = (poemasData || []).map(p => p.id);
+        let publicaciones = [];
+        if (ids.length) {
+          const { data, error: publicacionesError } = await supabase
+            .from('poema_revista').select('id_poema, id_revista').in('id_poema', ids);
+          if (publicacionesError) throw publicacionesError;
+          publicaciones = data || [];
+        }
+        const transformedPoemas = (poemasData || []).flatMap(poema => {
+          const relacionesPoema = publicaciones.filter(rel => rel.id_poema === poema.id);
+          // No atribuimos automáticamente poemas sin relación a una edición.
+          return relacionesPoema.filter(rel => !edicionParam || String(rel.id_revista) === edicionParam)
+            .map(rel => ({
+              id: poema.id,
+              editionId: rel.id_revista,
+              title: poema.titulo,
+              author: autorData.nombre,
+              cover: poema.portada,
+              link: `/poema/${encodeURIComponent(poema.titulo.toLowerCase())}?edicion=${rel.id_revista}`,
+              wordCount: countWords(poema.texto),
+            }));
         });
 
         setPoemas(transformedPoemas);
@@ -204,7 +238,7 @@ useEffect(() => {
   };
   
   fetchData();
-}, [nombre]);
+}, [nombre, edicionParam]);
 
     const categorizeBooks = (books) => {
       const small = books.filter(book => book.wordCount < 100);
@@ -251,7 +285,16 @@ useEffect(() => {
       return result;
     };
     
-    const arrangedBooks = arrangeBooks(poemas);
+    const groupedBooks = edicionParam
+      ? [{ edition: edicionesAutor.find(r => String(r.id) === edicionParam), books: arrangeBooks(poemas) }]
+      : edicionesAutor.map(edition => ({
+          edition,
+          books: arrangeBooks(poemas.filter(p => p.editionId === edition.id)),
+        })).filter(group => group.books.length > 0);
+    const arrangedBooks = groupedBooks.flatMap(group => [
+      ...(!edicionParam ? [{ isHeading: true, id: `heading-${group.edition.id}`, title: `Número ${group.edition.numero} — ${group.edition.nombre}` }] : []),
+      ...group.books,
+    ]);
 
     const getBookSize = (wordCount, sizeCategory) => {
       if (sizeCategory === 'large') {
@@ -368,7 +411,7 @@ return (
     <ScrollReveal direction="up">
       <div style={{margin:isDesktop ? '0 auto':'normal',width:isDesktop ? '30%':'normal',display: isDesktop? 'flex':'normal', justifyContent: isDesktop ?  'center' : 'normal'}}>
         <div className="cover-image image_2" style={{
-          backgroundImage: `url(${!isVisualArtist ? (poemario?.portada || portada) : (autor?.imagen || portada)})`,
+          backgroundImage: `url(${!isVisualArtist ? (portadaEdicion || poemario?.portada || portada) : (autor?.imagen || portada)})`,
           height: '30vh',
           backgroundSize: '45%',
           backgroundRepeat: 'no-repeat',
@@ -691,6 +734,11 @@ return (
             zIndex: 1
           }}>
             {arrangedBooks.map((book, index) => {
+              if (book.isHeading) return (
+                <h2 key={book.id} style={{ gridColumn: '1 / -1', fontSize: isDesktop ? '24px' : '18px', margin: '28px 0 4px' }}>
+                  {book.title}
+                </h2>
+              );
               const sizeStyles = getBookSize(book.wordCount, book.sizeCategory);
               const titleStyles = getTitleStyles(sizeStyles);
               const isLargeBook = sizeStyles.isLarge;

@@ -438,7 +438,8 @@ const Contenido = () => {
                     const direction = directions[index % directions.length];
                     
                     return (
-                      <ScrollReveal key={index} delay={index * 200} direction={direction}>
+                      <React.Fragment key={item.path || index}>
+                      <ScrollReveal delay={index * 200} direction={direction}>
                         <Link 
                           to={item.path} 
                           className="menu-item" 
@@ -485,6 +486,7 @@ const Contenido = () => {
                           </div>
                         </Link>
                       </ScrollReveal>
+                    </React.Fragment>
                     );
                   })}
                 </div>
