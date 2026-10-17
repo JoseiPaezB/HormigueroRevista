@@ -17,7 +17,7 @@ import NotFound from './components/ui/notFound.jsx';
 import Critica from './components/ui/critica.jsx';
 import VisualesWrapper from './components/ui/visuales_wrapper.jsx';
 import Eventos from './components/ui/eventos.jsx';
-
+import Visuales2 from './components/ui/visuales2.jsx';
 
 function App() {
   return (
@@ -31,6 +31,7 @@ function App() {
           <Route path="/creaciones" element={<Creaciones />} />
           <Route path="/critica" element={<Critica />} />
           <Route path="/visuales" element={<VisualesWrapper />} />
+          <Route path="/visuales2" element={<Visuales2 />} />
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/autor/:nombre" element={<AuthorBio />} />
           <Route path="/poema/:titulo" element={<Poema />} />

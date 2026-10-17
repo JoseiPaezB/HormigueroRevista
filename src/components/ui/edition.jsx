@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 
 import HormigueadosSection from './hormigueados';
 import HormigaCaminando from './HormigaCaminando';
+import './EscenarioRevista5.css';
 import Footer from './footer';
 import ScrollReveal from './ScrollReveal';
 import { setupHashNavigation } from './scrollUtils';
@@ -243,9 +244,9 @@ useEffect(() => {
     delay: 0,
   },
   {
-    path: `/critica?edicion=${revista?.id || edicionId || ''}`,
-    title: revista?.id === 3 ? 'TEJER LUZ A PERPETUIDAD' : 'OTROS BICHOS',
-    subtitle: revista?.id === 3 ? 'Ensayos, entrevistas y traducciones' : 'Ensayos, entrevistas y traducciones',
+    path: Number(revista?.id) === 5 ? '/visuales2?edicion=5' : `/critica?edicion=${revista?.id || edicionId || ''}`,
+    title: Number(revista?.id) === 5 ? 'A OJO DE HORMIGA' : revista?.id === 3 ? 'TEJER LUZ A PERPETUIDAD' : 'OTROS BICHOS',
+    subtitle: Number(revista?.id) === 5 ? 'Artes visuales' : 'Ensayos, entrevistas y traducciones',
     delay: 0.3,
   },
   ...(revista?.id === 1 || revista?.numero === 1 ? [{
@@ -468,20 +469,26 @@ useEffect(() => {
               {/* ── Menú de contenidos ── */}
               <ScrollReveal direction="scale" delay={400}>
                 <div
-                  className="menu-background-section"
+                  className={`menu-background-section${Number(revista?.id) === 5 ? " escenario-revista-5" : ""}`}
                   style={{
                     position: 'relative',
-                    padding: isMobile ? '0' : revista?.numero === 1 ? '100px 10px' : revista?.numero === 2 ? '400px 10px' : '250px 10px',                    
+                    padding: Number(revista?.id) === 5 ? (isMobile ? '20px 8px' : '35px 12px') : isMobile ? '0' : revista?.numero === 1 ? '100px 10px' : revista?.numero === 2 ? '400px 10px' : '250px 10px',                    
                     margin: isMobile ? '30px 0' : '0px 0',
                     overflow: 'hidden',
                   }}
                 >
+                  {/* Paisaje sincronizado con el caminante; solo revista ID 5. */}
+                  {Number(revista?.id) === 5 && (
+                    <div className="escenario-revista-5-fondos" aria-hidden="true">
+                      <div className="escenario-revista-5-fondo" />
+                    </div>
+                  )}
                   {/* Per-edition background inside menu */}
                   {revista?.numero === 2 ? (
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
                       <RotatingBackground changeInterval={850} opacity={0.65} zIndex={-1} supabase={supabase} />
                     </div>
-                  ) : (revista?.numero === 1 || Number(revista?.id) === 5) ? (
+                  ) : (revista?.numero === 1 || Number(revista?.id) === 6) ? (
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
                       <InsectColony insects={localInsects} count={25} />
                     </div>
@@ -495,16 +502,22 @@ useEffect(() => {
                     }} />
                   ) : null}
 
-                  <div className="vertical-menu" style={{ display: 'grid', gap: '30px', padding: '8px', width: '100%', fontSize: '1.3rem', position: 'relative', zIndex: 1 }}>
+                  <div className="vertical-menu" style={{  gap: Number(revista?.id) === 5 ? '0px' : '30px', padding: '8px', width: '100%', fontSize: '1.3rem', position: 'relative', zIndex: 2 }}>
                     {menuItems.map((item, index) => {
                       const directions = ['left', 'right', 'up'];
                       return (
                         <React.Fragment key={item.path || index}>
+                        <div style={Number(revista?.id) === 5 && windowWidth <= 768 ? {
+                          width: '100%',
+                          boxSizing: 'border-box',
+                          marginTop: index === 1 ? '230px' : '0',
+                          textAlign: 'center',
+                        } : undefined}>
                         <ScrollReveal delay={index * 200} direction={directions[index % directions.length]}>
                           <Link
                             to={item.path}
                             className="menu-item"
-                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textDecoration: 'none', color: 'black', justifyContent: 'center', textAlign: 'center', padding: '20px', position: 'relative', zIndex: 2 }}
+                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textDecoration: 'none', color: 'black', justifyContent: 'center', textAlign: 'center', padding: Number(revista?.id) === 5 ? '8px 12px' : '20px', position: 'relative', zIndex: 2, ...(Number(revista?.id) === 5 && windowWidth <= 768 ? { width: '100%', boxSizing: 'border-box', marginLeft: 'auto', marginRight: 'auto' } : {}) }}
                           >
                             <div
                               className="menu-text pulsing-text"
@@ -520,6 +533,7 @@ useEffect(() => {
                             </div>
                           </Link>
                         </ScrollReveal>
+                        </div>
                         {index === 0 && Number(revista?.id) === 5 && (
                           <div style={{ width: '100%', position: 'relative', zIndex: 2 }}>
                             <HormigaCaminando />

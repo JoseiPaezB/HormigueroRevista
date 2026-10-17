@@ -1,5 +1,7 @@
 .hormiga-recorrido {
   --caminante-ancho: 205px;
+  --limite-izquierdo: 25%;
+  --limite-derecho: 75%;
   position: relative;
   width: 100%;
   height: 225px;
@@ -9,7 +11,7 @@
 .hormiga-caminando {
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: var(--limite-izquierdo);
   width: var(--caminante-ancho);
   height: 215px;
   object-fit: contain;
@@ -20,18 +22,32 @@
 .hormiga-ida { animation: hormiga-ida 16s linear infinite; }
 .hormiga-vuelta { animation: hormiga-vuelta 16s linear infinite; }
 @keyframes hormiga-ida {
-  0% { left: 0; visibility: visible; }
-  49.999% { left: calc(100% - var(--caminante-ancho)); visibility: visible; }
-  50%, 100% { left: calc(100% - var(--caminante-ancho)); visibility: hidden; }
+  0% { left: var(--limite-izquierdo); visibility: visible; }
+  49.999% { left: calc(var(--limite-derecho) - var(--caminante-ancho)); visibility: visible; }
+  50%, 100% { left: calc(var(--limite-derecho) - var(--caminante-ancho)); visibility: hidden; }
 }
 @keyframes hormiga-vuelta {
-  0%, 49.999% { left: calc(100% - var(--caminante-ancho)); visibility: hidden; }
-  50% { left: calc(100% - var(--caminante-ancho)); visibility: visible; }
-  100% { left: 0; visibility: visible; }
+  0%, 49.999% { left: calc(var(--limite-derecho) - var(--caminante-ancho)); visibility: hidden; }
+  50% { left: calc(var(--limite-derecho) - var(--caminante-ancho)); visibility: visible; }
+  100% { left: var(--limite-izquierdo); visibility: visible; }
 }
-@media (max-width: 768px) {
-  .hormiga-recorrido { --caminante-ancho: 130px; height: 150px; }
-  .hormiga-caminando { height: 145px; }
+@media (max-width: 840px) {
+  .hormiga-recorrido {
+    --caminante-ancho: 65px;
+    --limite-izquierdo: 0px;
+    --limite-derecho: 390px;
+
+    width: 390px;
+    max-width: none;
+    height: 100px;
+
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .hormiga-caminando {
+    height: 90px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hormiga-caminando { animation: none; }

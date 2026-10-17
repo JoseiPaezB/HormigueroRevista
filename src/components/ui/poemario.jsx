@@ -456,167 +456,57 @@ return (
           position: 'relative',
           zIndex: 1,
         }}>
-          {(() => {
-            const fullSemblanza = autor?.semblanza || '';
-            
-            if (fullSemblanza.length > 100) {
-              const periods = [];
-              let dotIndex = fullSemblanza.indexOf('. ');
-              
-              while (dotIndex !== -1) {
-                periods.push(dotIndex + 1);
-                dotIndex = fullSemblanza.indexOf('. ', dotIndex + 1);
-              }
-              
-              if (periods.length === 0) {
-                return (
-                  <ScrollReveal direction="up" delay={400}>
-                    <div style={{ 
-                      fontSize: isDesktop ? '1rem' : '14px',
-                      lineHeight: '1.5'
-                    }}>
-                      <img 
-                        src={autor?.imagen || eventImage} 
-                        alt={autor?.nombre || "Author"} 
-                        style={{
-                          float: 'right',
-                          height: isDesktop ? '400px' : '200px',
-                          objectFit: 'cover',
-                          margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
-                          border: '1px solid #eee'
-                        }}
-                      />
-                      
-                      <p style={{ marginBottom: '15px' }}>
-                        <span style={{ 
-                          fontSize: isDesktop ? '2rem' : '28px', 
-                          fontWeight: 'bold',
-                          float: 'left',
-                          marginRight: '2px',
-                          lineHeight: '1'
-                        }}>
-                          {firstLetter}
-                        </span>
-                        {restOfName}, {/* Author name with comma */}
-                        {processItalics(fullSemblanza)}
-                      </p>
-                    </div>
-                  </ScrollReveal>
-                );
-              }
-              
-              const middle = fullSemblanza.length / 2;
-              let breakIndex = periods[0];
-              let closestDistance = Math.abs(periods[0] - middle);
-              
-              for (let i = 1; i < periods.length; i++) {
-                const distance = Math.abs(periods[i] - middle);
-                if (distance < closestDistance) {
-                  breakIndex = periods[i];
-                  closestDistance = distance;
-                }
-                if (periods[i] > middle) {
-                  break;
-                }
-              }
-              
-              if (breakIndex < 50 && periods.length > 1) {
-                breakIndex = periods[1];
-              }
-              
-              const firstPart = fullSemblanza.substring(0, breakIndex);
-              const secondPart = fullSemblanza.substring(breakIndex).trim();
-              
-             return (
-                <>
-                  <ScrollReveal direction="up" delay={400}>
-                    <div style={{ 
-                      fontSize: isDesktop ? '1rem' : '14px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      marginBottom: isDesktop ? '30px' : '20px'
-                    }}>
-                      <p style={{ 
-                        marginBottom: '15px', 
-                        width: isDesktop ? 'auto' : '90%',
-                        textAlign: 'justify'
-                      }}>
-                        <span style={{ 
-                          fontSize: isDesktop ? '2rem' : '28px', 
-                          fontWeight: 'bold',
-                          float: 'left',
-                          marginRight: '2px',
-                          lineHeight: '1'
-                        }}>
-                          {firstLetter}
-                        </span>
-                        {restOfName}, {/* Author name with comma */}
-                        {processItalics(fullSemblanza)}
-                      </p>
-                    </div>
-                  </ScrollReveal>
-                  
-                  <ScrollReveal direction="scale" delay={600}>
-                    <div style={{
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      margin: isDesktop ? '40px 0' : '30px 0'
-                    }}>
-                      <img 
-                        src={autor?.imagen || eventImage} 
-                        alt={autor?.nombre || "Author"} 
-                        style={{
-                          height: isDesktop ? '410px' : '200px',
-                          width: isDesktop ? '50%' : '75%',
-                          objectFit: 'cover',
-                          border: '1px solid #eee',
-                          boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-                        }}
-                      />
-                    </div>
-                  </ScrollReveal>
-                </>
-              );
-            } 
-            else {
-              return (
-                <ScrollReveal direction="up" delay={400}>
-                  <div style={{ 
-                    fontSize: isDesktop ? '1rem' : '14px',
-                    lineHeight: '1.5'
-                  }}>
-                    <img 
-                      src={autor?.imagen || eventImage} 
-                      alt={autor?.nombre || "Author"} 
-                      style={{
-                        float: 'right',
-                        height: isDesktop ? '400px' : '175px',
-                        objectFit: 'cover',
-                        margin: isDesktop ? '0 0 20px 20px' : '0 0 10px 10px',
-                        border: '1px solid #eee'
-                      }}
-                    />
-                    
-                    <p style={{ marginBottom: '15px' }}>
-                      <span style={{ 
-                        fontSize: isDesktop ? '2rem' : '28px', 
-                        fontWeight: 'bold',
-                        float: 'left',
-                        marginRight: '2px',
-                        lineHeight: '1'
-                      }}>
-                        {firstLetter}
-                      </span>
-                      {restOfName}, {/* Author name with comma */}
-                      {processItalics(fullSemblanza)}
-                    </p>
-                  </div>
-                </ScrollReveal>
-              );
-            }
-          })()}
-          
+          {/* Semblanza: siempre texto arriba y fotografía debajo */}
+          <ScrollReveal direction="up" delay={400}>
+            <div style={{
+              fontSize: isDesktop ? '1rem' : '14px',
+              lineHeight: '1.5',
+              width: (autor?.semblanza || '').trim().length < 200
+                ? (isDesktop ? '50%' : '75%')
+                : '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}>
+              <p style={{
+                marginBottom: '15px',
+                textAlign: (autor?.semblanza || '').trim().length < 200 ? 'left' : 'justify',
+                overflowWrap: 'break-word'
+              }}>
+                <span style={{
+                  fontSize: isDesktop ? '2rem' : '28px',
+                  fontWeight: 'bold',
+                  float: 'left',
+                  marginRight: '2px',
+                  lineHeight: '1'
+                }}>
+                  {firstLetter}
+                </span>
+                {restOfName}, {processItalics(autor?.semblanza || '')}
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal direction="scale" delay={600}>
+            <div style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              margin: isDesktop ? '40px 0' : '30px 0'
+            }}>
+              <img
+                src={autor?.imagen || eventImage}
+                alt={autor?.nombre || 'Author'}
+                style={{
+                  height: isDesktop ? '410px' : '200px',
+                  width: isDesktop ? '50%' : '75%',
+                  objectFit: 'cover',
+                  border: '1px solid #eee',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                }}
+              />
+            </div>
+          </ScrollReveal>
+
           {/* Bio corta section */}
           <ScrollReveal direction="up" delay={1000}>
             <div style={{ 

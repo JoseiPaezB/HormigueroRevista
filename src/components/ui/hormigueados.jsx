@@ -51,40 +51,24 @@ const HormigueadosSection = ({ edicionId = null }) => {
           revistaId = revistaData.id;
         }
 
-        // Fetch poems for this specific edition
-        // First, get all poemarios for this revista
-        const { data: creacionesData, error: creacionesError } = await supabase
-          .from('creaciones')
-          .select('id')
+        // Consultar los poemas publicados específicamente en esta edición.
+        // Un poemario puede contener poemas de distintas ediciones, por eso
+        // la relación correcta es poema_revista y no creaciones_poemario.
+        const { data: poemRelations, error: relationsError } = await supabase
+          .from('poema_revista')
+          .select('id_poema')
           .eq('id_revista', revistaId);
-        
-        if (creacionesError) throw creacionesError;
-        
-        if (!creacionesData || creacionesData.length === 0) {
-          setCarouselItems([]);
-          setLoading(false);
-          return;
-        }
-
-        const creacionIds = creacionesData.map(c => c.id);
-
-        // Get poemarios linked to these creaciones
-        const { data: poemarioRelations, error: relationsError } = await supabase
-          .from('creaciones_poemario')
-          .select('id_poemario')
-          .in('id_creacion', creacionIds);
 
         if (relationsError) throw relationsError;
 
-        if (!poemarioRelations || poemarioRelations.length === 0) {
+        const poemaIds = [...new Set((poemRelations || []).map(rel => rel.id_poema))];
+
+        if (poemaIds.length === 0) {
           setCarouselItems([]);
-          setLoading(false);
           return;
         }
 
-        const poemarioIds = poemarioRelations.map(rel => rel.id_poemario);
-
-        // Now fetch poems from these poemarios with hormigueos
+        // Top 3 exclusivamente entre los poemas de la edición seleccionada.
         const { data, error } = await supabase
           .from('poema')
           .select(`
@@ -97,7 +81,7 @@ const HormigueadosSection = ({ edicionId = null }) => {
               nombre
             )
           `)
-          .in('id_poemario', poemarioIds)
+          .in('id', poemaIds)
           .not('hormigueos', 'is', null)
           .order('hormigueos', { ascending: false })
           .limit(3);
