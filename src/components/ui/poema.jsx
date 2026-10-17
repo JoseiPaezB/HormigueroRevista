@@ -745,6 +745,7 @@ const poemSections = [295, 296, 297].includes(Number(poema?.id))
                         {section.content.split('~').map((block, blockIndex) => {
                           if (!block.trim()) return null;
                           const lines = block.split('\n');
+                          const esPoemaEspecial = Number(poema.id) === 284;
                           return (
                             <ScrollReveal key={blockIndex} direction="up" delay={100}>
                               <div style={{ marginBottom: '0px', overflowX: 'auto', maxWidth: '100%' }}>
@@ -761,7 +762,7 @@ const poemSections = [295, 296, 297].includes(Number(poema?.id))
                                   }, 0);
                                   const rawText = line.replace(/^[>%*°]+/, '');
                                   const processLine = (str) => {
-                                    return str.split(/@([^@]+)@/).flatMap((part, j) => {
+                                    return str.replace(/@@@/g, '').split(/@([^@]+)@/).flatMap((part, j) => {
                                       if (j % 2 === 1) return [<strong key={`b${j}`}>{part}</strong>];
                                       return part.split(/\$([^$]+)\$/).map((p, k) =>
                                         k % 2 === 1 ? <em key={`i${j}${k}`}>{p}</em> : p
