@@ -1,0 +1,61 @@
+/* Fondo único para la sección de contenidos de la revista ID 5. */
+.escenario-revista-5 {
+  isolation: isolate;
+  min-height: 650px;
+}
+.escenario-revista-5-fondos {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.escenario-revista-5-fondo {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://hkapdwrhiafewoqxdwsr.supabase.co/storage/v1/object/public/animation/1%20(2).jpg');
+  background-position: center 15%;
+  background-size: 50% auto;
+  background-repeat: no-repeat;
+}
+@media (max-width: 840px) {
+  .escenario-revista-5 {
+    min-height: 500px;
+    overflow: hidden;
+  }
+
+  .escenario-revista-5-fondo {
+    left: 50%;
+    right: auto;
+    width: 390px;
+    transform: translateX(-50%);
+
+    background-size: 450px auto;
+    background-position: center 45%;
+    background-repeat: no-repeat;
+  }
+}
+@media (max-width: 768px) {
+  /* Centrar ambos títulos sin cambiar su altura */
+  .titulo-hormiguero-5,
+  .titulo-otros-bichos-5 {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* Centrar el contenido interno */
+  .titulo-hormiguero-5 > *,
+  .titulo-otros-bichos-5 > * {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Bajar solamente OTROS BICHOS */
+  .titulo-otros-bichos-5 {
+    position: relative;
+    top: 200px;
+  }
+}

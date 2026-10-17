@@ -91,8 +91,9 @@ const EditionCards = ({ isDesktop }) => {
 
   if (loadingCards || editions.length === 0) return null;
 
-  const cardW = isDesktop ? 275 : 120;
-  const cardH = isDesktop ? 375 : 180;
+  // Dos columnas en móvil/tablet; cuatro en escritorio.
+  const cardW = isDesktop ? 275 : '100%';
+  const cardH = isDesktop ? 375 : 'auto';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',marginTop: '2rem' }}>
@@ -112,20 +113,24 @@ const EditionCards = ({ isDesktop }) => {
         </p>
       </ScrollReveal>
 
-      {/* Cards — flex row, always centered */}
+      {/* Cards — 2 columnas hasta 840px; 4 columnas desde 841px */}
       <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
+        display: 'grid',
+        gridTemplateColumns: isDesktop ? 'repeat(4, 275px)' : 'repeat(2, minmax(0, 1fr))',
         gap: isDesktop ? '20px' : '10px',
+        width: isDesktop ? 'max-content' : 'min(100% - 24px, 500px)',
+        maxWidth: '100%',
+        margin: '0 auto',
         justifyContent: 'center',
       }}>
         {editions.map((edition, i) => (
-          <ScrollReveal key={edition.id} direction="up" delay={700 + i * 110}>
+          <div key={edition.id} style={{ minWidth: 0 }}>
+          <ScrollReveal direction="up" delay={700 + i * 110}>
             <Link
               to={`/edicion?edicion=${edition.id}`}
               className="ed-card"
               style={{
-                width: `${cardW}px`,
+                width: isDesktop ? `${cardW}px` : '100%',
                 backgroundColor: 'transparent',
                 boxShadow: '0 6px 24px rgba(0,0,0,0.22)',
                 overflow: 'hidden',
@@ -134,7 +139,7 @@ const EditionCards = ({ isDesktop }) => {
               }}
             >
               {/* Cover image — full card height, no footer bar */}
-              <div style={{ width: `${cardW}px`, height: `${cardH}px`, overflow: 'hidden', backgroundColor: '#ececec', position: 'relative' }}>
+              <div style={{ width: '100%', height: isDesktop ? `${cardH}px` : 'auto', aspectRatio: isDesktop ? undefined : '2 / 3', overflow: 'hidden', backgroundColor: '#ececec', position: 'relative' }}>
                 {edition.portada
                   ? <img src={edition.portada} alt={`Edición ${edition.numero}`} className="ed-card-img" />
                   : (
@@ -177,6 +182,7 @@ const EditionCards = ({ isDesktop }) => {
               </div>
             </Link>
           </ScrollReveal>
+          </div>
         ))}
       </div>
     </div>

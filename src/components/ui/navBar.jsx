@@ -25,9 +25,22 @@ const Navbar = () => {
   const hormigueadosRef = useRef(null);
   const eventosRef = useRef(null);
   const searchRef = useRef(null);
+  const navbarRef = useRef(null);
+  const [navbarHeight, setNavbarHeight] = useState(70);
   const searchDebounceRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Keep the mobile menu directly below the actual navbar height.
+  useEffect(() => {
+    const navbar = navbarRef.current;
+    if (!navbar) return;
+    const updateHeight = () => setNavbarHeight(navbar.getBoundingClientRect().height);
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(navbar);
+    return () => observer.disconnect();
+  }, []);
 
   // ── Navigate to a page then scroll to a section id ──
   const handleScrollToSection = (sectionId, page = '/') => {
@@ -51,7 +64,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const checkScreenSize = () => setIsMobile(window.innerWidth <= 768);
+    const checkScreenSize = () => setIsMobile(window.innerWidth <= 1050);
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
@@ -195,7 +208,10 @@ const Navbar = () => {
   };
 
   const getLogoSize = () => ({ width: isMobile ? '60px' : '60px', height: 'auto' });
-  const navFontSize = window.innerWidth < 1200 ? '12px' : '14px';
+  const navFontSize = 'clamp(11px, 0.85vw, 14px)';
+  const desktopNavGap = 'clamp(8px, 1.1vw, 18px)';
+  const mobileMenuFontSize = '17px';
+  const mobileSubmenuFontSize = '14px';
 
   const dropdownMenuStyle = {
     position: 'absolute', top: '100%', right: 0, marginTop: '10px',
@@ -221,6 +237,7 @@ const Navbar = () => {
     <>
       <nav
         id="navbar"
+        ref={navbarRef}
         style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           padding: isMobile ? '2px 12px' : '10px 20px',
@@ -230,8 +247,8 @@ const Navbar = () => {
         }}
       >
         {/* ── LEFT: Search ── */}
-        <div style={{ width: isMobile ? '20%' : '33%', display: 'flex', alignItems: 'center' }}>
-          <div ref={searchRef} style={{ position: 'relative' }}>
+        <div style={{ width: isMobile ? '20%' : 'auto', flex: isMobile ? 'none' : '1 1 0', minWidth: 0, display: 'flex', alignItems: 'center' }}>
+          <div ref={searchRef} style={{ position: 'relative', zIndex: searchOpen ? 3 : 'auto' }}>
             {!searchOpen && (
               <button onClick={() => setSearchOpen(true)} aria-label="Buscar autor"
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: '#000', transition: 'opacity 0.2s ease' }}
@@ -248,7 +265,7 @@ const Navbar = () => {
                     to   { opacity: 1; transform: scaleX(1);   transform-origin: left; }
                   }
                 `}</style>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', animation: 'expandSearch 0.25s ease forwards' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', animation: 'expandSearch 0.25s ease forwards', position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', backgroundColor: 'white', padding: '6px 8px', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
                   <FaSearch size={12} color="#999" style={{ flexShrink: 0 }} />
                   <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Buscar autor..."
@@ -260,7 +277,7 @@ const Navbar = () => {
                   </button>
                 </div>
                 {(searchLoading || searchResults.length > 0 || (searchQuery.trim() && !searchLoading)) && (
-                  <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: 0, backgroundColor: 'white', border: '1px solid #e0e0e0', borderRadius: '4px', boxShadow: '0 6px 16px rgba(0,0,0,0.12)', minWidth: isMobile ? '200px' : '260px', zIndex: 1002, overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', top: `${navbarHeight / 2 + 18}px`, left: 0, backgroundColor: 'white', border: '1px solid #e0e0e0', borderRadius: '4px', boxShadow: '0 6px 16px rgba(0,0,0,0.12)', minWidth: isMobile ? '200px' : '260px', zIndex: 1002, overflow: 'hidden' }}>
                     {searchLoading && <div style={{ padding: '14px 16px', color: '#999', fontSize: '13px' }}>Buscando...</div>}
                     {!searchLoading && searchResults.length === 0 && searchQuery.trim() && (
                       <div style={{ padding: '14px 16px', color: '#999', fontSize: '13px' }}>Sin resultados para "{searchQuery}"</div>
@@ -293,16 +310,16 @@ const Navbar = () => {
         </div>
 
         {/* ── CENTER: Logo ── */}
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: isMobile ? '60%' : '34%' }}>
-          <a href="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: isMobile ? '60%' : 'auto', ...(isMobile ? {} : { position: 'absolute', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none' }) }}>
+          <a href="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'auto' }}>
             <img src={hormigueroLogoUrl} alt="Hormiga" style={getLogoSize()} />
           </a>
         </div>
 
         {/* ── RIGHT: Nav links / Hamburger ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 0 : '20px', width: isMobile ? '20%' : '33%', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 0 : desktopNavGap, width: isMobile ? '20%' : 'auto', flex: isMobile ? 'none' : '0 1 auto', minWidth: 0, justifyContent: 'flex-end' }}>
           {!isMobile && (
-            <div style={{ display: 'flex', flexWrap: window.innerWidth < 1200 ? 'wrap' : 'nowrap', justifyContent: 'flex-end', alignItems: 'center', gap: window.innerWidth < 1200 ? '15px' : '20px' }}>
+            <div style={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'flex-end', alignItems: 'center', gap: desktopNavGap, whiteSpace: 'nowrap' }}>
 
               {/* EDICIONES */}
               <div ref={dropdownRef} style={{ position: 'relative' }}>
@@ -385,23 +402,23 @@ const Navbar = () => {
 
       {/* ── Mobile menu ── */}
       {isMobile && menuOpen && (
-        <div id="navbar-menu" style={{ position: 'fixed', top: '20px', left: 0, right: 0, backgroundColor: 'white', borderBottom: '1px solid #ddd', zIndex: 999, boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '20px', transition: 'all 0.3s ease' }}>
-          <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
+        <div id="navbar-menu" style={{ position: 'fixed', top: `${navbarHeight}px`, left: 0, right: 0, backgroundColor: 'white', borderBottom: '1px solid #ddd', zIndex: 999, boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '20px', maxHeight: `calc(100dvh - ${navbarHeight}px)`, overflowY: 'auto', boxSizing: 'border-box', transition: 'all 0.3s ease' }}>
+          <ul style={{ listStyleType: 'none', margin: 0, padding: 0, fontFamily: 'inherit', fontSize: mobileMenuFontSize, fontWeight: 400, lineHeight: 1.4 }}>
 
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <a href="/" style={{ textDecoration: 'none', color: '#000' }} onClick={() => setMenuOpen(false)}>INICIO</a>
+              <a href="/" style={{ textDecoration: 'none', color: '#000', font: 'inherit' }} onClick={() => setMenuOpen(false)}>INICIO</a>
             </li>
 
             {/* EVENTOS */}
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <div onClick={() => setEventosDropdownOpen(!eventosDropdownOpen)} style={{ color: '#000', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div onClick={() => setEventosDropdownOpen(!eventosDropdownOpen)} style={{ color: '#000', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: mobileMenuFontSize, fontWeight: 400 }}>
                 EVENTOS
                 <FaChevronDown size={10} style={{ transform: eventosDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
               </div>
               {eventosDropdownOpen && (
                 <ul style={{ listStyleType: 'none', margin: '10px 0 0 0', padding: '0 0 0 15px' }}>
                   <li style={{ padding: '8px 0' }}>
-                    <button onClick={handleEventosClick} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', fontSize: '14px' }}>
+                    <button onClick={handleEventosClick} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', fontSize: mobileSubmenuFontSize, fontFamily: 'inherit', fontWeight: 400 }}>
                       Eventos
                     </button>
                   </li>
@@ -411,7 +428,7 @@ const Navbar = () => {
 
             {/* EDICIONES */}
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <div onClick={() => setEdicionesDropdownOpen(!edicionesDropdownOpen)} style={{ color: '#000', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div onClick={() => setEdicionesDropdownOpen(!edicionesDropdownOpen)} style={{ color: '#000', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: mobileMenuFontSize, fontWeight: 400 }}>
                 EDICIONES
                 <FaChevronDown size={10} style={{ transform: edicionesDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
               </div>
@@ -419,7 +436,7 @@ const Navbar = () => {
                 <ul style={{ listStyleType: 'none', margin: '10px 0 0 0', padding: '0 0 0 15px' }}>
                   {allEditions.map((edition) => (
                     <li key={edition.id} style={{ padding: '8px 0' }}>
-                      <button onClick={() => handleEditionClick(edition.id)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', fontSize: '14px' }}>
+                      <button onClick={() => handleEditionClick(edition.id)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', fontSize: mobileSubmenuFontSize, fontFamily: 'inherit', fontWeight: 400 }}>
                         Edición {edition.numero}
                       </button>
                     </li>
@@ -430,7 +447,7 @@ const Navbar = () => {
 
             {/* HORMIGUEADOS */}
             <li style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-              <div onClick={() => setHormigueadosDropdownOpen(!hormigueadosDropdownOpen)} style={{ color: '#000', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div onClick={() => setHormigueadosDropdownOpen(!hormigueadosDropdownOpen)} style={{ color: '#000', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: mobileMenuFontSize, fontWeight: 400 }}>
                 HORMIGUEADOS
                 <FaChevronDown size={10} style={{ transform: hormigueadosDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }} />
               </div>
@@ -438,7 +455,7 @@ const Navbar = () => {
                 <ul style={{ listStyleType: 'none', margin: '10px 0 0 0', padding: '0 0 0 15px' }}>
                   {allEditions.map((edition) => (
                     <li key={edition.id} style={{ padding: '8px 0' }}>
-                      <button onClick={() => handleHormigueadosEditionClick(edition.id)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', fontSize: '14px' }}>
+                      <button onClick={() => handleHormigueadosEditionClick(edition.id)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#666', fontSize: mobileSubmenuFontSize, fontFamily: 'inherit', fontWeight: 400 }}>
                         Hormigueados Edición {edition.numero}
                       </button>
                     </li>
@@ -450,7 +467,7 @@ const Navbar = () => {
             {/* COLABORADORES / CONTACTO / SUSCRÍBETE */}
             {footerLinks.map(({ id, label, page }) => (
               <li key={id} style={{ padding: '10px 0', borderBottom: '1px solid #eee' }}>
-                <button onClick={() => handleScrollToSection(id, page)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#000', textTransform: 'uppercase', fontSize: '14px', fontWeight: '500' }}>
+                <button onClick={() => handleScrollToSection(id, page)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#000', textTransform: 'uppercase', fontSize: mobileMenuFontSize, fontFamily: 'inherit', fontWeight: 400 }}>
                   {label}
                 </button>
               </li>

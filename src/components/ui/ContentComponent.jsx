@@ -279,7 +279,9 @@ const ContentComponent = ({ contentType }) => {
             })
           );
 
-          setPoemarios(poemariosWithCount);
+          setPoemarios(poemariosWithCount.sort((a, b) =>
+            a.author.localeCompare(b.author, 'es', { sensitivity: 'base' })
+          ));
         }
 
         setLoading(false);
@@ -353,7 +355,9 @@ const ContentComponent = ({ contentType }) => {
     return result;
   };
 
-  const arrangedBooks = arrangeBooks(poemarios);
+  const arrangedBooks = arrangeBooks(poemarios).sort((a, b) =>
+    a.author.localeCompare(b.author, 'es', { sensitivity: 'base' })
+  );
 
   const getTitleStyles = (sizeInfo, isHighlighted) => {
     if (sizeInfo.isLarge) {
