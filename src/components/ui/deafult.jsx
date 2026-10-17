@@ -70,6 +70,10 @@ const CustomStyles = () => (
     .ed-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.18) !important; }
     .ed-card:hover .ed-card-img { transform: scale(1.04); }
     .ed-card-img { transition: transform 0.4s ease; width: 100%; height: 100%; object-fit: cover; display: block; }
+    @media (max-width: 1199px) {
+      .edition-container .cover-image { height: auto !important; max-height: none !important; }
+      .edition-container .ed-card { height: 100%; }
+    }
   `}</style>
 );
 
@@ -91,7 +95,7 @@ const EditionCards = ({ isDesktop }) => {
 
   if (loadingCards || editions.length === 0) return null;
 
-  // Dos columnas en móvil/tablet; cuatro en escritorio.
+  // Dos columnas hasta que haya espacio real para cuatro portadas de escritorio.
   const cardW = isDesktop ? 275 : '100%';
   const cardH = isDesktop ? 375 : 'auto';
 
@@ -113,12 +117,12 @@ const EditionCards = ({ isDesktop }) => {
         </p>
       </ScrollReveal>
 
-      {/* Cards — 2 columnas hasta 840px; 4 columnas desde 841px */}
+      {/* Cards — 2 columnas hasta 1199px; 4 columnas desde 1200px */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: isDesktop ? 'repeat(4, 275px)' : 'repeat(2, minmax(0, 1fr))',
         gap: isDesktop ? '20px' : '10px',
-        width: isDesktop ? 'max-content' : 'min(calc(100% - 32px), 360px)',
+        width: isDesktop ? 'max-content' : 'min(calc(100% - 48px), 340px)',
         maxWidth: '100%',
         margin: '0 auto',
         justifyContent: 'center',
@@ -139,7 +143,7 @@ const EditionCards = ({ isDesktop }) => {
               }}
             >
               {/* Cover image — full card height, no footer bar */}
-              <div style={{ width: '100%', height: isDesktop ? `${cardH}px` : 'auto', aspectRatio: isDesktop ? undefined : '4 / 5', overflow: 'hidden', backgroundColor: '#ececec', position: 'relative' }}>
+              <div style={{ width: '100%', height: isDesktop ? `${cardH}px` : 'auto', aspectRatio: isDesktop ? undefined : '2 / 3', overflow: 'hidden', backgroundColor: '#ececec', position: 'relative' }}>
                 {edition.portada
                   ? <img src={edition.portada} alt={`Edición ${edition.numero}`} className="ed-card-img" />
                   : (
@@ -356,7 +360,7 @@ const Default = () => {
     </h2>
   );
 
-  const isDesktop = windowWidth > 840;
+  const isDesktop = windowWidth >= 1200;
   const editionLink = revista ? `/contenidos?edicion=${revista.id}` : '/contenidos';
 
   if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Cargando...</div>;
@@ -397,7 +401,8 @@ const Default = () => {
             position: 'relative',
             overflow: 'hidden',
             minHeight: isDesktop ? '130vh' : 'auto',
-             paddingBottom: isDesktop ? undefined : '40px',
+             paddingBottom: isDesktop ? undefined : '150px',
+            height: isDesktop ? undefined : 'auto',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -441,7 +446,8 @@ const Default = () => {
             position: isDesktop ? 'absolute' : 'relative',
             bottom: isDesktop ? '40px' : undefined,
             top: isDesktop ? '300px' : undefined,
-            marginTop: isDesktop ? undefined : '250px',
+            marginTop: isDesktop ? undefined : '280px',
+            marginBottom: isDesktop ? undefined : '50px',
             left: 0,
             right: 0,
             zIndex: 10,

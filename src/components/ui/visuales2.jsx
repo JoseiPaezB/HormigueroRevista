@@ -163,7 +163,7 @@ export default function Visuales2() {
       </Helmet>
       <div style={{ maxWidth: 1150, margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <header style={{ textAlign: 'center', marginBottom: 55 }}>
-          <p style={{ fontSize: 12, letterSpacing: '0.2em', marginBottom: 14 }}>EDICIÓN 5</p>
+          <p style={{ fontSize: 12, letterSpacing: '0.2em', marginBottom: 14 }}>EDICIÓN 4</p>
           <h1 style={{ fontSize: 'clamp(2rem, 6vw, 4.5rem)', lineHeight: 1.1, margin: '0 0 15px', fontWeight: 900 }}>A OJO DE HORMIGA</h1>
           <p style={{ fontSize: 15, fontStyle: 'italic' }}>Artes visuales</p>
         </header>
