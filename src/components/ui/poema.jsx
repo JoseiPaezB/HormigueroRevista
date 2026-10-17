@@ -740,7 +740,7 @@ const poemSections = [295, 296, 297].includes(Number(poema?.id))
                         </div>
                       ));
                     })()
-                  ) : poema.id === 206 || poema.id === 197 || poema.id ==196 || poema.id == 300 || poema.id == 284 ? (
+                  ) : poema.id === 206 || poema.id === 197 || poema.id ==196 || poema.id == 300 || poema.id == 284 || poema.id == 221 ? (
                       <div>
                         {section.content.split('~').map((block, blockIndex) => {
                           if (!block.trim()) return null;

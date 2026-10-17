@@ -118,7 +118,7 @@ const EditionCards = ({ isDesktop }) => {
         display: 'grid',
         gridTemplateColumns: isDesktop ? 'repeat(4, 275px)' : 'repeat(2, minmax(0, 1fr))',
         gap: isDesktop ? '20px' : '10px',
-        width: isDesktop ? 'max-content' : 'min(100% - 24px, 500px)',
+        width: isDesktop ? 'max-content' : 'min(calc(100% - 32px), 360px)',
         maxWidth: '100%',
         margin: '0 auto',
         justifyContent: 'center',
@@ -139,7 +139,7 @@ const EditionCards = ({ isDesktop }) => {
               }}
             >
               {/* Cover image — full card height, no footer bar */}
-              <div style={{ width: '100%', height: isDesktop ? `${cardH}px` : 'auto', aspectRatio: isDesktop ? undefined : '2 / 3', overflow: 'hidden', backgroundColor: '#ececec', position: 'relative' }}>
+              <div style={{ width: '100%', height: isDesktop ? `${cardH}px` : 'auto', aspectRatio: isDesktop ? undefined : '4 / 5', overflow: 'hidden', backgroundColor: '#ececec', position: 'relative' }}>
                 {edition.portada
                   ? <img src={edition.portada} alt={`Edición ${edition.numero}`} className="ed-card-img" />
                   : (
@@ -170,9 +170,9 @@ const EditionCards = ({ isDesktop }) => {
                       fontSize: isDesktop ? '12px' : '10px',
                       fontWeight: '700',
                       color: '#fff',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
+                      whiteSpace: 'normal',
+                      overflowWrap: 'break-word',
+                      lineHeight: '1.25',
                       letterSpacing: '0.3px',
                     }}>
                       {edition.nombre}
@@ -396,7 +396,8 @@ const Default = () => {
             backgroundImage: '#fff',
             position: 'relative',
             overflow: 'hidden',
-            minHeight: isDesktop ? '130vh' : '800px',
+            minHeight: isDesktop ? '130vh' : 'auto',
+             paddingBottom: isDesktop ? undefined : '40px',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -437,9 +438,10 @@ const Default = () => {
         
           {/* Edition cards — centered horizontally, pinned to bottom on desktop, higher on mobile */}
           <div style={{
-            position: 'absolute',
+            position: isDesktop ? 'absolute' : 'relative',
             bottom: isDesktop ? '40px' : undefined,
-            top: isDesktop ? '300px' : '250px',
+            top: isDesktop ? '300px' : undefined,
+            marginTop: isDesktop ? undefined : '250px',
             left: 0,
             right: 0,
             zIndex: 10,
